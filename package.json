@@ -1,0 +1,39 @@
+{
+  "name": "cuckoo.plus",
+  "version": "0.0.1",
+  "description": "A third-party client for mastodon",
+  "scripts": {
+    "dev": "webpack-dev-server"
+  },
+  "dependencies": {
+    "element-ui": "^2.4.8",
+    "vue": "^2.5.13",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "css-loader": "^0.28.9",
+    "sass-loader": "^7.1.0",
+    "ts-loader": "^3.5.0",
+    "typescript": "^2.7.1",
+    "vue-loader": "^14.1.1",
+    "vue-property-decorator": "^7.2.0",
+    "vue-template-compiler": "^2.5.13",
+    "vuex-class": "^0.3.1",
+    "webpack": "^3.11.0",
+    "webpack-dev-server": "^2.11.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NanaMorse/Cuckoo.Plus.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NanaMorse/Cuckoo.Plus/issues"
+  },
+  "homepage": "https://github.com/NanaMorse/Cuckoo.Plus#readme"
+}
