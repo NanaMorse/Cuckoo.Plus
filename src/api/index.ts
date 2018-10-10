@@ -1,5 +1,5 @@
-import * as Apps from './apps'
+import * as apps from './apps'
 
 export {
-  Apps
+  apps
 }

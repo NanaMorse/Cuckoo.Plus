@@ -1,7 +1,8 @@
 <template>
   <div>
+    <h1>Welcome to Cuckoo.Plus!</h1>
     <!-- todo add vue i18n -->
-    <h1>Please input the mastodon server which you want to join in..</h1>
+    <h2>Please input the mastodon server which you want to join in..</h2>
 
     <el-input placeholder="https://pawoo.net" :value="mastodonServerUri"/>
 
@@ -12,7 +13,7 @@
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
   import { Mutation, State } from 'vuex-class'
-  import { Apps } from '@/api'
+  import { apps } from '@/api'
 
   // the first step, ask for mastodon OAuth Access token
   // and store this token
@@ -20,7 +21,7 @@
   @Component({})
   class App extends Vue {
 
-    @State('OAuthInfo') OAuthInfo: cuckoostore.state.OAuthInfo
+    @State('OAuthInfo') OAuthInfo: cuckoostore.OAuthInfo
 
     @Mutation('updateMastodonServerUri') updateMastodonServerUri
 
@@ -31,7 +32,7 @@
     async onSubmitServerName () {
       this.updateMastodonServerUri(this.mastodonServerUri)
 
-      const result = await Apps.registerApplication()
+      const result = await apps.registerApplication()
 
       this.updateClientInfo({
         clientId: result.data.client_id,
