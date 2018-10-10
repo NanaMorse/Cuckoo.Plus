@@ -3,7 +3,7 @@
     <!-- todo add vue i18n -->
     <h1>Please input the mastodon server which you want to join in..</h1>
 
-    <el-input placeholder="https://pawoo.net" :value="mastodonServer"/>
+    <el-input placeholder="https://pawoo.net" :value="mastodonServerUri"/>
 
     <el-button class="submit-server-name-btn" @click="onSubmitServerName">Submit</el-button>
   </div>
@@ -11,7 +11,8 @@
 
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
-  import { postClientInfo } from '@/api'
+  import { Mutation, State } from 'vuex-class'
+  import { Apps } from '@/api'
 
   // the first step, ask for mastodon OAuth Access token
   // and store this token
@@ -19,10 +20,31 @@
   @Component({})
   class App extends Vue {
 
-    mastodonServer: string = 'https://pawoo.net';
+    @State('OAuthInfo') OAuthInfo: cuckoostore.state.OAuthInfo
+
+    @Mutation('updateMastodonServerUri') updateMastodonServerUri
+
+    @Mutation('updateClientInfo') updateClientInfo
+
+    mastodonServerUri: string = 'https://pawoo.net'
 
     async onSubmitServerName () {
-      const result = await postClientInfo(this.mastodonServer)
+      this.updateMastodonServerUri(this.mastodonServerUri)
+
+      const result = await Apps.registerApplication()
+
+      this.updateClientInfo({
+        clientId: result.data.client_id,
+        clientSecret: result.data.client_secret
+      })
+
+      this.goToMastodonServerForOAuth()
+    }
+
+    goToMastodonServerForOAuth () {
+      window.location.href = `${this.mastodonServerUri}/oauth/authorize?client_id=${this.OAuthInfo.clientId}` +
+        `&redirect_uri=${location.origin}` +
+        `&response_type=code&scope=read write follow`
     }
   }
 
