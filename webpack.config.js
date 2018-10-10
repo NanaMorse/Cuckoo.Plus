@@ -3,9 +3,11 @@ const path = require('path');
 module.exports = {
 
   devServer: {
-    contentBase: path.join(__dirname, 'public'),
+    contentBase: path.join(__dirname, '/public'),
+    publicPath: '/dist/',
     compress: true,
-    port: 3000
+    port: 3000,
+    watchContentBase: true
   },
 
   entry: './src/index.ts',
@@ -13,7 +15,7 @@ module.exports = {
   devtool: '#source-map',
 
   output: {
-    path: path.resolve(__dirname, 'public/dist'),
+    path: path.resolve(__dirname, 'public/dist/'),
     filename: 'bundle.js'
   },
 
