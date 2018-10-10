@@ -14,6 +14,7 @@
   import { Vue, Component } from 'vue-property-decorator'
   import { Mutation, State } from 'vuex-class'
   import { apps } from '@/api'
+  import { cuckoostore } from '@/interface'
 
   // the first step, ask for mastodon OAuth Access token
   // and store this token

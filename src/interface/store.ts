@@ -1,12 +1,29 @@
-declare namespace cuckoostore {
-  interface OAuthInfo {
-    clientId: string
-    clientSecret: string
-    accessToken: string
-  }
+export namespace cuckoostore {
 
-  interface state {
+  export interface stateInfo {
     OAuthInfo: OAuthInfo
     mastodonServerUri: string
   }
+
+  export interface OAuthInfo {
+    clientId: string
+    clientSecret: string
+    accessToken: string
+    code: string
+  }
+
 }
+
+// declare namespace cuckoostore {
+//   interface OAuthInfo {
+//     clientId: string
+//     clientSecret: string
+//     accessToken: string
+//     code: string
+//   }
+//
+//   interface state {
+//     OAuthInfo: OAuthInfo
+//     mastodonServerUri: string
+//   }
+// }

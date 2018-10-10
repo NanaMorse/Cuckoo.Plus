@@ -22,16 +22,34 @@ const router = new Router({
   ]
 } as any);
 
+function checkShouldReRegisterApplication (to): boolean {
+  // should have clientId/clientSecret/code
+  const { clientId, clientSecret } = store.state.OAuthInfo
+
+  let code = store.state.OAuthInfo.code
+  if (to.path === '/' && !code) {
+    if (location.href.indexOf("?code=") !== -1) {
+      code = location.href.replace(location.origin + location.pathname + "?code=", "")
+      code = code.replace('#/', '')
+      // todo maybe shouldn't put this here?
+      store.commit('updateOAuthCode', code)
+    }
+  }
+
+  return !(clientId && clientSecret && code)
+}
+
 router.beforeEach((to, from, next) => {
 
-  // todo redirect logic, need code info
-
-  const clientId = store.state.OAuthInfo.clientId
+  const shouldReRegisterApplication = checkShouldReRegisterApplication(to)
 
   if (to.path === '/welcome') {
-    if (clientId) next('/')
+    if (!shouldReRegisterApplication) next('/')
   } else {
-    if (!clientId) next('/welcome')
+    if (shouldReRegisterApplication) {
+      localStorage.clear()
+      next('/welcome')
+    }
   }
 
   next();

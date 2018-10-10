@@ -4,7 +4,6 @@ import VueResource from 'vue-resource'
 import store from './store'
 import router from './router'
 import App from './App.vue'
-import '@/interface/store'
 
 Vue.use(ElementUI);
 Vue.use(VueResource);
