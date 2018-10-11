@@ -10,6 +10,7 @@ Vue.use(Router);
 
 const router = new Router({
   routes: [
+    // todo timelines下的子路由
     {
       path: RoutersInfo.empty.path,
       name: RoutersInfo.empty.name,

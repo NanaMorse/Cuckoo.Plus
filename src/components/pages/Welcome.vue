@@ -4,9 +4,9 @@
     <!-- todo add vue i18n -->
     <h2>Please input the mastodon server which you want to join in..</h2>
 
-    <el-input placeholder="https://pawoo.net" :value="mastodonServerUri"/>
+    <input placeholder="https://pawoo.net" :value="mastodonServerUri"/>
 
-    <el-button class="submit-server-name-btn" @click="onSubmitServerName">Submit</el-button>
+    <button class="submit-server-name-btn" @click="onSubmitServerName">Submit</button>
   </div>
 </template>
 
