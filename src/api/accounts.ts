@@ -1,7 +1,7 @@
 import Vue from 'vue'
-import store from '@/store'
 import { mastodonentities } from '@/interface'
 import HttpResponse = vuejs.HttpResponse
+import { patchApiUri } from './util'
 
 async function fetchAccountInfoById () {
 
@@ -23,9 +23,7 @@ interface fetchCurrentUserAccountInfoReturnData extends HttpResponse {
 }
 
 async function fetchCurrentUserAccountInfo (): Promise<fetchCurrentUserAccountInfoReturnData> {
-  const apiUri = `${store.state.mastodonServerUri}/api/v1/accounts/verify_credentials?access_token=${store.state.OAuthInfo.accessToken}`
-
-  return Vue.http.get(apiUri) as any
+  return Vue.http.get(patchApiUri('/api/v1/accounts/verify_credentials')) as any
 }
 
 export {

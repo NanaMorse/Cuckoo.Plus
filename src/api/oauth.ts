@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import store from '@/store'
+import { patchApiUri } from './util'
 import HttpResponse = vuejs.HttpResponse;
 
 interface fetchOAuthTokenReturnData extends HttpResponse {
@@ -19,7 +20,7 @@ async function fetchOAuthToken (): Promise<fetchOAuthTokenReturnData> {
     code: OAuthInfo.code
   }
 
-  return await Vue.http.post(`${store.state.mastodonServerUri}/oauth/token`, formData) as any
+  return await Vue.http.post(patchApiUri('/oauth/token'), formData) as any
 }
 
 export {

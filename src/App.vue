@@ -2,7 +2,9 @@
   <div id="app">
     <div class="main-container">
       <cuckoo-plus-header />
-      <router-view />
+      <mu-container>
+        <router-view />
+      </mu-container>
     </div>
   </div>
 </template>
@@ -24,5 +26,13 @@
 </script>
 
 <style lang="scss" scoped>
+  .main-container {
+  }
+</style>
 
+<style>
+  body {
+    height: 100%;
+    background-color: rgb(241, 241, 241);
+  }
 </style>

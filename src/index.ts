@@ -26,6 +26,12 @@ const i18n = new VueI18n({
   messages: i18nMessages
 });
 
+const httpInterceptor: any = (request) => {
+  request.headers.set('Authorization', `Bearer ${store.state.OAuthInfo.accessToken}`);
+}
+
+Vue.http.interceptors.push(httpInterceptor)
+
 new Vue({
   el: '#app',
   store,

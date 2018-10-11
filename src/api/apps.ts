@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import store from '@/store'
+import { patchApiUri } from './util'
 
 const clientName = 'Cuckoo.Plus'
 const scopes = 'read write follow'
@@ -40,7 +40,7 @@ async function registerApplication (): Promise<Apps.registerApplicationReturnDat
     scopes: scopes
   }
 
-  const result = await Vue.http.post(`${store.state.mastodonServerUri}/api/v1/apps`, formData)
+  const result = await Vue.http.post(patchApiUri('/api/v1/apps'), formData)
 
   if (result.ok && (result.status === 200)) {
     return result as any

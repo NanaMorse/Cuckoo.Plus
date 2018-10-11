@@ -1,7 +1,8 @@
 <template>
-  <div>
-    <h1>Hello,  {{userName}}!</h1>
-    <h1>You have got the access token!</h1>
+  <div class="home-container">
+    <div class="status-cards-container">
+      <status-card />
+    </div>
   </div>
 </template>
 
@@ -9,26 +10,41 @@
   import { State } from 'vuex-class'
   import { Vue, Component } from 'vue-property-decorator'
   import { Mutation } from 'vuex-class'
-  import { oauth, accounts } from '@/api'
+  import { oauth, timelines, accounts } from '@/api'
   import { cuckoostore } from '@/interface'
+  import StatusCard from '@/components/StatusCard'
 
-  @Component({})
+  @Component({
+    components: {
+      'status-card': StatusCard
+    }
+  })
   class Home extends Vue {
 
     @State('OAuthInfo') OAuthInfo: cuckoostore.OAuthInfo
 
     @Mutation('updateOAuthAccessToken') updateOAuthAccessToken
 
-    userName: string = ''
-
     async mounted () {
       if (!this.OAuthInfo.accessToken) {
-        const result = await oauth.fetchOAuthToken()
-        this.updateOAuthAccessToken(result.data.access_token)
+        try {
+          const result = await oauth.fetchOAuthToken()
+          this.updateOAuthAccessToken(result.data.access_token)
+        } catch (e) {
+          // todo
+        }
       }
 
-      const currentUserInfo = await accounts.fetchCurrentUserAccountInfo()
-      this.userName = currentUserInfo.data.username
+      this.getHomeStatuses()
+    }
+
+    async getHomeStatuses () {
+      try {
+        const result = await timelines.getHomeStatuses()
+
+      } catch (e) {
+        console.log(e)
+      }
     }
 
   }
