@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from '../store'
+import { RoutersInfo } from '@/constant/common'
 
 import HomePage from '@/components/pages/Home.vue'
 import WelcomePage from '@/components/pages/Welcome.vue'
@@ -10,13 +11,13 @@ Vue.use(Router);
 const router = new Router({
   routes: [
     {
-      path: '/',
-      name: 'empty',
+      path: RoutersInfo.empty.path,
+      name: RoutersInfo.empty.name,
       component: HomePage
     },
     {
-      path: '/welcome',
-      name: 'welcome',
+      path: RoutersInfo.welcome.path,
+      name: RoutersInfo.welcome.name,
       component: WelcomePage
     }
   ]
@@ -43,12 +44,12 @@ router.beforeEach((to, from, next) => {
 
   const shouldReRegisterApplication = checkShouldReRegisterApplication(to)
 
-  if (to.path === '/welcome') {
-    if (!shouldReRegisterApplication) next('/')
+  if (to.path === RoutersInfo.welcome.path) {
+    if (!shouldReRegisterApplication) next(RoutersInfo.empty.path)
   } else {
     if (shouldReRegisterApplication) {
       localStorage.clear()
-      next('/welcome')
+      next(RoutersInfo.welcome.path)
     }
   }
 

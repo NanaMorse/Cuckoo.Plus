@@ -6,13 +6,19 @@
     "dev": "webpack-dev-server"
   },
   "dependencies": {
-    "element-ui": "^2.4.8",
+    "crypto-js": "^3.1.9-1",
+    "muse-ui": "^3.0.1",
+    "sha1": "^1.1.1",
     "vue": "^2.5.13",
+    "vue-i18n": "^8.1.0",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@types/crypto-js": "^3.1.43",
+    "@types/node": "^10.11.7",
+    "@types/sha1": "^1.1.1",
     "@types/vue-resource": "^0.9.34",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
@@ -35,7 +41,7 @@
     "type": "git",
     "url": "git+https://github.com/NanaMorse/Cuckoo.Plus.git"
   },
-  "author": "",
+  "author": "Nana.Morse",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/NanaMorse/Cuckoo.Plus/issues"

@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <div class="main-container">
+      <cuckoo-plus-header />
       <router-view />
     </div>
   </div>
@@ -8,9 +9,16 @@
 
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
+  import Header from '@/components/Header'
 
-  @Component({})
-  class App extends Vue {}
+  @Component({
+    components: {
+      'cuckoo-plus-header': Header
+    }
+  })
+  class App extends Vue {
+
+  }
 
   export default App
 </script>
