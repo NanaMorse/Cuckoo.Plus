@@ -6,8 +6,6 @@ const scopes = 'read write follow'
 
 namespace Apps {
 
-  import HttpResponse = vuejs.HttpResponse;
-
   export interface registerApplicationFormData {
     // Name of your application
     client_name?: string
@@ -20,7 +18,7 @@ namespace Apps {
     website?: string
   }
 
-  export interface registerApplicationReturnData extends HttpResponse {
+  export interface registerApplicationReturnData {
     data: {
       client_id: string,
       client_secret: string,
@@ -40,14 +38,7 @@ async function registerApplication (): Promise<Apps.registerApplicationReturnDat
     scopes: scopes
   }
 
-  const result = await Vue.http.post(patchApiUri('/api/v1/apps'), formData)
-
-  if (result.ok && (result.status === 200)) {
-    return result as any
-  } else {
-    // todo internet connect check
-    throw new Error('some thing went wrong!')
-  }
+  return Vue.http.post(patchApiUri('/api/v1/apps'), formData) as any
 }
 
 export {

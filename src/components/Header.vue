@@ -4,7 +4,7 @@
       <mu-button icon slot="left">
         <mu-icon value="menu" color="#676767"></mu-icon>
       </mu-button>
-      <span>Main</span>
+      <span>Main </span>
     </mu-appbar>
   </div>
 </template>

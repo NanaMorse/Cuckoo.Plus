@@ -3,13 +3,13 @@ import * as oauth from './oauth'
 import * as accounts from './accounts'
 import * as lists from './lists'
 import * as timelines from './timelines'
-import Vue from 'vue'
-import store from '@/store'
+import * as statuses from './statuses'
 
 export {
   apps,
   oauth,
   accounts,
   lists,
-  timelines
+  timelines,
+  statuses
 }
