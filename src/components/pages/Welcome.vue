@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Welcome to Cuckoo.Plus!</h1>
+    <h1>{{$i18nTags.welcome.welcome_message}}</h1>
     <!-- todo add vue i18n -->
     <h2>Please input the mastodon server which you want to join in..</h2>
 

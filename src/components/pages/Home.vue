@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Hello, {{userName}}!</h1>
+    <h1>Hello,  {{userName}}!</h1>
     <h1>You have got the access token!</h1>
   </div>
 </template>
@@ -30,7 +30,7 @@
       const currentUserInfo = await accounts.fetchCurrentUserAccountInfo()
       this.userName = currentUserInfo.data.username
     }
-    
+
   }
 
   export default Home
