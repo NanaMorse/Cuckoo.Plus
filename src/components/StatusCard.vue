@@ -48,7 +48,7 @@
 
       <div class="reply-area-full" v-if="shouldShowFullReplyArea">
         <div class="full-reply-list">
-          <div class="full-reply-list-item" v-for="replyStatus in lastedThreeReplyStatuses" :key="replyStatus.id">
+          <div class="full-reply-list-item" v-for="replyStatus in context.descendants" :key="replyStatus.id">
             <div class="left-area">
               <mu-avatar class="status-replier-avatar" slot="avatar" size="34">
                 <img :src="replyStatus.account.avatar_static">
@@ -273,6 +273,11 @@
     font-size: 14px;
   }
 
+  .full-reply-list {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
   .full-reply-list-item {
     display: flex;
     padding: 12px 16px;
@@ -323,6 +328,7 @@
     }
 
     .right-area {
+      flex-shrink: 0;
 
       .reply-from-now {
         width: 32px;
