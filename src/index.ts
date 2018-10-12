@@ -7,6 +7,7 @@ const Toast = require('muse-ui-toast').default
 import store from './store'
 import router from './router'
 import App from './App.vue'
+import * as moment from 'moment'
 
 import i18nMessages from './i18n'
 import { I18nTags, I18nLocales, RoutersInfo } from '@/constant/common'
@@ -23,10 +24,14 @@ Vue.use(VueResource)
 Vue.use(VueI18n)
 Vue.use(Toast)
 
+const currentLocale = I18nLocales.ZH_CN
+
 const i18n = new VueI18n({
-  locale: I18nLocales.ZH_CN,
+  locale: currentLocale,
   messages: i18nMessages
 });
+
+moment.locale(currentLocale)
 
 const httpInterceptor: any = (request) => {
   request.headers.set('Authorization', `Bearer ${store.state.OAuthInfo.accessToken}`);

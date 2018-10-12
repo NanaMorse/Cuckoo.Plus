@@ -9,6 +9,12 @@ const oauth = {
   [I18nTags.oauth.register_app_error_message]: '出错啦！检查一下目标链接是否正确吧'
 }
 
+const common = {
+  [I18nTags.common.status_visibility_public]: '公开',
+  [I18nTags.common.status_visibility_private]: '私密分享'
+}
+
 export default {
-  ...oauth
+  ...oauth,
+  ...common
 }

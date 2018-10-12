@@ -4,6 +4,11 @@ export const I18nLocales = {
 }
 
 export const I18nTags = {
+  common: {
+    status_visibility_public: 'public',
+    status_visibility_private: 'private'
+  },
+
   header: {
 
   },

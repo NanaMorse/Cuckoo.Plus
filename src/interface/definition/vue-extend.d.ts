@@ -14,6 +14,10 @@ declare module "vue/types/vue" {
     }
 
     $i18nTags: {
+      common: {
+        status_visibility_public: string
+        status_visibility_private: string
+      },
       header: {
 
       },

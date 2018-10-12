@@ -1,11 +1,31 @@
 <template>
-  <div class="status-card-container">
+  <div class="status-card-container" @mouseover="onMouseOver" @mouseout="onMouseOut">
     <mu-card class="status-card">
       <mu-card-header class="mu-card-header">
-        <mu-avatar class="mu-avatar" slot="avatar" size="34">
-          <img :src="status.account.avatar_static">
-        </mu-avatar>
-        <a class="user-name">{{status.account.display_name}}</a>
+        <div class="left-area">
+          <mu-avatar class="mu-avatar" slot="avatar" size="34">
+            <img :src="status.account.avatar_static">
+          </mu-avatar>
+          <div class="user-and-status-info">
+            <a class="user-name">{{status.account.display_name}}</a>
+            <div class="visibility-row">
+              <div class="arrow-container">
+                <svg viewBox="0 0 48 48" height="100%" width="100%"><path fill="rgba(0, 0, 0, 0.54)" d="M20 14l10 10-10 10z"></path></svg>
+              </div>
+              <div class="visibility-info">{{$t(status.visibility)}}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="right-area">
+          <span v-show="!showHeaderActionButtonGroup" class="from-now">{{fromNowTime}}</span>
+
+          <div v-show="showHeaderActionButtonGroup" class="card-header-action">
+            <mu-icon class="header-icon" value="open_in_new" />
+            <mu-icon class="header-icon" value="more_vert" />
+          </div>
+        </div>
+
       </mu-card-header>
 
       <mu-card-text class="mu-card-text" v-html="status.content" />
@@ -36,11 +56,13 @@
 
 <script lang="ts">
   import { Vue, Component, Prop } from 'vue-property-decorator'
-  import {  } from 'vuex-class'
+  import * as moment from 'moment'
   import { mastodonentities } from '@/interface'
 
   @Component({})
   class StatusCard extends Vue {
+
+    showHeaderActionButtonGroup: boolean = false
 
     @Prop() status: mastodonentities.Status
 
@@ -52,6 +74,18 @@
 
     get shouldShowSimpleReplyArea () {
       return this.context && this.context.descendants.length
+    }
+
+    get fromNowTime () {
+      return moment(this.status.created_at).fromNow(true)
+    }
+
+    onMouseOver () {
+      this.showHeaderActionButtonGroup = true
+    }
+
+    onMouseOut () {
+      this.showHeaderActionButtonGroup = false
     }
   }
 
@@ -71,18 +105,65 @@
 
   .mu-card-header {
     line-height: 1;
+    display: flex;
+    justify-content: space-between;
 
-    .mu-avatar {
-      margin-right: 8px;
+    .left-area {
+      display: flex;
+      align-items: center;
+
+      .mu-avatar {
+        margin-right: 8px;
+        cursor: pointer;
+      }
+
+      .user-and-status-info {
+        display: flex;
+        align-items: center;
+
+        .user-name {
+          cursor: pointer;
+          font-size: 15px;
+          color: rgba(0,0,0,.87);
+        }
+
+        .visibility-row {
+          display: flex;
+          align-items: center;
+          color: rgba(0,0,0,0.54);
+
+          .arrow-container {
+            width: 18px;
+            height: 18px;
+          }
+
+          .visibility-info {
+            cursor: pointer;
+          }
+        }
+
+      }
+
     }
 
-    .user-name {
-      font-size: 15px;
-      color: rgba(0,0,0,.87);
-      display: inline-block;
-      vertical-align: top;
-      white-space: normal;
-      line-height: 34px;
+    .right-area {
+      display: flex;
+      align-items: center;
+
+      .from-now {
+        color: #9e9e9e;
+        font-size: 13px;
+        font-weight: 400;
+      }
+
+      .card-header-action {
+        .header-icon {
+          cursor: pointer;
+          color: #757575;
+          font-size: 18px;
+          margin-left: 10px;
+        }
+      }
     }
   }
 
