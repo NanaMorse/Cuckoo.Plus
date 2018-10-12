@@ -8,7 +8,7 @@
             <img :src="status.account.avatar_static">
           </mu-avatar>
           <div class="user-and-status-info">
-            <a class="user-name">{{status.account.display_name}}</a>
+            <a class="user-name">{{getAccountDisplayName(status.account)}}</a>
             <div class="visibility-row">
               <div class="arrow-container">
                 <svg viewBox="0 0 48 48" height="100%" width="100%"><path fill="rgba(0, 0, 0, 0.54)" d="M20 14l10 10-10 10z"></path></svg>
@@ -40,7 +40,7 @@
 
         <div class="simple-reply-list" @click="onSimpleReplyListClick">
           <div class="simple-reply-list-item" v-for="replyStatus in lastedThreeReplyStatuses" :key="replyStatus.id">
-            <span class="reply-account-display-name">{{replyStatus.account.display_name}}:</span>
+            <span class="reply-account-display-name">{{getAccountDisplayName(replyStatus.account)}}:</span>
             <span class="status-content simple-reply-status-content" v-html="replyStatus.content"></span>
           </div>
         </div>
@@ -55,15 +55,22 @@
               </mu-avatar>
             </div>
             <div class="center-area">
+
               <div class="reply-user-display-name">
-                <p>{{replyStatus.account.display_name}}</p>
-                <span v-if="replyStatus.favourites_count > 0" class="reply-favorites-count">+{{replyStatus.favourites_count}}</span>
+                <p>{{getAccountDisplayName(replyStatus.account)}}</p>
+                <span v-if="replyStatus.favourites_count > 0"
+                      class="reply-favorites-count" :class="{ 'user-favorites': replyStatus.favourited }">+{{replyStatus.favourites_count}}</span>
               </div>
+
               <div class="status-content full-reply-status-content" v-html="replyStatus.content"></div>
+
               <div class="reply-action-list">
                 <a class="reply-button">{{$t($i18nTags.statusCard.reply_to_replier)}}</a>
-                <a class="plus-one-button">+1</a>
+                <div class="plus-one-button" :class="{ 'user-favorites': replyStatus.favourited }">
+                  <a>+1</a>
+                </div>
               </div>
+
             </div>
             <div class="right-area">
               <span class="reply-from-now">{{fromNowTime}}</span>
@@ -117,6 +124,8 @@
     get lastedThreeReplyStatuses (): Array<mastodonentities.Status> {
       if (!this.context) return []
 
+      if (this.context.descendants.length <= 3) return this.context.descendants
+
       return [...this.context.descendants].splice(this.context.descendants.length - 3, this.context.descendants.length)
     }
 
@@ -157,6 +166,10 @@
       } catch (e) {
 
       }
+    }
+
+    getAccountDisplayName (account: mastodonentities.Account): string {
+      return account.display_name || account.username || account.acct
     }
   }
 
@@ -306,6 +319,10 @@
           color: $common_grey_color;
           font-weight: 500;
           margin-left: 8px;
+
+          &.user-favorites {
+            color: #b93221;
+          }
         }
       }
 
@@ -314,14 +331,36 @@
         align-items: center;
         margin-top: 6px;
 
-        > a {
+        .common-style {
           cursor: pointer;
           font-size: 13px;
           color: #2962ff;
-          margin: 8px;
+          margin: 0 8px;
+        }
 
-          &:first-child {
-            margin-left: 0;
+        .reply-button {
+          @extend .common-style;
+          margin-left: 0;
+        }
+
+        .plus-one-button {
+          @extend .common-style;
+          width: 24px;
+          height: 24px;
+          line-height: 24px;
+          text-align: center;
+          border-radius: 50%;
+
+          &.user-favorites {
+            background-color: #db4437;
+
+            a {
+              color: #fff;
+            }
+          }
+
+          a {
+            color: #2962ff;
           }
         }
       }
