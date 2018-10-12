@@ -4,7 +4,7 @@ import store from '../store'
 import { RoutersInfo } from '@/constant/common'
 
 import HomePage from '@/components/pages/Home.vue'
-import WelcomePage from '@/components/pages/Welcome.vue'
+import OAuthPage from '@/components/pages/OAuth.vue'
 
 Vue.use(Router);
 
@@ -17,9 +17,9 @@ const router = new Router({
       component: HomePage
     },
     {
-      path: RoutersInfo.welcome.path,
-      name: RoutersInfo.welcome.name,
-      component: WelcomePage
+      path: RoutersInfo.oauth.path,
+      name: RoutersInfo.oauth.name,
+      component: OAuthPage
     }
   ]
 } as any);
@@ -45,12 +45,12 @@ router.beforeEach((to, from, next) => {
 
   const shouldReRegisterApplication = checkShouldReRegisterApplication(to)
 
-  if (to.path === RoutersInfo.welcome.path) {
+  if (to.path === RoutersInfo.oauth.path) {
     if (!shouldReRegisterApplication) next(RoutersInfo.empty.path)
   } else {
     if (shouldReRegisterApplication) {
       localStorage.clear()
-      next(RoutersInfo.welcome.path)
+      next(RoutersInfo.oauth.path)
     }
   }
 

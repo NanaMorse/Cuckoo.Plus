@@ -1,15 +1,3 @@
-declare module 'vue/types/vue' {
-  interface routerInfo { path: string, name: string }
-
-  interface Vue {
-    $routersInfo: {
-      empty: routerInfo
-      home: routerInfo
-      welcome: routerInfo
-    }
-  }
-}
-
 export const RoutersInfo = {
   empty: {
     path: '/',
@@ -21,8 +9,8 @@ export const RoutersInfo = {
     name: 'home'
   },
 
-  welcome: {
-    path: '/welcome',
-    name: 'welcome'
+  oauth: {
+    path: '/oauth',
+    name: 'oauth'
   }
 };

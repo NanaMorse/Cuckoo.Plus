@@ -3,6 +3,7 @@ import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 import VueResource from 'vue-resource'
 import VueI18n from 'vue-i18n'
+const Toast = require('muse-ui-toast').default
 import store from './store'
 import router from './router'
 import App from './App.vue'
@@ -20,9 +21,10 @@ Vue.use({
 Vue.use(MuseUI)
 Vue.use(VueResource)
 Vue.use(VueI18n)
+Vue.use(Toast)
 
 const i18n = new VueI18n({
-  locale: I18nLocales.EN,
+  locale: I18nLocales.ZH_CN,
   messages: i18nMessages
 });
 

@@ -1,17 +1,15 @@
 <template>
   <div id="app">
-    <div class="main-container">
-      <cuckoo-plus-header />
-      <mu-container>
-        <router-view />
-      </mu-container>
-    </div>
+    <cuckoo-plus-header v-if="shouldShowHeader"/>
+    <mu-container>
+      <router-view />
+    </mu-container>
   </div>
 </template>
 
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
-  import Header from '@/components/Header'
+  import Header from '@/components/Header.vue'
 
   @Component({
     components: {
@@ -19,6 +17,11 @@
     }
   })
   class App extends Vue {
+
+    get shouldShowHeader () {
+      // @ts-ignore
+      return this.$route.name !== this.$routersInfo.oauth.name
+    }
 
   }
 
@@ -33,6 +36,6 @@
 <style>
   body {
     height: 100%;
-    background-color: rgb(241, 241, 241);
+    background-color: #f2f2f2;
   }
 </style>

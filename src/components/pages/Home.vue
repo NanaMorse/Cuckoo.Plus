@@ -14,7 +14,7 @@
   import { Mutation } from 'vuex-class'
   import * as api from '@/api'
   import { cuckoostore, mastodonentities } from '@/interface'
-  import StatusCard from '@/components/StatusCard'
+  import StatusCard from '@/components/StatusCard.vue'
 
   // todo 大部分逻辑应该剥离出home timeline，多个timeline共享方法
 
