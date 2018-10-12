@@ -15,7 +15,9 @@ const state: cuckoostore.stateInfo = {
     code: localStorage.getItem('code') || ''
   },
 
-  mastodonServerUri: localStorage.getItem('mastodonServerUri') || ''
+  mastodonServerUri: localStorage.getItem('mastodonServerUri') || '',
+
+  currentUserAccount: null
 }
 
 export default new Vuex.Store({

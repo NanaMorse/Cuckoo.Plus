@@ -29,6 +29,11 @@ const mutations = {
 
     localStorage.setItem('mastodonServerUri', mastodonServerUri)
   },
+
+  updateCurrentUserAccount (state: cuckoostore.stateInfo, currentUserAccount) {
+    state.currentUserAccount = currentUserAccount
+  },
+
   ...OAuthInfoMutations
 }
 

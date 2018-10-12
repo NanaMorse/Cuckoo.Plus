@@ -1,6 +1,7 @@
 <template>
   <div class="status-card-container">
     <mu-card class="status-card" @mouseover="onCardMouseOver" @mouseout="onCardMouseOut">
+
       <mu-card-header class="mu-card-header">
         <div class="left-area">
           <mu-avatar class="status-account-avatar" slot="avatar" size="34">
@@ -72,7 +73,8 @@
       </div>
 
       <mu-card-actions>
-        
+        <div class="simple-action-bar"></div>
+        <div class="full-action-bar"></div>
       </mu-card-actions>
     </mu-card>
   </div>

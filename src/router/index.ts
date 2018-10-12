@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '../store'
 import { RoutersInfo } from '@/constant/common'
+import * as api from '@/api'
 
 import HomePage from '@/components/pages/Home.vue'
 import OAuthPage from '@/components/pages/OAuth.vue'
@@ -41,20 +42,49 @@ function checkShouldReRegisterApplication (to): boolean {
   return !(clientId && clientSecret && code)
 }
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
 
   const shouldReRegisterApplication = checkShouldReRegisterApplication(to)
 
+  // need not register
   if (to.path === RoutersInfo.oauth.path) {
-    if (!shouldReRegisterApplication) next(RoutersInfo.empty.path)
-  } else {
-    if (shouldReRegisterApplication) {
-      localStorage.clear()
-      next(RoutersInfo.oauth.path)
+    if (!shouldReRegisterApplication) {
+      return next(RoutersInfo.empty.path)
     }
   }
 
-  next();
+
+  else {
+    // need register
+    if (shouldReRegisterApplication) {
+      localStorage.clear()
+      return next(RoutersInfo.oauth.path)
+    }
+
+    // should get accessToken
+    if (!store.state.OAuthInfo.accessToken) {
+      try {
+        const result = await api.oauth.fetchOAuthToken()
+        store.commit('updateOAuthAccessToken', result.data.access_token)
+      } catch (e) {
+        return next(RoutersInfo.oauth.path)
+      }
+    }
+
+    // todo access token expired
+
+    // should get currentUserAccount
+    if (!store.state.currentUserAccount) {
+      try {
+        const result = await api.accounts.fetchCurrentUserAccountInfo()
+        store.commit('updateCurrentUserAccount', result.data)
+      } catch (e) {
+
+      }
+    }
+  }
+
+  next()
 });
 
 export default router

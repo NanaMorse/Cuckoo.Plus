@@ -36,16 +36,6 @@
     homeStatuses: Array<mastodonentities.Status> = []
 
     async mounted () {
-      // todo move this to App.Vue
-      if (!this.OAuthInfo.accessToken) {
-        try {
-          const result = await api.oauth.fetchOAuthToken()
-          this.updateOAuthAccessToken(result.data.access_token)
-        } catch (e) {
-          // todo
-        }
-      }
-
       this.getHomeStatuses()
     }
 
