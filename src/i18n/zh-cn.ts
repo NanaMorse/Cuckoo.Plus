@@ -14,7 +14,13 @@ const common = {
   [I18nTags.common.status_visibility_private]: '私密分享'
 }
 
+const statusCard = {
+  [I18nTags.statusCard.reply_to_main_status]: '发表评论…',
+  [I18nTags.statusCard.reply_to_replier]: '回复'
+}
+
 export default {
   ...oauth,
-  ...common
+  ...common,
+  ...statusCard
 }

@@ -9,6 +9,11 @@ export const I18nTags = {
     status_visibility_private: 'private'
   },
 
+  statusCard: {
+    reply_to_replier: 'status_card_reply_to_replier',
+    reply_to_main_status: 'status_card_reply_to_main_status'
+  },
+
   header: {
 
   },

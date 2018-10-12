@@ -2,7 +2,7 @@
   <div class="home-container">
     <div class="status-cards-container">
       <template v-for="status in rootHomeStatuses">
-        <status-card :key="status.id" :status="status" :context="statusesExternalInfoMap[status.id]"/>
+        <status-card :key="status.id" :status="status"/>
       </template>
     </div>
   </div>
@@ -35,17 +35,6 @@
 
     homeStatuses: Array<mastodonentities.Status> = []
 
-    statusesExternalInfoMap: {
-      [id: string]: {
-        context: mastodonentities.Context
-      }
-    } = {}
-
-    @Watch('homeStatuses')
-    onHomeStatusesChanged () {
-      this.getStatusesExternalInfo()
-    }
-
     async mounted () {
       // todo move this to App.Vue
       if (!this.OAuthInfo.accessToken) {
@@ -69,19 +58,6 @@
       } catch (e) {
         console.log(e)
       }
-    }
-
-    getStatusesExternalInfo () {
-      this.rootHomeStatuses.forEach(async (status: mastodonentities.Status) => {
-        if (this.statusesExternalInfoMap[status.id]) return
-
-        try {
-          const result = await api.statuses.getStatusContextById(status.id)
-          Vue.set(this.statusesExternalInfoMap, status.id, result.data)
-        } catch (e) {
-          // todo
-        }
-      })
     }
   }
 

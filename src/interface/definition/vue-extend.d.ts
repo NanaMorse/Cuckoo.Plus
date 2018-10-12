@@ -14,6 +14,10 @@ declare module "vue/types/vue" {
     }
 
     $i18nTags: {
+      statusCard: {
+        reply_to_replier: string,
+        reply_to_main_status: string
+      },
       common: {
         status_visibility_public: string
         status_visibility_private: string
