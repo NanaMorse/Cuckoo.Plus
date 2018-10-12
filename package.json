@@ -8,6 +8,7 @@
   "dependencies": {
     "crypto-js": "^3.1.9-1",
     "muse-ui": "^3.0.1",
+    "muse-ui-toast": "^0.3.0",
     "sha1": "^1.1.1",
     "vue": "^2.5.13",
     "vue-i18n": "^8.1.0",

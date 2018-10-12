@@ -1,10 +1,10 @@
 import { I18nTags } from '@/constant/common'
 
-const welcome = {
-  [I18nTags.welcome.welcome_message]: 'Welcome to Cuckoo.Plus!'
+const oauth = {
+  [I18nTags.oauth.form_brand]: 'Cuckoo Plus'
 }
 
 
 export default {
-  ...welcome
+  ...oauth
 }
