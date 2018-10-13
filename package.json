@@ -6,6 +6,7 @@
     "dev": "webpack-dev-server"
   },
   "dependencies": {
+    "autosize": "^4.0.2",
     "crypto-js": "^3.1.9-1",
     "moment": "^2.22.2",
     "muse-ui": "^3.0.1",
