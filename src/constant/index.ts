@@ -13,7 +13,15 @@ const TimeLineTypes = {
   HOME: 'home'
 }
 
+const VisibilityTypes = {
+  DIRECT: 'direct',
+  PRIVATE: 'private',
+  UNLISTED: 'unlisted',
+  PUBLIC: 'public'
+}
+
 export {
   AttachmentTypes,
-  TimeLineTypes
+  TimeLineTypes,
+  VisibilityTypes
 }

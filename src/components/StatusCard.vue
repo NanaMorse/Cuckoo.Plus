@@ -122,7 +122,8 @@
             </mu-avatar>
 
             <div class="input-container">
-              <textarea ref="replayTextInput" class="reply-input" :style="shouldShowFullReplyListArea && { backgroundColor: '#fff' }"
+              <textarea ref="replayTextInput" class="reply-input" v-model="replyInputValue"
+                        :style="shouldShowFullReplyListArea && { backgroundColor: '#fff' }"
                         :placeholder="$t($i18nTags.statusCard.reply_to_main_status)"/>
             </div>
 
@@ -139,7 +140,8 @@
             <div class="right-area">
               <mu-button flat class="operate-btn cancel"
                          color="primary" @click="onHideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_reply)}}</mu-button>
-              <mu-button flat class="operate-btn submit" disabled>{{$t($i18nTags.statusCard.submit_reply)}}</mu-button>
+              <mu-button flat class="operate-btn submit" @click="onSubmitReplyContent"
+                         :disabled="!replyInputValue">{{$t($i18nTags.statusCard.submit_reply)}}</mu-button>
             </div>
           </div>
         </div>
@@ -173,6 +175,7 @@
 
     @Action('updateFavouriteStatusById') updateFavouriteStatusById
     @Action('updateContextData') updateContextData
+    @Action('postStatus') postStatus
 
     mounted () {
       this.updateContextData(this.status.id)
@@ -184,6 +187,8 @@
     shouldShowFullReplyActionArea: boolean = false
 
     hasTryToExtendSimpleReplyArea = false
+
+    replyInputValue: string = ''
 
     get context (): mastodonentities.Context {
       return this.contextsMap[this.status.id]
@@ -255,6 +260,20 @@
 
     onHideFullReplyActionArea () {
       this.shouldShowFullReplyActionArea = false
+      this.replyInputValue = ''
+    }
+
+    onSubmitReplyContent () {
+      // todo 先只回复主po
+      this.postStatus({
+        mainStatusId: this.status.id,
+        formData: {
+          status: this.replyInputValue,
+          inReplyToId: this.status.id
+        }
+      })
+
+      this.replyInputValue = ''
     }
 
     getAccountDisplayName (account: mastodonentities.Account): string {

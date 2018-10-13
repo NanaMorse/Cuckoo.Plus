@@ -1,4 +1,5 @@
 import * as api from '@/api'
+import statuses from './statuses'
 
 const timelines = {
   async updateTimeLineStatuses ({ commit }, { timeLineType, maxId, sinceId }) {
@@ -15,34 +16,6 @@ const timelines = {
 
     } catch (e) {
       throw new Error(e)
-    }
-  }
-}
-
-const statuses = {
-  async updateFavouriteStatusById ({ commit }, { favourited, mainStatusId, targetStatusId }) {
-    try {
-
-      if (favourited) {
-        api.statuses.favouriteStatusById(targetStatusId)
-      } else {
-        api.statuses.unFavouriteStatusById(targetStatusId)
-      }
-
-      commit('updateFavouriteStatusById', { favourited, mainStatusId, targetStatusId })
-    } catch (e) {
-      throw new Error(e)
-    }
-  },
-
-  async updateContextData ({ commit }, statusId) {
-    if (!statusId) throw new Error('unknown status id!')
-
-    try {
-      const result = await api.statuses.getStatusContextById(statusId)
-      commit('updateContextData', { statusId, context: result.data })
-    } catch (e) {
-
     }
   }
 }
