@@ -1,4 +1,4 @@
-import { I18nLocales } from '@/constant/common'
+import { I18nLocales } from '@/constant'
 import EN from './en'
 import ZH_CN from './zh-cn'
 
