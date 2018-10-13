@@ -1,6 +1,7 @@
-import { cuckoostore } from '@/interface'
+import Vue from 'vue'
+import { cuckoostore, mastodonentities } from '@/interface'
 
-const OAuthInfoMutations = {
+const oAuthInfoMutations = {
 
   updateClientInfo (state: cuckoostore.stateInfo, { clientId, clientSecret }) {
     state.OAuthInfo.clientId = clientId
@@ -23,6 +24,48 @@ const OAuthInfoMutations = {
   }
 }
 
+const timelinesMutations = {
+  setTimeLineStatuses (state: cuckoostore.stateInfo, { newStatuses, timeLineType }) {
+    // clear all statuses
+    state.timelines[timeLineType].splice(0, state.timelines[timeLineType].length)
+
+    state.timelines[timeLineType].push(...newStatuses)
+  }
+}
+
+const statusesMutations = {
+  updateStatusInfo (state: cuckoostore.stateInfo, newStatus: mastodonentities.Status) {
+    // get all status list
+    Object.keys(state.timelines).forEach(timeLineType => {
+      const currentTimeLine = state.timelines[timeLineType]
+      const targetStatusIndex = currentTimeLine.findIndex(status => status.id === newStatus.id)
+      if (targetStatusIndex !== -1) {
+        Vue.set(currentTimeLine, targetStatusIndex, newStatus)
+      }
+    })
+  },
+
+  updateFavouriteStatusById (state: cuckoostore.stateInfo, { favourited, mainStatusId, targetStatusId }) {
+    if (mainStatusId === targetStatusId) {
+      Object.keys(state.timelines).forEach(timeLineType => {
+        const currentTimeLine = state.timelines[timeLineType]
+        const targetStatus = currentTimeLine.find(status => status.id === mainStatusId)
+        if (targetStatus) {
+          Vue.set(targetStatus, 'favourited', favourited)
+          Vue.set(targetStatus, 'favourites_count', favourited ? targetStatus.favourites_count + 1 : targetStatus.favourites_count -1)
+        }
+      })
+    } else {
+      state.contexts[mainStatusId].descendants.forEach(status => {
+        if (status.id === targetStatusId) {
+          Vue.set(status, 'favourited', favourited)
+          Vue.set(status, 'favourites_count', favourited ? status.favourites_count + 1 : status.favourites_count -1)
+        }
+      })
+    }
+  }
+}
+
 const mutations = {
   updateMastodonServerUri (state: cuckoostore.stateInfo, mastodonServerUri: string) {
     state.mastodonServerUri = mastodonServerUri
@@ -34,7 +77,13 @@ const mutations = {
     state.currentUserAccount = currentUserAccount
   },
 
-  ...OAuthInfoMutations
+  updateContextData (state: cuckoostore.stateInfo, { statusId, context }) {
+    Vue.set(state.contexts, statusId, context)
+  },
+
+  ...oAuthInfoMutations,
+  ...timelinesMutations,
+  ...statusesMutations
 }
 
 export default mutations

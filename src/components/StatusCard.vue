@@ -70,7 +70,7 @@
 
               <div class="reply-action-list">
                 <a class="reply-button">{{$t($i18nTags.statusCard.reply_to_replier)}}</a>
-                <div class="plus-one-button" :class="{ 'user-favorites': replyStatus.favourited }">
+                <div class="plus-one-button" @click="onFavoriteButtonClick(replyStatus)" :class="{ 'user-favorites': replyStatus.favourited }">
                   <a>+1</a>
                 </div>
               </div>
@@ -99,7 +99,8 @@
 
           <div class="right-area">
             <div class="plus-one operate-btn-group">
-              <mu-button class="button" :class="{ 'has-operated': status.favourited }" icon>
+              <mu-button class="button" icon @click="onFavoriteButtonClick(status)"
+                         :class="{ 'has-operated': status.favourited }">
                 +1
               </mu-button>
               <span v-if="status.favourites_count > 0" class="count">{{status.favourites_count}}</span>
@@ -149,7 +150,7 @@
 
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-  import { State } from 'vuex-class'
+  import { State, Action } from 'vuex-class'
   import * as moment from 'moment'
   import * as api from '@/api'
   import { AttachmentTypes } from '@/constant'
@@ -168,8 +169,13 @@
       replayTextInput: HTMLTextAreaElement
     }
 
+    @State('contexts') contextsMap
+
+    @Action('updateFavouriteStatusById') updateFavouriteStatusById
+    @Action('updateContextData') updateContextData
+
     mounted () {
-      this.getStatusContextInfo()
+      this.updateContextData(this.status.id)
       autosize(this.$refs.replayTextInput)
     }
 
@@ -179,7 +185,9 @@
 
     hasTryToExtendSimpleReplyArea = false
 
-    context: mastodonentities.Context = null
+    get context (): mastodonentities.Context {
+      return this.contextsMap[this.status.id]
+    }
 
     @Prop() status: mastodonentities.Status
 
@@ -189,9 +197,7 @@
     async onShowCompleteReplyArea () {
       if (this.shouldShowFullReplyListArea) {
         try {
-          // todo loading
-          await this.getStatusContextInfo()
-          // todo loading end
+
         } catch (e) {
 
         }
@@ -232,6 +238,14 @@
       }
     }
 
+    onFavoriteButtonClick (targetStatus: mastodonentities.Status) {
+      this.updateFavouriteStatusById({
+        favourited: !targetStatus.favourited,
+        mainStatusId: this.status.id,
+        targetStatusId: targetStatus.id
+      })
+    }
+
     onShowFullReplyActionArea () {
       this.shouldShowFullReplyActionArea = true
       this.$nextTick(() => {
@@ -241,15 +255,6 @@
 
     onHideFullReplyActionArea () {
       this.shouldShowFullReplyActionArea = false
-    }
-
-    async getStatusContextInfo () {
-      try {
-        const result = await api.statuses.getStatusContextById(this.status.id)
-        this.context = result.data
-      } catch (e) {
-
-      }
     }
 
     getAccountDisplayName (account: mastodonentities.Account): string {

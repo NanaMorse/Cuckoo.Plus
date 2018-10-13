@@ -8,6 +8,12 @@ const AttachmentTypes = {
   UNKNOWN: 'unknown'
 }
 
+const TimeLineTypes = {
+  PUBLIC: 'public',
+  HOME: 'home'
+}
+
 export {
-  AttachmentTypes
+  AttachmentTypes,
+  TimeLineTypes
 }
