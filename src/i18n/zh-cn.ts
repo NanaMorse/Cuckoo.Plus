@@ -11,12 +11,15 @@ const oauth = {
 
 const common = {
   [I18nTags.common.status_visibility_public]: '公开',
-  [I18nTags.common.status_visibility_private]: '私密分享'
+  [I18nTags.common.status_visibility_private]: '私密分享',
+  [I18nTags.common.status_visibility_unlisted]: '未列出'
 }
 
 const statusCard = {
   [I18nTags.statusCard.reply_to_main_status]: '发表评论…',
-  [I18nTags.statusCard.reply_to_replier]: '回复'
+  [I18nTags.statusCard.reply_to_replier]: '回复',
+  [I18nTags.statusCard.cancel_reply]: '取消',
+  [I18nTags.statusCard.submit_reply]: '发布'
 }
 
 export default {

@@ -6,12 +6,15 @@ export const I18nLocales = {
 export const I18nTags = {
   common: {
     status_visibility_public: 'public',
-    status_visibility_private: 'private'
+    status_visibility_private: 'private',
+    status_visibility_unlisted: 'unlisted'
   },
 
   statusCard: {
     reply_to_replier: 'status_card_reply_to_replier',
-    reply_to_main_status: 'status_card_reply_to_main_status'
+    reply_to_main_status: 'status_card_reply_to_main_status',
+    cancel_reply: 'status_card_cancel_reply',
+    submit_reply: 'status_card_submit_reply'
   },
 
   header: {

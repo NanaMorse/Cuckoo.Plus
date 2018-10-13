@@ -83,9 +83,68 @@
         </div>
       </div>
 
-      <mu-card-actions>
-        <div class="simple-action-bar"></div>
-        <div class="full-action-bar"></div>
+      <mu-card-actions class="card-action-area">
+
+        <div class="simple-action-bar" v-show="!shouldShowFullBottomActionBar">
+
+          <div class="left-area">
+            <mu-avatar class="current-user-avatar" slot="avatar" size="24">
+              <img :src="currentUserAccount.avatar_static">
+            </mu-avatar>
+
+            <div class="active-reply-entry">
+              {{$t($i18nTags.statusCard.reply_to_main_status)}}
+            </div>
+          </div>
+
+          <div class="right-area">
+            <div class="plus-one operate-btn-group">
+              <mu-button class="button" :class="{ 'has-operated': status.favourited }" icon>
+                +1
+              </mu-button>
+              <span v-if="status.favourites_count > 0" class="count">{{status.favourites_count}}</span>
+            </div>
+            <div class="share operate-btn-group">
+              <mu-button class="button unset-display" :class="{ 'has-operated': status.reblogged }" icon>
+                <mu-icon class="share-icon" value="share" />
+              </mu-button>
+              <span v-if="status.reblogs_count > 0" class="count">{{status.reblogs_count}}</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="full-action-bar" v-show="shouldShowFullBottomActionBar">
+          <div class="reply-input-area">
+            <mu-avatar class="current-user-avatar" slot="avatar" size="24">
+              <img :src="currentUserAccount.avatar_static">
+            </mu-avatar>
+
+            <!--<textarea-autosize-->
+                <!--class="reply-text-input"-->
+                <!--:placeholder="$t($i18nTags.statusCard.reply_to_main_status)"/>-->
+
+            <div class="input-container">
+              <textarea ref="replayTextInput" class="reply-input"
+                        :placeholder="$t($i18nTags.statusCard.reply_to_main_status)"/>
+            </div>
+
+          </div>
+          <div class="reply-action-area">
+            <div class="left-area">
+              <mu-button class="operate-btn add-image" icon>
+                <mu-icon class="reply-action-icon" value="local_see" />
+              </mu-button>
+              <mu-button class="operate-btn add-link" icon>
+                <mu-icon class="reply-action-icon" value="link" />
+              </mu-button>
+            </div>
+            <div class="right-area">
+              <mu-button flat class="operate-btn cancel" color="primary">{{$t($i18nTags.statusCard.cancel_reply)}}</mu-button>
+              <mu-button flat class="operate-btn submit" disabled>{{$t($i18nTags.statusCard.submit_reply)}}</mu-button>
+            </div>
+          </div>
+        </div>
       </mu-card-actions>
     </mu-card>
   </div>
@@ -93,11 +152,13 @@
 
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+  import { State } from 'vuex-class'
   import * as moment from 'moment'
   import * as api from '@/api'
   import { AttachmentTypes } from '@/constant'
   import MediaPanel from './MediaPanel'
   import { mastodonentities } from '@/interface'
+  const autosize = require('autosize')
 
   @Component({
     components: {
@@ -106,17 +167,26 @@
   })
   class StatusCard extends Vue {
 
+    $refs: {
+      replayTextInput: HTMLTextAreaElement
+    }
+
     mounted () {
       this.getStatusContextInfo()
+      autosize(this.$refs.replayTextInput)
     }
 
     shouldShowHeaderActionButtonGroup: boolean = false
+
+    shouldShowFullBottomActionBar: boolean = true
 
     hasTryToExtendSimpleReplyArea = false
 
     context: mastodonentities.Context = null
 
     @Prop() status: mastodonentities.Status
+
+    @State('currentUserAccount') currentUserAccount: mastodonentities.AuthenticatedAccount
 
     @Watch('shouldShowFullReplyArea')
     async onShowCompleteReplyArea () {
@@ -208,13 +278,15 @@
 
   $common_grey_color: rgba(0,0,0,0.54);
 
+  $common_operated_red_color: #db4437;
+
   .status-card-container {
     margin: 16px 0;
   }
 
   .status-card {
     width: 100%;
-    max-width: 498px;
+    max-width: 530px;
     margin: 0 auto;
     background-color: #fafafa;
   }
@@ -393,7 +465,7 @@
             border-radius: 50%;
 
             &.user-favorites {
-              background-color: #db4437;
+              background-color: $common_operated_red_color;
 
               a {
                 color: #fff;
@@ -419,9 +491,161 @@
     }
   }
 
+  .card-action-area {
+    padding: 0;
 
-  .status-content {
+    .simple-action-bar {
+      min-height: 60px;
+      display: flex;
+      justify-content: space-between;
 
+      .left-area {
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+
+        .active-reply-entry {
+          margin-left: 16px;
+          height: 36px;
+          color: #999;
+          font-size: 14px;
+          line-height: 36px;
+          font-weight: 300;
+          flex-grow: 1;
+        }
+      }
+
+      .right-area {
+        margin: 12px 8px;
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+
+        .operate-btn-group {
+          display: flex;
+
+          .button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #eeeeee;
+            cursor: pointer;
+            -webkit-transition: background .3s;
+            -moz-transition: background .3s;
+            -ms-transition: background .3s;
+            -o-transition: background .3s;
+            transition: background .3s;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            margin: 0 8px;
+            font-size: 15px;
+
+            &.unset-display {
+              display: unset;
+            }
+
+            &.hover:before {
+              background-color: unset;
+            }
+
+            &:hover {
+              background-color: #f5f5f5;
+              box-shadow: 0 1px 3px 0 rgba(0,0,0,0.26);
+            }
+
+            &.has-operated {
+              background-color: $common_operated_red_color;
+              color: #fff;
+
+              &:hover {
+                background-color: #c53929;
+              }
+            }
+          }
+
+          &.plus-one {
+            font-size: 12px;
+          }
+
+          .share-icon {
+            font-size: 18px;
+          }
+
+          .count {
+            line-height: 36px;
+            color: #777;
+            font-size: 13px;
+            margin-right: 6px;
+          }
+        }
+      }
+    }
+
+    .full-action-bar {
+      padding: 12px 16px 0 16px;
+
+      .reply-input-area {
+        display: flex;
+
+        .current-user-avatar {
+          margin-top: 7px;
+        }
+
+        .input-container {
+          display: flex;
+          align-items: center;
+          flex-grow: 1;
+          margin-left: 16px;
+          padding: 9px 12px 8px 0;
+
+          .reply-input {
+            width: 100%;
+            height: 18px;
+            outline: none;
+            border: none;
+            padding: 0;
+            background-color: #fafafa;
+            resize: none;
+          }
+        }
+      }
+
+      .reply-action-area {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 48px;
+        margin: 0 -12px;
+
+        .left-area {
+          display: flex;
+
+          .operate-btn {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: $common_grey_color;
+
+            .reply-action-icon {
+              font-size: 18px;
+            }
+          }
+        }
+
+        .right-area {
+          display: flex;
+        }
+      }
+    }
   }
 </style>
 
@@ -435,11 +659,18 @@
     span.h-card, span.h-card > a, span.h-card > span { color: #2962ff }
   }
 
-  .full-reply-status-content {
-
-  }
-
   .simple-reply-status-content {
     > p { display: inline }
+  }
+
+  .reply-text-input {
+    .el-textarea__inner {
+      width: 100%;
+      outline: none;
+      border: none;
+      padding: 0;
+      background-color: #fafafa;
+      resize: none;
+    }
   }
 </style>
