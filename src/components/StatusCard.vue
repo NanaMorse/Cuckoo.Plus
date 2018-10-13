@@ -37,7 +37,7 @@
         <media-panel :mediaList="status.media_attachments"/>
       </div>
 
-      <div class="reply-area-simple" v-if="shouldShowSimpleReplyArea">
+      <div class="reply-area-simple" v-if="shouldShowSimpleReplyListArea">
         <template v-if="context.descendants.length > 3">
           <mu-sub-header class="show-all-reply-btn" @click="onShowAllReplyButtonClick">显示所有评论（共 {{context.descendants.length}} 条）</mu-sub-header>
         </template>
@@ -50,7 +50,7 @@
         </div>
       </div>
 
-      <div class="reply-area-full" v-if="shouldShowFullReplyArea">
+      <div class="reply-area-full" v-if="shouldShowFullReplyListArea">
         <div class="full-reply-list">
           <div class="full-reply-list-item" v-for="replyStatus in context.descendants" :key="replyStatus.id">
             <div class="left-area">
@@ -83,16 +83,16 @@
         </div>
       </div>
 
-      <mu-card-actions class="card-action-area">
+      <mu-card-actions class="card-action-area" :style="shouldShowFullReplyListArea && { backgroundColor: '#fff' }">
 
-        <div class="simple-action-bar" v-show="!shouldShowFullBottomActionBar">
+        <div class="simple-action-bar" v-show="!shouldShowFullReplyActionArea">
 
           <div class="left-area">
             <mu-avatar class="current-user-avatar" slot="avatar" size="24">
               <img :src="currentUserAccount.avatar_static">
             </mu-avatar>
 
-            <div class="active-reply-entry">
+            <div class="active-reply-entry" @click="onShowFullReplyActionArea">
               {{$t($i18nTags.statusCard.reply_to_main_status)}}
             </div>
           </div>
@@ -114,18 +114,14 @@
 
         </div>
 
-        <div class="full-action-bar" v-show="shouldShowFullBottomActionBar">
+        <div class="full-action-bar" v-show="shouldShowFullReplyActionArea">
           <div class="reply-input-area">
             <mu-avatar class="current-user-avatar" slot="avatar" size="24">
               <img :src="currentUserAccount.avatar_static">
             </mu-avatar>
 
-            <!--<textarea-autosize-->
-                <!--class="reply-text-input"-->
-                <!--:placeholder="$t($i18nTags.statusCard.reply_to_main_status)"/>-->
-
             <div class="input-container">
-              <textarea ref="replayTextInput" class="reply-input"
+              <textarea ref="replayTextInput" class="reply-input" :style="shouldShowFullReplyListArea && { backgroundColor: '#fff' }"
                         :placeholder="$t($i18nTags.statusCard.reply_to_main_status)"/>
             </div>
 
@@ -140,7 +136,8 @@
               </mu-button>
             </div>
             <div class="right-area">
-              <mu-button flat class="operate-btn cancel" color="primary">{{$t($i18nTags.statusCard.cancel_reply)}}</mu-button>
+              <mu-button flat class="operate-btn cancel"
+                         color="primary" @click="onHideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_reply)}}</mu-button>
               <mu-button flat class="operate-btn submit" disabled>{{$t($i18nTags.statusCard.submit_reply)}}</mu-button>
             </div>
           </div>
@@ -178,7 +175,7 @@
 
     shouldShowHeaderActionButtonGroup: boolean = false
 
-    shouldShowFullBottomActionBar: boolean = true
+    shouldShowFullReplyActionArea: boolean = false
 
     hasTryToExtendSimpleReplyArea = false
 
@@ -190,7 +187,7 @@
 
     @Watch('shouldShowFullReplyArea')
     async onShowCompleteReplyArea () {
-      if (this.shouldShowFullReplyArea) {
+      if (this.shouldShowFullReplyListArea) {
         try {
           // todo loading
           await this.getStatusContextInfo()
@@ -209,11 +206,11 @@
       return [...this.context.descendants].splice(this.context.descendants.length - 3, this.context.descendants.length)
     }
 
-    get shouldShowSimpleReplyArea () {
+    get shouldShowSimpleReplyListArea () {
       return this.context && this.context.descendants.length && !this.hasTryToExtendSimpleReplyArea
     }
 
-    get shouldShowFullReplyArea () {
+    get shouldShowFullReplyListArea () {
       return this.context && this.context.descendants.length && this.hasTryToExtendSimpleReplyArea
     }
 
@@ -235,6 +232,17 @@
       }
     }
 
+    onShowFullReplyActionArea () {
+      this.shouldShowFullReplyActionArea = true
+      this.$nextTick(() => {
+        this.$refs.replayTextInput.focus()
+      })
+    }
+
+    onHideFullReplyActionArea () {
+      this.shouldShowFullReplyActionArea = false
+    }
+
     async getStatusContextInfo () {
       try {
         const result = await api.statuses.getStatusContextById(this.status.id)
@@ -250,22 +258,6 @@
 
     getFromNowTime (createdAt: string) {
       return moment(createdAt).fromNow(true)
-    }
-
-    getAttachmentAreaHeightStyle (status: mastodonentities.Status) {
-      // as main attachment area
-      if (status === this.status) {
-        // if there is only one attachment
-        if (status.media_attachments.length === 1) {
-          const { width: orginalWidth, height: originalHeight } = status.media_attachments[0].meta.original
-
-          const attachmentAreaHeight = `${originalHeight / orginalWidth * 100}%`
-
-          return { height: attachmentAreaHeight }
-        } else {
-          return { height: '200px' }
-        }
-      }
     }
   }
 

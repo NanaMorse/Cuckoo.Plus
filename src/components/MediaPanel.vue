@@ -41,6 +41,10 @@
 <style lang="scss" scoped>
   .media-panel-container {
 
+    img {
+      display: block;
+    }
+
     .single-media-area img {
       width: 100%;
       height: auto;
