@@ -202,7 +202,7 @@
     async onShowCompleteReplyArea () {
       if (this.shouldShowFullReplyListArea) {
         try {
-
+          this.updateContextData(this.status.id)
         } catch (e) {
 
         }

@@ -41,6 +41,7 @@ const statuses = {
     if (!statusId) throw new Error('unknown status id!')
 
     try {
+      console.log('updateContextData')
       const result = await api.statuses.getStatusContextById(statusId)
       commit('updateContextData', { statusId, context: result.data })
     } catch (e) {

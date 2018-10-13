@@ -30,6 +30,14 @@ const timelinesMutations = {
     state.timelines[timeLineType].splice(0, state.timelines[timeLineType].length)
 
     state.timelines[timeLineType].push(...newStatuses)
+  },
+
+  pushTimeLineStatuses (state: cuckoostore.stateInfo, { newStatuses, timeLineType }) {
+    state.timelines[timeLineType].push(...newStatuses)
+  },
+
+  unShiftTimeLineStatuses (state: cuckoostore.stateInfo, { newStatuses, timeLineType }) {
+    state.timelines[timeLineType].unshift(...newStatuses)
   }
 }
 

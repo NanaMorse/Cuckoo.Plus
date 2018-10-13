@@ -11,9 +11,12 @@ async function getTimeLineStatuses ({ timeLineType = '', maxId = '', sinceId = '
 
   if (!typeToUrlFragment[timeLineType]) throw new Error('unknown timeline!')
 
+  const params: any = { limit: 20 }
+  if (maxId) params.max_id = maxId
+  if (sinceId) params.since_id = sinceId
+
   return Vue.http.get(patchApiUri(`/api/v1/timelines/${typeToUrlFragment[timeLineType]}`), {
-    max_id: maxId,
-    since_id: sinceId
+    params
   }) as any
 }
 

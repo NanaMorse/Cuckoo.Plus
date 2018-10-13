@@ -7,7 +7,8 @@ export const I18nTags = {
   common: {
     status_visibility_public: 'public',
     status_visibility_private: 'private',
-    status_visibility_unlisted: 'unlisted'
+    status_visibility_unlisted: 'unlisted',
+    status_visibility_direct: 'direct'
   },
 
   statusCard: {

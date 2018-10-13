@@ -12,7 +12,8 @@ const oauth = {
 const common = {
   [I18nTags.common.status_visibility_public]: '公开',
   [I18nTags.common.status_visibility_private]: '私密分享',
-  [I18nTags.common.status_visibility_unlisted]: '未列出'
+  [I18nTags.common.status_visibility_unlisted]: '未列出',
+  [I18nTags.common.status_visibility_direct]: '指定对象'
 }
 
 const statusCard = {
