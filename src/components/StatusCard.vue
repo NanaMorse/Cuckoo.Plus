@@ -19,7 +19,7 @@
         </div>
 
         <div class="right-area">
-          <span v-show="!shouldShowHeaderActionButtonGroup" class="status-from-now">{{fromNowTime}}</span>
+          <span v-show="!shouldShowHeaderActionButtonGroup" class="status-from-now">{{getFromNowTime(status.created_at)}}</span>
 
           <div v-show="shouldShowHeaderActionButtonGroup" class="card-header-action">
             <mu-icon class="header-icon" value="open_in_new" />
@@ -32,6 +32,10 @@
       <mu-card-text class="status-content main-status-content" v-html="status.content" />
 
       <mu-divider />
+
+      <div class="main-attachment-area">
+        <media-panel :mediaList="status.media_attachments"/>
+      </div>
 
       <div class="reply-area-simple" v-if="shouldShowSimpleReplyArea">
         <template v-if="context.descendants.length > 3">
@@ -73,7 +77,7 @@
 
             </div>
             <div class="right-area">
-              <span class="reply-from-now">{{fromNowTime}}</span>
+              <span class="reply-from-now">{{getFromNowTime(replyStatus.created_at)}}</span>
             </div>
           </div>
         </div>
@@ -91,9 +95,15 @@
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import * as moment from 'moment'
   import * as api from '@/api'
+  import { AttachmentTypes } from '@/constant'
+  import MediaPanel from './MediaPanel'
   import { mastodonentities } from '@/interface'
 
-  @Component({})
+  @Component({
+    components: {
+      'media-panel': MediaPanel
+    }
+  })
   class StatusCard extends Vue {
 
     mounted () {
@@ -137,10 +147,6 @@
       return this.context && this.context.descendants.length && this.hasTryToExtendSimpleReplyArea
     }
 
-    get fromNowTime () {
-      return moment(this.status.created_at).fromNow(true)
-    }
-
     onCardMouseOver () {
       this.shouldShowHeaderActionButtonGroup = true
     }
@@ -171,6 +177,26 @@
     getAccountDisplayName (account: mastodonentities.Account): string {
       return account.display_name || account.username || account.acct
     }
+
+    getFromNowTime (createdAt: string) {
+      return moment(createdAt).fromNow(true)
+    }
+
+    getAttachmentAreaHeightStyle (status: mastodonentities.Status) {
+      // as main attachment area
+      if (status === this.status) {
+        // if there is only one attachment
+        if (status.media_attachments.length === 1) {
+          const { width: orginalWidth, height: originalHeight } = status.media_attachments[0].meta.original
+
+          const attachmentAreaHeight = `${originalHeight / orginalWidth * 100}%`
+
+          return { height: attachmentAreaHeight }
+        } else {
+          return { height: '200px' }
+        }
+      }
+    }
   }
 
   export default StatusCard
@@ -190,9 +216,11 @@
     width: 100%;
     max-width: 498px;
     margin: 0 auto;
+    background-color: #fafafa;
   }
 
   .mu-card-header {
+    background-color: #fff;
     line-height: 1;
     display: flex;
     justify-content: space-between;
@@ -257,7 +285,17 @@
   }
 
   .main-status-content {
+    background-color: #fff;
     padding: 0 16px 16px;
+  }
+
+  .main-attachment-area {
+    .attachment-list {
+      > img {
+        width: 100%;
+        height: auto;
+      }
+    }
   }
 
   .show-all-reply-btn {
@@ -286,96 +324,101 @@
     font-size: 14px;
   }
 
-  .full-reply-list {
-    max-height: 400px;
-    overflow-y: auto;
-  }
+  .reply-area-full {
+    background-color: #fff;
 
-  .full-reply-list-item {
-    display: flex;
-    padding: 12px 16px;
+    .full-reply-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
 
-    .center-area {
-      flex-grow: 1;
-      margin: 0 10px 0 16px;
+    .full-reply-list-item {
       display: flex;
-      flex-direction: column;
+      padding: 12px 16px;
 
-      .reply-user-display-name {
+      .center-area {
+        flex-grow: 1;
+        margin: 0 10px 0 16px;
         display: flex;
-        align-items: center;
+        flex-direction: column;
 
-        > p {
-          margin: 0;
-          font-size: 15px;
-          font-weight: 500;
-          color: $common_black_color;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
+        .reply-user-display-name {
+          display: flex;
+          align-items: center;
 
-        .reply-favorites-count {
-          font-size: 13px;
-          color: $common_grey_color;
-          font-weight: 500;
-          margin-left: 8px;
-
-          &.user-favorites {
-            color: #b93221;
+          > p {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 500;
+            color: $common_black_color;
+            text-overflow: ellipsis;
+            overflow: hidden;
           }
-        }
-      }
 
-      .reply-action-list {
-        display: flex;
-        align-items: center;
-        margin-top: 6px;
+          .reply-favorites-count {
+            font-size: 13px;
+            color: $common_grey_color;
+            font-weight: 500;
+            margin-left: 8px;
 
-        .common-style {
-          cursor: pointer;
-          font-size: 13px;
-          color: #2962ff;
-          margin: 0 8px;
-        }
-
-        .reply-button {
-          @extend .common-style;
-          margin-left: 0;
-        }
-
-        .plus-one-button {
-          @extend .common-style;
-          width: 24px;
-          height: 24px;
-          line-height: 24px;
-          text-align: center;
-          border-radius: 50%;
-
-          &.user-favorites {
-            background-color: #db4437;
-
-            a {
-              color: #fff;
+            &.user-favorites {
+              color: #b93221;
             }
           }
+        }
 
-          a {
+        .reply-action-list {
+          display: flex;
+          align-items: center;
+          margin-top: 6px;
+
+          .common-style {
+            cursor: pointer;
+            font-size: 13px;
             color: #2962ff;
+            margin: 0 8px;
+          }
+
+          .reply-button {
+            @extend .common-style;
+            margin-left: 0;
+          }
+
+          .plus-one-button {
+            @extend .common-style;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            border-radius: 50%;
+
+            &.user-favorites {
+              background-color: #db4437;
+
+              a {
+                color: #fff;
+              }
+            }
+
+            a {
+              color: #2962ff;
+            }
           }
         }
       }
-    }
 
-    .right-area {
-      flex-shrink: 0;
+      .right-area {
+        flex-shrink: 0;
 
-      .reply-from-now {
-        width: 32px;
-        color: $common_grey_color;
-        font-size: 13px;
+        .reply-from-now {
+          width: 32px;
+          color: $common_grey_color;
+          font-size: 13px;
+        }
       }
     }
   }
+
 
   .status-content {
 

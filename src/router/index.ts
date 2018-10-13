@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from '../store'
-import { RoutersInfo } from '@/constant/common'
+import { RoutersInfo } from '@/constant'
 import * as api from '@/api'
 
 import HomePage from '@/components/pages/Home.vue'

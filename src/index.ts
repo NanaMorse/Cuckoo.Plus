@@ -10,7 +10,7 @@ import App from './App.vue'
 import * as moment from 'moment'
 
 import i18nMessages from './i18n'
-import { I18nTags, I18nLocales, RoutersInfo } from '@/constant/common'
+import { I18nTags, I18nLocales, RoutersInfo } from '@/constant'
 
 Vue.use({
   install (Vue) {

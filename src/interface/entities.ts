@@ -121,7 +121,56 @@ export namespace mastodonentities {
   }
 
   export interface Attachment {
+    // ID of the attachment
+    id: string
+    // One of: "image", "video", "gifv", "unknown"
+    type: "image" | "video" | "gifv" | "unknown"
+    // URL of the locally hosted version of the image
+    url: string
+    // For remote images, the remote URL of the original image
+    remote_url?: string
+    // URL of the preview image
+    preview_url: string
+    // Shorter URL for the image, for insertion into text (only present on local images)
+    text_url?: string
+    /**
+     * May contain small and original (referring to the preview and the original file).
+     * Images may contain width, height, size, aspect,
+     * while videos (including GIFV) may contain width, height,
+     * frame_rate, duration and bitrate. There may be another top-level object,
+     * focus with the coordinates x and y.
+     * These coordinates can be used for smart thumbnail cropping
+     **/
+    meta?: ImageMeta | GifvMeta
+    // A description of the image for the visually impaired (maximum 420 characters), or null if none provided
+    description?: string
+  }
 
+  interface ImageSizeMetaItem {
+    aspect: number
+    width: number
+    height: number
+    size: string
+  }
+
+  export interface ImageMeta {
+    focus: { x: number, y: number }
+    original: ImageSizeMetaItem
+    small: ImageSizeMetaItem
+  }
+
+  export interface GifvMeta extends ImageSizeMetaItem {
+    duration: number
+    fps: number
+    length: string
+    original: {
+      bitrate: number
+      duration: number
+      frame_rate: string
+      height: number
+      width: number
+    }
+    small: ImageSizeMetaItem
   }
 
   export interface Mention {
