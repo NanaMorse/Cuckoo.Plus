@@ -1,9 +1,20 @@
 import Vue from 'vue'
 import { patchApiUri } from './util'
+import { TimeLineTypes } from '@/constant'
 import { mastodonentities } from '@/interface'
 
-async function getHomeStatuses (): Promise<{ data: Array<mastodonentities.Status> }> {
-  return Vue.http.get(patchApiUri('/api/v1/timelines/home')) as any
+async function getTimeLineStatuses ({ timeLineType = '', maxId = '', sinceId = ''} = {}): Promise<{ data: Array<mastodonentities.Status> }> {
+  const typeToUrlFragment = {
+    [TimeLineTypes.HOME]: 'home',
+    [TimeLineTypes.PUBLIC]: 'public'
+  }
+
+  if (!typeToUrlFragment[timeLineType]) throw new Error('unknown timeline!')
+
+  return Vue.http.get(patchApiUri(`/api/v1/timelines/${typeToUrlFragment[timeLineType]}`), {
+    max_id: maxId,
+    since_id: sinceId
+  }) as any
 }
 
 async function getPublicStatuses () {
@@ -23,7 +34,7 @@ async function getDirectStatuses () {
 }
 
 export {
-  getHomeStatuses,
+  getTimeLineStatuses,
   getPublicStatuses,
   getStatusesByTag,
   getStatusesByListId,

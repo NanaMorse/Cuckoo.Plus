@@ -9,14 +9,11 @@
 </template>
 
 <script lang="ts">
-  import { State } from 'vuex-class'
-  import { Vue, Component, Watch } from 'vue-property-decorator'
-  import { Mutation } from 'vuex-class'
-  import * as api from '@/api'
+  import { Vue, Component } from 'vue-property-decorator'
+  import { Action, State } from 'vuex-class'
+  import { TimeLineTypes } from '@/constant'
   import { cuckoostore, mastodonentities } from '@/interface'
   import StatusCard from '@/components/StatusCard.vue'
-
-  // todo 大部分逻辑应该剥离出home timeline，多个timeline共享方法
 
   @Component({
     components: {
@@ -25,35 +22,18 @@
   })
   class Home extends Vue {
 
-    @State('OAuthInfo') OAuthInfo: cuckoostore.OAuthInfo
+    @State('timelines') timelines
 
-    @Mutation('updateOAuthAccessToken') updateOAuthAccessToken
+    @Action('updateTimeLineStatuses') updateTimeLineStatuses
 
     get rootHomeStatuses () {
-      return this.homeStatuses.filter((status: mastodonentities.Status) => !status.in_reply_to_id)
+      return this.timelines.home.filter((status: mastodonentities.Status) => !status.in_reply_to_id)
     }
-
-    homeStatuses: Array<mastodonentities.Status> = []
 
     async mounted () {
-      this.getHomeStatuses()
-    }
-
-    async getHomeStatuses () {
-      try {
-        const result = await api.timelines.getHomeStatuses()
-        this.homeStatuses.push(...result.data)
-
-        // todo if result was less than 20, load more
-      } catch (e) {
-        console.log(e)
-      }
+      this.updateTimeLineStatuses({ timeLineType: TimeLineTypes.HOME })
     }
   }
 
   export default Home
 </script>
-
-<style lang="scss">
-
-</style>

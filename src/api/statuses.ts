@@ -18,9 +18,19 @@ async function getFavouritedAccountsById (id: string): Promise<{ data: Array<mas
   return Vue.http.get(patchApiUri(`/api/v1/statuses/${id}/favourited_by`)) as any
 }
 
+async function favouriteStatusById (id: string): Promise<{ data: mastodonentities.Status }> {
+  return Vue.http.post(patchApiUri(`/api/v1/statuses/${id}/favourite`)) as any
+}
+
+async function unFavouriteStatusById (id: string): Promise<{ data: mastodonentities.Status }> {
+  return Vue.http.post(patchApiUri(`/api/v1/statuses/${id}/unfavourite`)) as any
+}
+
 export {
   getStatusById,
   getStatusContextById,
   getReBloggedAccountsById,
-  getFavouritedAccountsById
+  getFavouritedAccountsById,
+  favouriteStatusById,
+  unFavouriteStatusById
 }
