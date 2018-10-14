@@ -4,18 +4,25 @@
       <mu-button icon slot="left">
         <mu-icon value="menu" color="#676767"></mu-icon>
       </mu-button>
-      <span>Main </span>
+      <span>{{parsedMastodonServerUri}}</span>
     </mu-appbar>
   </div>
 </template>
 
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
-  import {} from 'vuex-class'
+  import { State } from 'vuex-class'
+  import { cuckoostore } from '@/interface'
 
   @Component({})
   class Header extends Vue {
 
+    @State('mastodonServerUri') mastodonServerUri
+
+    get parsedMastodonServerUri () {
+      const url = new URL(this.mastodonServerUri)
+      return url.host
+    }
   }
 
   export default Header
