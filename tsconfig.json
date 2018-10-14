@@ -8,11 +8,12 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
-    "target": "es6",
+    "target": "es5",
     "allowJs": true,
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "lib": ["ES2015", "dom"]
   },
   "exclude": [
     "node_modules"

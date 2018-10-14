@@ -8,6 +8,12 @@ npm run dev
 ```
 then open [localhost:3000](http://localhost:3000) in the browser.
 
+Build project.
+```
+npm run build
+```
+the files located in public folder are all you need
+
 我英语很烂，还是让我用中文写README吧。
 
 ## 目标
