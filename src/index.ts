@@ -1,8 +1,10 @@
 const Toast = require('muse-ui-toast').default
 const Message = require('muse-ui-message').default
+const Loading = require('muse-ui-loading').default
 import Vue from 'vue'
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
+import 'muse-ui-loading/dist/muse-ui-loading.css'
 import VueResource from 'vue-resource'
 import VueI18n from 'vue-i18n'
 import store from './store'
@@ -24,6 +26,11 @@ Vue.use(VueResource)
 Vue.use(VueI18n)
 Vue.use(Toast)
 Vue.use(Message)
+Vue.use(Loading, {
+  overlayColor: 'hsla(0,0%,100%,.9)',        // 背景色
+  size: 48,
+  color: '#db4437',                           // color
+})
 
 const currentLocale = I18nLocales.ZH_CN
 

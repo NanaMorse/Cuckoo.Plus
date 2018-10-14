@@ -1,4 +1,5 @@
 import * as api from '@/api'
+import { TimeLineTypes } from '@/constant'
 
 interface postStatusFormData {
   // The text of the status
@@ -57,14 +58,18 @@ const statuses = {
 
       // meaning this is a new root post
       if (!formData.inReplyToId) {
-        // todo
+        // todo 默认只有home信息流，真的好吗？
+        commit('unShiftTimeLineStatuses', {
+          newStatuses: [result.data],
+          timeLineType: TimeLineTypes.HOME
+        })
       } else {
         // update the reply status's context
         dispatch('updateContextData', mainStatusId)
       }
 
     } catch (e) {
-
+      throw new Error(e)
     }
   }
 }

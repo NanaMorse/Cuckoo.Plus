@@ -8,7 +8,8 @@
       <mu-button slot="left" icon @click="onTryCloseDialog">
         <mu-icon value="close"></mu-icon>
       </mu-button>
-      <mu-button slot="right" flat :disabled="!shouldEnableSubmitButton">
+      <mu-button slot="right" flat :disabled="!shouldEnableSubmitButton"
+                 @click="onSubmitNewStatus">
         {{$t($i18nTags.statusCard.submit_post)}}
       </mu-button>
     </mu-appbar>
@@ -53,7 +54,9 @@
     </section>
 
     <footer v-if="!isFullScreen">
-      <mu-button class="dialog-button" flat :disabled="!shouldEnableSubmitButton">
+      <mu-button class="dialog-button" :disabled="!shouldEnableSubmitButton"
+                 color="primary"
+                 @click="onSubmitNewStatus">
         {{$t($i18nTags.statusCard.submit_post)}}
       </mu-button>
       <mu-button class="dialog-button" flat @click="onTryCloseDialog">
@@ -66,7 +69,7 @@
 
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-  import { State, Getter } from 'vuex-class'
+  import { State, Getter, Action } from 'vuex-class'
   const autosize = require('autosize')
 
   const dialogStyleToggleWidth = 530
@@ -81,6 +84,7 @@
     textContentValue: string = ''
 
     mounted () {
+      // todo seems not working, why?
       autosize(this.$refs.textArea)
     }
 
@@ -89,6 +93,8 @@
     @Prop() close: Function
 
     @State('currentUserAccount') currentUserAccount
+
+    @Action('postStatus') postStatus
 
     @Getter('getAccountDisplayName') getAccountDisplayName
 
@@ -128,15 +134,31 @@
         // @ts-ignore todo i18n
         const doCloseDialog = (await this.$confirm('要舍弃这条信息吗？', '', {})).result
         if (doCloseDialog) {
-          this.textContentValue = ''
-          this.cancelPostStatus()
+          this.closeDialog()
         }
       } else {
-        this.cancelPostStatus()
+        this.closeDialog()
       }
     }
 
-    cancelPostStatus () {
+    async onSubmitNewStatus () {
+      const formData = {
+        status: this.textContentValue
+      }
+
+      // @ts-ignore
+      const loading = this.$loading()
+
+      await this.postStatus({ formData })
+
+      loading.close()
+
+      // clear data and close dialog
+      this.closeDialog()
+    }
+
+    closeDialog () {
+      this.textContentValue = ''
       this.$emit('update:open', false)
     }
   }
