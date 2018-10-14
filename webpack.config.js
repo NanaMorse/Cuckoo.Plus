@@ -8,7 +8,8 @@ module.exports = {
     compress: true,
     port: 3000,
     host: "0.0.0.0",
-    watchContentBase: true
+    watchContentBase: true,
+    disableHostCheck: true
   },
 
   entry: './src/index.ts',
