@@ -16,6 +16,10 @@ export namespace cuckoostore {
     contexts: {
       [statusId: string]: mastodonentities.Context
     }
+
+    appStatus: {
+      isDrawerOpened: boolean
+    }
   }
 
   export interface OAuthInfo {

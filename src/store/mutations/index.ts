@@ -74,6 +74,12 @@ const statusesMutations = {
   }
 }
 
+const appStatusMutations = {
+  updateIsDrawerOpened (state: cuckoostore.stateInfo, isDrawerOpened: boolean) {
+    state.appStatus.isDrawerOpened = isDrawerOpened
+  }
+}
+
 const mutations = {
   updateMastodonServerUri (state: cuckoostore.stateInfo, mastodonServerUri: string) {
     state.mastodonServerUri = mastodonServerUri
@@ -91,7 +97,8 @@ const mutations = {
 
   ...oAuthInfoMutations,
   ...timelinesMutations,
-  ...statusesMutations
+  ...statusesMutations,
+  ...appStatusMutations,
 }
 
 export default mutations

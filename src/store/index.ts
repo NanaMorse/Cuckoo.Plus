@@ -26,7 +26,11 @@ const state: cuckoostore.stateInfo = {
     direct: []
   },
 
-  contexts: {}
+  contexts: {},
+
+  appStatus: {
+    isDrawerOpened: false
+  }
 }
 
 export default new Vuex.Store({
