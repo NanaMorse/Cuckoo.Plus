@@ -17,10 +17,11 @@ const common = {
 }
 
 const statusCard = {
+  [I18nTags.statusCard.post_new_status_placeholder]: '你最近有什么新鲜事要分享吗？',
   [I18nTags.statusCard.reply_to_main_status]: '发表评论…',
   [I18nTags.statusCard.reply_to_replier]: '回复',
-  [I18nTags.statusCard.cancel_reply]: '取消',
-  [I18nTags.statusCard.submit_reply]: '发布'
+  [I18nTags.statusCard.cancel_post]: '取消',
+  [I18nTags.statusCard.submit_post]: '发布'
 }
 
 export default {

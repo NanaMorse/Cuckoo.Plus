@@ -1,0 +1,16 @@
+@import "variable";
+
+.common-auto-size-text-area {
+  width: 100%;
+  font-size: 15px;
+  line-height: 18px;
+  outline: none;
+  border: none;
+  padding: 0;
+  background-color: #fafafa;
+  resize: none;
+}
+
+.common-icon {
+  color: $common_grey_color;
+}

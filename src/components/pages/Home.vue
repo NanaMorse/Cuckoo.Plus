@@ -9,12 +9,19 @@
       </div>
     </mu-load-more>
 
+    <!-- todo move those widgets to a common area -->
     <mu-snackbar position="top" color="info" :open.sync="isSnackBarOpening">
       <mu-icon left value="info"></mu-icon>
       {{snackBarMessage}}
       <mu-button flat slot="action" color="#fff" @click="isSnackBarOpening = false">Close</mu-button>
     </mu-snackbar>
 
+    <mu-button fab class="post-new-status-button" v-show="!isPostStatusDialogOpening"
+               @click="showNewPostDialogPanel">
+      <mu-icon value="edit" />
+    </mu-button>
+
+    <post-status-dialog :open.sync="isPostStatusDialogOpening"/>
   </div>
 </template>
 
@@ -24,10 +31,12 @@
   import { TimeLineTypes } from '@/constant'
   import { cuckoostore, mastodonentities } from '@/interface'
   import StatusCard from '@/components/StatusCard.vue'
+  import PostStatusDialog from '@/components/PostStatusDialog.vue'
 
   @Component({
     components: {
-      'status-card': StatusCard
+      'status-card': StatusCard,
+      'post-status-dialog': PostStatusDialog
     }
   })
   class Home extends Vue {
@@ -43,6 +52,8 @@
     isSnackBarOpening: boolean = false
 
     snackBarMessage: string = ''
+
+    isPostStatusDialogOpening: boolean = false
 
     get rootHomeStatuses () {
       return this.timelines.home.filter((status: mastodonentities.Status) => !status.in_reply_to_id)
@@ -85,7 +96,30 @@
         this.isSnackBarOpening = false
       }, 3000)
     }
+
+    showNewPostDialogPanel () {
+      // todo handle history.back() event
+      // use vue router?
+      this.isPostStatusDialogOpening = true
+    }
   }
 
   export default Home
 </script>
+
+<style lang="scss" scoped>
+  .home-container {
+
+    .post-new-status-button {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      background-color: #db4437;
+
+      @media (min-width: 768px) {
+        right: 32px;
+        bottom: 32px;
+      }
+    }
+  }
+</style>

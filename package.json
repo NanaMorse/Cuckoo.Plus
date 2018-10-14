@@ -10,6 +10,8 @@
     "crypto-js": "^3.1.9-1",
     "moment": "^2.22.2",
     "muse-ui": "^3.0.1",
+    "muse-ui-loading": "^0.2.0",
+    "muse-ui-message": "^0.2.1",
     "muse-ui-toast": "^0.3.0",
     "sha1": "^1.1.1",
     "vue": "^2.5.13",
