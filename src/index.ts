@@ -1,14 +1,14 @@
+const Toast = require('muse-ui-toast').default
+const Message = require('muse-ui-message').default
 import Vue from 'vue'
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 import VueResource from 'vue-resource'
 import VueI18n from 'vue-i18n'
-const Toast = require('muse-ui-toast').default
 import store from './store'
 import router from './router'
 import App from './App.vue'
 import * as moment from 'moment'
-
 import i18nMessages from './i18n'
 import { I18nTags, I18nLocales, RoutersInfo } from '@/constant'
 
@@ -23,6 +23,7 @@ Vue.use(MuseUI)
 Vue.use(VueResource)
 Vue.use(VueI18n)
 Vue.use(Toast)
+Vue.use(Message)
 
 const currentLocale = I18nLocales.ZH_CN
 

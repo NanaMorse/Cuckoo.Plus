@@ -122,7 +122,7 @@
             </mu-avatar>
 
             <div class="input-container">
-              <textarea ref="replayTextInput" class="reply-input" v-model="replyInputValue"
+              <textarea ref="replayTextInput" class="common-auto-size-text-area" v-model="replyInputValue"
                         :style="shouldShowFullReplyListArea && { backgroundColor: '#fff' }"
                         :placeholder="$t($i18nTags.statusCard.reply_to_main_status)"/>
             </div>
@@ -152,7 +152,7 @@
 
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-  import { State, Action } from 'vuex-class'
+  import { State, Action, Getter } from 'vuex-class'
   import * as moment from 'moment'
   import * as api from '@/api'
   import { AttachmentTypes } from '@/constant'
@@ -176,6 +176,8 @@
     @Action('updateFavouriteStatusById') updateFavouriteStatusById
     @Action('updateContextData') updateContextData
     @Action('postStatus') postStatus
+
+    @Getter('getAccountDisplayName') getAccountDisplayName
 
     mounted () {
       this.updateContextData(this.status.id)
@@ -276,10 +278,6 @@
       this.replyInputValue = ''
     }
 
-    getAccountDisplayName (account: mastodonentities.Account): string {
-      return account.display_name || account.username || account.acct
-    }
-
     getFromNowTime (createdAt: string) {
       return moment(createdAt).fromNow(true)
     }
@@ -289,12 +287,7 @@
 </script>
 
 <style lang="scss" scoped>
-
-  $common_black_color: rgba(0,0,0,.87);
-
-  $common_grey_color: rgba(0,0,0,0.54);
-
-  $common_operated_red_color: #db4437;
+  @import "../assets/variable";
 
   .status-card-container {
     margin: 16px 0;
@@ -481,7 +474,7 @@
             border-radius: 50%;
 
             &.user-favorites {
-              background-color: $common_operated_red_color;
+              background-color: $common_google_plus_red_color;
 
               a {
                 color: #fff;
@@ -577,7 +570,7 @@
             }
 
             &.has-operated {
-              background-color: $common_operated_red_color;
+              background-color: $common_google_plus_red_color;
               color: #fff;
 
               &:hover {
@@ -621,14 +614,8 @@
           margin-left: 16px;
           padding: 9px 12px 8px 0;
 
-          .reply-input {
-            width: 100%;
+          .common-auto-size-text-area {
             height: 18px;
-            outline: none;
-            border: none;
-            padding: 0;
-            background-color: #fafafa;
-            resize: none;
           }
         }
       }

@@ -15,10 +15,11 @@ declare module "vue/types/vue" {
 
     $i18nTags: {
       statusCard: {
+        post_new_status_placeholder: string
         reply_to_replier: string
         reply_to_main_status: string
-        cancel_reply: string
-        submit_reply: string
+        cancel_post: string
+        submit_post: string
       },
       common: {
         status_visibility_public: string
@@ -44,5 +45,7 @@ declare module "vue/types/vue" {
     $toast: {
       error: (msg: string) => void
     }
+
+    $confirm: (message: string, title: string, options) => Promise<{ result: boolean }>
   }
 }

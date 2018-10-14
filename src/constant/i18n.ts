@@ -12,10 +12,11 @@ export const I18nTags = {
   },
 
   statusCard: {
+    post_new_status_placeholder: 'post_new_status_placeholder',
     reply_to_replier: 'status_card_reply_to_replier',
     reply_to_main_status: 'status_card_reply_to_main_status',
-    cancel_reply: 'status_card_cancel_reply',
-    submit_reply: 'status_card_submit_reply'
+    cancel_post: 'status_card_cancel_post',
+    submit_post: 'status_card_submit_post'
   },
 
   header: {

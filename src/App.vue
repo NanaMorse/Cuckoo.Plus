@@ -68,11 +68,12 @@
 </script>
 
 <style lang="scss" scoped>
-  .main-container {
-  }
+
 </style>
 
-<style>
+<style lang="scss">
+  @import "assets/common";
+
   body {
     height: 100%;
     background-color: #f2f2f2;
