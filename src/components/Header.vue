@@ -1,7 +1,7 @@
 <template>
   <div class="header-container">
     <mu-appbar class="header">
-      <mu-button icon slot="left">
+      <mu-button icon @click="onIconClick" slot="left">
         <mu-icon value="menu" color="#676767"></mu-icon>
       </mu-button>
       <span>{{parsedMastodonServerUri}}</span>
@@ -11,7 +11,7 @@
 
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
-  import { State } from 'vuex-class'
+  import { State, Mutation } from 'vuex-class'
   import { cuckoostore } from '@/interface'
 
   @Component({})
@@ -19,9 +19,15 @@
 
     @State('mastodonServerUri') mastodonServerUri
 
+    @Mutation('updateIsDrawerOpened') updateIsDrawerOpened
+
     get parsedMastodonServerUri () {
       const url = new URL(this.mastodonServerUri)
       return url.host
+    }
+
+    onIconClick () {
+      this.updateIsDrawerOpened(true)
     }
   }
 
