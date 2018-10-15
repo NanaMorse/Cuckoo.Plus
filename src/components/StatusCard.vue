@@ -139,9 +139,9 @@
             </div>
             <div class="right-area">
               <mu-button flat class="operate-btn cancel"
-                         color="primary" @click="onHideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_reply)}}</mu-button>
+                         color="primary" @click="onHideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_post)}}</mu-button>
               <mu-button flat class="operate-btn submit" @click="onSubmitReplyContent"
-                         :disabled="!replyInputValue">{{$t($i18nTags.statusCard.submit_reply)}}</mu-button>
+                         :disabled="!replyInputValue">{{$t($i18nTags.statusCard.submit_post)}}</mu-button>
             </div>
           </div>
         </div>
