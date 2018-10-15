@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { patchApiUri } from './util'
+import { patchApiUri } from '@/util'
 
 const clientName = 'Cuckoo.Plus'
 const scopes = 'read write follow'

@@ -42,8 +42,12 @@
   class TimeLines extends Vue {
 
     $route: {
+      name: string
+
       params: {
         timeLineType: string
+        tagName: string
+        listName: string
       }
     }
 
@@ -70,11 +74,31 @@
       this.loadStatuses()
     }
 
+    getTimeLineTypeAndHashName () {
+      let timeLineType = '', hashName = ''
+      // @ts-ignore
+      if (this.$route.name === this.$routersInfo.defaulttimelines.name) {
+        timeLineType = this.$route.params.timeLineType
+      }
+      // @ts-ignore
+      else if (this.$route.name === this.$routersInfo.tagtimelines.name) {
+        timeLineType = TimeLineTypes.TAG
+        hashName = this.$route.params.tagName
+      }
+      // @ts-ignore
+      else if (this.$route.name === this.$routersInfo.listtimelines.name) {
+        timeLineType = TimeLineTypes.LIST
+        hashName = this.$route.params.listName
+      }
+
+      return { timeLineType, hashName }
+    }
+
     async loadStatuses (isLoadMore: boolean = false) {
       this.isLoading = true
       await this.updateTimeLineStatuses({
         isLoadMore,
-        timeLineType: 'home'
+        ...this.getTimeLineTypeAndHashName()
       })
       this.isLoading = false
     }

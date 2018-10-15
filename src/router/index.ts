@@ -14,12 +14,12 @@ const router = new Router({
 
     {
       path: RoutersInfo.empty.path,
-      redirect: {
-        name: RoutersInfo.timelines.name,
-        params: {
-          timeLineType: TimeLineTypes.HOME
-        }
-      }
+      redirect: '/timelines/home'
+    },
+
+    {
+      path: RoutersInfo.timelines.path,
+      redirect: '/timelines/home'
     },
 
     {

@@ -10,7 +10,7 @@ export const RoutersInfo = {
   },
 
   defaulttimelines: {
-    path: ':timeType',
+    path: ':timeLineType',
     name: 'defaulttimelines'
   },
 

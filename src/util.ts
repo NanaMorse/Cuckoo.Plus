@@ -1,4 +1,5 @@
 import store from '@/store'
+import { TimeLineTypes } from '@/constant'
 
 export function patchApiUri (uri: string): string {
   return `${store.state.mastodonServerUri}${uri}`
@@ -13,4 +14,8 @@ export function generateUniqueKey () {
 
     return v.toString(16)
   })
+}
+
+export function isBaseTimeLine (timeLineType: string): boolean {
+  return [TimeLineTypes.HOME, TimeLineTypes.PUBLIC, TimeLineTypes.DIRECT].indexOf(timeLineType) !== -1
 }
