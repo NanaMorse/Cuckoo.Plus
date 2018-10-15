@@ -1,9 +1,9 @@
 <template>
-  <div class="home-container">
-    <mu-load-more @load="onLoadMoreStatuses" :loading="isLoading" loading-text=""
-                  @refresh="onFetchMoreStatuses" :refreshing="isRefreshing">
+  <div class="timelines-container">
+
+    <mu-load-more @load="loadStatuses(true)" :loading="isLoading" loading-text="">
       <div class="status-cards-container">
-        <template v-for="status in rootHomeStatuses">
+        <template v-for="status in getRootStatuses('home')">
           <status-card :key="status.id" :status="status"/>
         </template>
       </div>
@@ -26,8 +26,8 @@
 </template>
 
 <script lang="ts">
-  import { Vue, Component } from 'vue-property-decorator'
-  import { Action, State } from 'vuex-class'
+  import { Vue, Component, Watch } from 'vue-property-decorator'
+  import { Action, State, Getter } from 'vuex-class'
   import { TimeLineTypes } from '@/constant'
   import { cuckoostore, mastodonentities } from '@/interface'
   import StatusCard from '@/components/StatusCard.vue'
@@ -39,13 +39,19 @@
       'post-status-dialog': PostStatusDialog
     }
   })
-  class Home extends Vue {
+  class TimeLines extends Vue {
+
+    $route: {
+      params: {
+        timeLineType: string
+      }
+    }
 
     @State('timelines') timelines
 
-    @Action('updateTimeLineStatuses') updateTimeLineStatuses
+    @Getter('getRootStatuses') getRootStatuses
 
-    isRefreshing: boolean = false
+    @Action('updateTimeLineStatuses') updateTimeLineStatuses
 
     isLoading: boolean = false
 
@@ -55,38 +61,22 @@
 
     isPostStatusDialogOpening: boolean = false
 
-    get rootHomeStatuses () {
-      return this.timelines.home.filter((status: mastodonentities.Status) => !status.in_reply_to_id)
+    @Watch('$route')
+    onRouteChanged (to) {
+      console.log(to)
     }
 
     async mounted () {
-      this.isLoading = true
-      await this.updateTimeLineStatuses({ timeLineType: TimeLineTypes.HOME })
-      this.isLoading = false
+      this.loadStatuses()
     }
 
-    async onLoadMoreStatuses () {
+    async loadStatuses (isLoadMore: boolean = false) {
       this.isLoading = true
       await this.updateTimeLineStatuses({
-        isLoadMore: true,
-        timeLineType: TimeLineTypes.HOME
+        isLoadMore,
+        timeLineType: 'home'
       })
       this.isLoading = false
-    }
-
-    async onFetchMoreStatuses () {
-      this.isRefreshing = true
-      const result = await this.updateTimeLineStatuses({
-        isFetchMore: true,
-        timeLineType: TimeLineTypes.HOME
-      })
-
-      if (!result.data.length) {
-        // todo 弹出提示 i18n
-        this.showSnackBar('没有更多了')
-      }
-
-      this.isRefreshing = false
     }
 
     showSnackBar (message: string) {
@@ -104,11 +94,11 @@
     }
   }
 
-  export default Home
+  export default TimeLines
 </script>
 
 <style lang="scss" scoped>
-  .home-container {
+  .timelines-container {
 
     .post-new-status-button {
       position: fixed;

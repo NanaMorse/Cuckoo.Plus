@@ -2,14 +2,18 @@ import * as api from '@/api'
 import statuses from './statuses'
 
 const timelines = {
-  async updateTimeLineStatuses ({ commit, state }, { timeLineType, isLoadMore, isFetchMore }: {
+  async updateTimeLineStatuses ({ commit, state }, { timeLineType, hashName, isLoadMore, isFetchMore }: {
     timeLineType: string
-    isLoadMore: boolean
-    isFetchMore: boolean
+    hashName?: string
+    isLoadMore?: boolean
+    isFetchMore?: boolean
   }) {
     if (!timeLineType) throw new Error('set time line type!')
 
     try {
+      // ensure target timeline array exists
+
+
       const targetTimeLineStatuses = state.timelines[timeLineType]
 
       let maxId, sinceId

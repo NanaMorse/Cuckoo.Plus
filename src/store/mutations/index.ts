@@ -25,18 +25,18 @@ const oAuthInfoMutations = {
 }
 
 const timelinesMutations = {
-  setTimeLineStatuses (state: cuckoostore.stateInfo, { newStatuses, timeLineType }) {
+  setTimeLineStatuses (state: cuckoostore.stateInfo, { newStatuses, timeLineType, hashName }) {
     // clear all statuses
     state.timelines[timeLineType].splice(0, state.timelines[timeLineType].length)
 
     state.timelines[timeLineType].push(...newStatuses)
   },
 
-  pushTimeLineStatuses (state: cuckoostore.stateInfo, { newStatuses, timeLineType }) {
+  pushTimeLineStatuses (state: cuckoostore.stateInfo, { newStatuses, timeLineType, hashName }) {
     state.timelines[timeLineType].push(...newStatuses)
   },
 
-  unShiftTimeLineStatuses (state: cuckoostore.stateInfo, { newStatuses, timeLineType }) {
+  unShiftTimeLineStatuses (state: cuckoostore.stateInfo, { newStatuses, timeLineType, hashName }) {
     state.timelines[timeLineType].unshift(...newStatuses)
   }
 }

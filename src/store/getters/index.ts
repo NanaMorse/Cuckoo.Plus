@@ -1,4 +1,4 @@
-import { mastodonentities } from '@/interface'
+import { cuckoostore, mastodonentities } from '@/interface'
 
 const accounts = {
   getAccountDisplayName () {
@@ -6,8 +6,16 @@ const accounts = {
   }
 }
 
+const timelines = {
+  getRootStatuses (state: cuckoostore.stateInfo) {
+    return (timeLineType: string): Array<mastodonentities.Status> => state.timelines[timeLineType].filter((status: mastodonentities.Status) => !status.in_reply_to_id)
+
+  }
+}
+
 const getters = {
-  ...accounts
+  ...accounts,
+  ...timelines
 }
 
 export default getters
