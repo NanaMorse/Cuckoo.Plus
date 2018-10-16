@@ -1,13 +1,16 @@
 <template>
   <div class="timelines-container">
 
-    <mu-load-more @load="loadStatuses(true)" :loading="isLoading" loading-text="">
-      <div class="status-cards-container">
-        <template v-for="status in getRootStatuses('home')">
-          <status-card :key="status.id" :status="status"/>
-        </template>
-      </div>
-    </mu-load-more>
+    <template v-for="(timeLineName, index) in allTimeLineNameList">
+      <mu-load-more :key="index" @load="loadStatuses(true)" v-show="isTimeLineNameEqualCurrentRoute(timeLineName)"
+                    :loading="isLoading" loading-text="">
+        <div class="status-cards-container">
+          <template v-for="status in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
+            <status-card :key="status.id" :status="status"/>
+          </template>
+        </div>
+      </mu-load-more>
+    </template>
 
     <!-- todo move those widgets to a common area -->
     <mu-snackbar position="top" color="info" :open.sync="isSnackBarOpening">
@@ -30,6 +33,7 @@
   import { Action, State, Getter } from 'vuex-class'
   import { TimeLineTypes } from '@/constant'
   import { cuckoostore, mastodonentities } from '@/interface'
+  import { getTimeLineTypeAndHashName, isBaseTimeLine } from '@/util'
   import StatusCard from '@/components/StatusCard.vue'
   import PostStatusDialog from '@/components/PostStatusDialog.vue'
 
@@ -65,40 +69,45 @@
 
     isPostStatusDialogOpening: boolean = false
 
+    get allTimeLineNameList (): Array<string> {
+      const result = [
+        TimeLineTypes.HOME, TimeLineTypes.PUBLIC
+      ].filter(type => this.timelines[type].length);
+
+      [TimeLineTypes.TAG, TimeLineTypes.LIST].forEach(secondType => {
+        Object.keys(this.timelines[secondType]).forEach(hashName => {
+          if (Array.isArray(this.timelines[secondType][hashName])) {
+            result.push(`${secondType}/${hashName}`)
+          }
+        })
+      })
+
+      return result
+    }
+
+    get currentRootStatuses (): Array<mastodonentities.Status> {
+      // @ts-ignore
+      const { timeLineType, hashName } = getTimeLineTypeAndHashName(this.$route)
+      return this.getRootStatuses(timeLineType, hashName)
+    }
+
     @Watch('$route')
     onRouteChanged (to) {
-      console.log(to)
+      if (!this.currentRootStatuses.length) {
+        this.loadStatuses()
+      }
     }
 
     async mounted () {
       this.loadStatuses()
     }
 
-    getTimeLineTypeAndHashName () {
-      let timeLineType = '', hashName = ''
-      // @ts-ignore
-      if (this.$route.name === this.$routersInfo.defaulttimelines.name) {
-        timeLineType = this.$route.params.timeLineType
-      }
-      // @ts-ignore
-      else if (this.$route.name === this.$routersInfo.tagtimelines.name) {
-        timeLineType = TimeLineTypes.TAG
-        hashName = this.$route.params.tagName
-      }
-      // @ts-ignore
-      else if (this.$route.name === this.$routersInfo.listtimelines.name) {
-        timeLineType = TimeLineTypes.LIST
-        hashName = this.$route.params.listName
-      }
-
-      return { timeLineType, hashName }
-    }
-
     async loadStatuses (isLoadMore: boolean = false) {
       this.isLoading = true
       await this.updateTimeLineStatuses({
         isLoadMore,
-        ...this.getTimeLineTypeAndHashName()
+        // @ts-ignore
+        ...getTimeLineTypeAndHashName(this.$route)
       })
       this.isLoading = false
     }
@@ -116,6 +125,18 @@
       // use vue router?
       this.isPostStatusDialogOpening = true
     }
+
+    isTimeLineNameEqualCurrentRoute (timeLineName: string): boolean {
+      // @ts-ignore
+      const { timeLineType, hashName } = getTimeLineTypeAndHashName(this.$route)
+
+      if (isBaseTimeLine(timeLineName)) {
+        return timeLineType === timeLineName
+      } else {
+        return `${timeLineType}/${hashName}` === timeLineName
+      }
+    }
+
   }
 
   export default TimeLines

@@ -16,7 +16,7 @@ async function getTimeLineStatuses ({ timeLineType = '', maxId = '', sinceId = '
     urlFragmentString = timeLineType
   } else {
     if (!hashName) throw new Error('need a hash name!')
-    urlFragmentString = `${urlFragmentString}/${hashName}`
+    urlFragmentString = `${timeLineType}/${hashName}`
   }
 
   const params: any = { limit: 20 }
