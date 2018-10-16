@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import timelinesMutations from './timelines'
 import { cuckoostore, mastodonentities } from '@/interface'
 
 const oAuthInfoMutations = {
@@ -21,23 +22,6 @@ const oAuthInfoMutations = {
     state.OAuthInfo.accessToken = accessToken
 
     localStorage.setItem('accessToken', accessToken)
-  }
-}
-
-const timelinesMutations = {
-  setTimeLineStatuses (state: cuckoostore.stateInfo, { newStatuses, timeLineType }) {
-    // clear all statuses
-    state.timelines[timeLineType].splice(0, state.timelines[timeLineType].length)
-
-    state.timelines[timeLineType].push(...newStatuses)
-  },
-
-  pushTimeLineStatuses (state: cuckoostore.stateInfo, { newStatuses, timeLineType }) {
-    state.timelines[timeLineType].push(...newStatuses)
-  },
-
-  unShiftTimeLineStatuses (state: cuckoostore.stateInfo, { newStatuses, timeLineType }) {
-    state.timelines[timeLineType].unshift(...newStatuses)
   }
 }
 

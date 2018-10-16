@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import { mastodonentities } from '@/interface'
-import HttpResponse = vuejs.HttpResponse
-import { patchApiUri } from './util'
+import { patchApiUri } from '@/util'
 
 async function fetchAccountInfoById () {
 

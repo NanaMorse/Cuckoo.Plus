@@ -10,7 +10,10 @@ const AttachmentTypes = {
 
 const TimeLineTypes = {
   PUBLIC: 'public',
-  HOME: 'home'
+  HOME: 'home',
+  DIRECT: 'direct',
+  TAG: 'tag',
+  LIST: 'list'
 }
 
 const VisibilityTypes = {

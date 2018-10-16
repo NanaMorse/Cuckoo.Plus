@@ -11,6 +11,12 @@ export namespace cuckoostore {
       home: Array<mastodonentities.Status>
       public: Array<mastodonentities.Status>
       direct: Array<mastodonentities.Status>
+      tag: {
+        [index: string]: Array<mastodonentities.Status>
+      }
+      list: {
+        [index: string]: Array<mastodonentities.Status>
+      }
     }
 
     contexts: {

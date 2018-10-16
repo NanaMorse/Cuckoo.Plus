@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { mastodonentities } from '@/interface'
-import { patchApiUri, generateUniqueKey } from './util'
+import { patchApiUri, generateUniqueKey } from '@/util'
 import { VisibilityTypes } from '@/constant'
 
 async function getStatusById (id: string): Promise<{ data: mastodonentities.Status }> {
