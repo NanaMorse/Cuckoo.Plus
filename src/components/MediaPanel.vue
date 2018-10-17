@@ -1,8 +1,17 @@
 <template>
   <div class="media-panel-container" v-if="hasMediaInfo">
 
-    <div class="single-media-area" v-if="(mediaList.length === 1) || pixivCards.length">
-      <img :src="singleMediaInfo.imageUrl"/>
+    <div class="single-media-area pixiv-card-area" v-if="pixivCards.length">
+      <img :src="pixivCards[0].image_url"/>
+    </div>
+
+    <div class="single-media-area" v-if="mediaList.length === 1">
+      <img v-if="isSameMediaType(mediaList[0].type, mediaTypes.IMAGE)"
+           :src="mediaList[0].url"/>
+
+      <div class="gifv-container" v-if="isSameMediaType(mediaList[0].type, mediaTypes.GIFV)">
+        <video autoplay loop :src="mediaList[0].url" />
+      </div>
     </div>
 
     <div class="multi-media-area" v-if="mediaList.length > 1">
@@ -11,7 +20,7 @@
              :src="media.url" :key="index"/>
 
         <div class="gifv-container" v-if="isSameMediaType(media.type, mediaTypes.GIFV)">
-          <video :src="media.url" :key="index"></video>
+          <video autoplay :src="media.url" :key="index" />
         </div>
       </div>
     </div>
@@ -67,8 +76,9 @@
 <style lang="scss" scoped>
   .media-panel-container {
 
-    img {
+    img, video {
       display: block;
+      cursor: zoom-in;
     }
 
     .single-media-area img {
@@ -84,7 +94,6 @@
       .media-gallery-item {
         width: 50%;
         height: 100%;
-        cursor: zoom-in;
 
         > img {
           height: 100%;
@@ -93,18 +102,18 @@
           object-position: 50% 20%;
         }
 
-        .gifv-container {
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
+      }
+    }
 
-          > video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          }
-        }
+    .gifv-container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
 
+      > video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
     }
   }

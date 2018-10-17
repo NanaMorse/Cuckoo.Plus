@@ -220,11 +220,12 @@
     }
 
     get shouldShowSimpleReplyListArea () {
-      return this.context && this.context.descendants.length && !this.hasTryToExtendSimpleReplyArea
+      return this.context && this.context.descendants.length && this.context.descendants.length > 4 &&
+        !this.hasTryToExtendSimpleReplyArea
     }
 
     get shouldShowFullReplyListArea () {
-      return this.context && this.context.descendants.length && this.hasTryToExtendSimpleReplyArea
+      return this.context && this.context.descendants.length && ( this.context.descendants.length < 4 || this.hasTryToExtendSimpleReplyArea)
     }
 
     onCardMouseOver () {
