@@ -59,8 +59,12 @@ const statusesMutations = {
 }
 
 const appStatusMutations = {
-  updateIsDrawerOpened (state: cuckoostore.stateInfo, isDrawerOpened: boolean) {
+  updateDrawerOpenStatus (state: cuckoostore.stateInfo, isDrawerOpened: boolean) {
     state.appStatus.isDrawerOpened = isDrawerOpened
+  },
+
+  updateDocumentWidth (state: cuckoostore.stateInfo) {
+    state.appStatus.documentWidth = document.body.clientWidth
   }
 }
 

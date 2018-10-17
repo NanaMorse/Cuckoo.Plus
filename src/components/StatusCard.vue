@@ -34,7 +34,7 @@
       <mu-divider />
 
       <div class="main-attachment-area">
-        <media-panel :mediaList="status.media_attachments"/>
+        <media-panel :mediaList="status.media_attachments" :pixivCards="status.pixiv_cards"/>
       </div>
 
       <div class="reply-area-simple" v-if="shouldShowSimpleReplyListArea">
@@ -223,11 +223,12 @@
     }
 
     get shouldShowSimpleReplyListArea () {
-      return this.context && this.context.descendants.length && !this.hasTryToExtendSimpleReplyArea
+      return this.context && this.context.descendants.length && this.context.descendants.length > 4 &&
+        !this.hasTryToExtendSimpleReplyArea
     }
 
     get shouldShowFullReplyListArea () {
-      return this.context && this.context.descendants.length && this.hasTryToExtendSimpleReplyArea
+      return this.context && this.context.descendants.length && ( this.context.descendants.length < 4 || this.hasTryToExtendSimpleReplyArea)
     }
 
     onCardMouseOver () {

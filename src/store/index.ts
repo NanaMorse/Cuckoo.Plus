@@ -4,6 +4,7 @@ import mutations from './mutations'
 import actions from './actions'
 import getters from './getters'
 import { cuckoostore } from '@/interface'
+import { UiWidthCheckConstants } from '@/constant'
 
 Vue.use(Vuex)
 
@@ -33,7 +34,8 @@ const state: cuckoostore.stateInfo = {
   contexts: {},
 
   appStatus: {
-    isDrawerOpened: false
+    documentWidth: document.body.clientWidth,
+    isDrawerOpened: document.body.clientWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY
   }
 }
 

@@ -1,8 +1,8 @@
 <template>
   <div class="header-container">
-    <mu-appbar class="header">
-      <mu-button icon @click="onIconClick" slot="left">
-        <mu-icon value="menu" color="#676767"></mu-icon>
+    <mu-appbar class="header" color="#db4437">
+      <mu-button icon @click="onMenuBtnClick" slot="left">
+        <mu-icon value="menu"></mu-icon>
       </mu-button>
       <span>{{parsedMastodonServerUri}}</span>
     </mu-appbar>
@@ -17,18 +17,21 @@
   @Component({})
   class Header extends Vue {
 
+    @State('appStatus') appStatus
+
     @State('mastodonServerUri') mastodonServerUri
 
-    @Mutation('updateIsDrawerOpened') updateIsDrawerOpened
+    @Mutation('updateDrawerOpenStatus') updateDrawerOpenStatus
 
     get parsedMastodonServerUri () {
       const url = new URL(this.mastodonServerUri)
       return url.host
     }
 
-    onIconClick () {
-      this.updateIsDrawerOpened(true)
+    onMenuBtnClick () {
+      this.updateDrawerOpenStatus(!this.appStatus.isDrawerOpened)
     }
+
   }
 
   export default Header
@@ -38,6 +41,11 @@
   .header {
     background-color: rgba(255, 255, 255, 1);
     padding-left: 8px;
-    color: #676767;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 300;
   }
 </style>
