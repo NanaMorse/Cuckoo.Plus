@@ -34,7 +34,7 @@
       <mu-divider />
 
       <div class="main-attachment-area">
-        <media-panel :mediaList="status.media_attachments"/>
+        <media-panel :mediaList="status.media_attachments" :pixivCards="status.pixiv_cards"/>
       </div>
 
       <div class="reply-area-simple" v-if="shouldShowSimpleReplyListArea">
