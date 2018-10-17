@@ -15,6 +15,7 @@
     "muse-ui": "^3.0.1",
     "muse-ui-loading": "^0.2.0",
     "muse-ui-message": "^0.2.1",
+    "muse-ui-progress": "^0.1.0",
     "muse-ui-toast": "^0.3.0",
     "sha1": "^1.1.1",
     "underscore": "^1.9.1",

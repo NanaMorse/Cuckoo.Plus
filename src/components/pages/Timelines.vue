@@ -45,15 +45,9 @@
   })
   class TimeLines extends Vue {
 
-    $route: {
-      name: string
+    $route;
 
-      params: {
-        timeLineType: string
-        tagName: string
-        listName: string
-      }
-    }
+    $progress;
 
     @State('timelines') timelines
 
@@ -92,9 +86,11 @@
     }
 
     @Watch('$route')
-    onRouteChanged (to) {
+    onRouteChanged () {
       if (!this.currentRootStatuses.length) {
         this.loadStatuses()
+      } else {
+        this.loadStatuses(false, true)
       }
     }
 
@@ -102,13 +98,15 @@
       this.loadStatuses()
     }
 
-    async loadStatuses (isLoadMore: boolean = false) {
+    async loadStatuses (isLoadMore: boolean = false, isFetchMore: boolean = false) {
       this.isLoading = true
+      this.$progress.start()
       await this.updateTimeLineStatuses({
         isLoadMore,
-        // @ts-ignore
+        isFetchMore,
         ...getTimeLineTypeAndHashName(this.$route)
       })
+      this.$progress.done()
       this.isLoading = false
     }
 
@@ -127,7 +125,6 @@
     }
 
     isTimeLineNameEqualCurrentRoute (timeLineName: string): boolean {
-      // @ts-ignore
       const { timeLineType, hashName } = getTimeLineTypeAndHashName(this.$route)
 
       if (isBaseTimeLine(timeLineName)) {
