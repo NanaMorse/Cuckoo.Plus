@@ -29,7 +29,7 @@
 
       </mu-card-header>
 
-      <mu-card-text class="status-content main-status-content" v-html="status.content" />
+      <mu-card-text class="status-content main-status-content" v-html="insertHtmlDelsToHtml(status.content)" />
 
       <mu-divider />
 
@@ -158,6 +158,7 @@
   import { AttachmentTypes } from '@/constant'
   import MediaPanel from './MediaPanel'
   import { mastodonentities } from '@/interface'
+  import { insertHtmlDelsToHtml } from '@/util'
   const autosize = require('autosize')
 
   @Component({
@@ -191,6 +192,8 @@
     hasTryToExtendSimpleReplyArea = false
 
     replyInputValue: string = ''
+
+    insertHtmlDelsToHtml = insertHtmlDelsToHtml
 
     get context (): mastodonentities.Context {
       return this.contextsMap[this.status.id]

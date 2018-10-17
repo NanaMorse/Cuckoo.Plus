@@ -1,6 +1,7 @@
 import store from '@/store'
 import { TimeLineTypes, RoutersInfo } from '@/constant'
 import { Route } from "vue-router";
+import { insertHtmlDelsToText } from "./formatter"
 
 export function patchApiUri (uri: string): string {
   return `${store.state.mastodonServerUri}${uri}`
@@ -39,4 +40,32 @@ export function getTimeLineTypeAndHashName (route: Route) {
   }
 
   return { timeLineType, hashName }
+}
+
+export function insertHtmlDelsToHtml(html: string): string {
+  const parentNode = parseHtmlToParentNode(html)
+  const node = parentNode.content
+
+  // https://stackoverflow.com/questions/10730309/find-all-text-nodes-in-html-page
+  let n
+  const walk = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null, false)
+  while (n = walk.nextNode()) {
+    n.nodeValue = insertHtmlDelsToText(n.nodeValue)
+  }
+
+  return serializeParentNode(parentNode)
+}
+
+// https://stackoverflow.com/questions/10585029/parse-an-html-string-with-js/10585079
+function parseHtmlToParentNode(html) {
+  var t = document.createElement('template');
+  t.innerHTML = html;
+  return t
+}
+
+// https://stackoverflow.com/questions/1912501/unescape-html-entities-in-javascript
+const DomParser = new DOMParser()
+function serializeParentNode(node) {
+  const doc = DomParser.parseFromString(node.innerHTML, "text/html")
+  return doc.documentElement.textContent
 }
