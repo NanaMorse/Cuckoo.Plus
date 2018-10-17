@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <cuckoo-plus-header v-if="shouldShowHeader"/>
-    <mu-container>
-      <cuckoo-plus-drawer />
+    <cuckoo-plus-drawer />
+    <mu-container class="app-content" :style="appContentStyle">
       <router-view />
     </mu-container>
   </div>
@@ -10,6 +10,9 @@
 
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
+  import { Mutation, State } from 'vuex-class'
+  import * as _ from 'underscore'
+  import { UiWidthCheckConstants } from '@/constant'
   import Header from '@/components/Header.vue'
   import Drawer from '@/components/Drawer.vue'
 
@@ -20,6 +23,23 @@
     }
   })
   class App extends Vue {
+
+    @State('appStatus') appStatus
+
+    @Mutation('updateDocumentWidth') updateDocumentWidth
+
+    mounted () {
+      window.addEventListener('resize', _.debounce(() => this.updateDocumentWidth(), 200))
+    }
+
+    get appContentStyle () {
+      if (this.appStatus.isDrawerOpened &&
+        (this.appStatus.documentWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY)) {
+        return {
+          paddingLeft: '256px'
+        }
+      }
+    }
 
     get shouldShowHeader () {
       // @ts-ignore
@@ -32,7 +52,20 @@
 </script>
 
 <style lang="scss" scoped>
+  .app-content {
+    padding: 56px 0 0 0;
+    -webkit-transition: padding-left .45s cubic-bezier(.23,1,.32,1);
+    -moz-transition: padding-left .45s cubic-bezier(.23,1,.32,1);
+    -ms-transition: padding-left .45s cubic-bezier(.23,1,.32,1);
+    -o-transition: padding-left .45s cubic-bezier(.23,1,.32,1);
+    transition: padding-left .45s cubic-bezier(.23,1,.32,1);
+  }
 
+  @media (min-width: 600px) {
+    .app-content {
+      padding: 64px 0 0 0;
+    }
+  }
 </style>
 
 <style lang="scss">
@@ -41,10 +74,6 @@
   body {
     height: 100%;
     background-color: #f2f2f2;
-  }
-
-  .container {
-    padding: 0;
   }
 
   a, .mu-load-more {

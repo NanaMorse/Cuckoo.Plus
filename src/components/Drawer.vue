@@ -1,8 +1,9 @@
 <template>
-  <mu-drawer :open.sync="appStatus.isDrawerOpened" :docked="false">
+  <mu-drawer class="cuckoo-drawer" :open.sync="appStatus.isDrawerOpened" :style="drawerStyle"
+             :docked="shouldDrawerDocked" :z-depth="shouldDrawerDocked ? 0 : 16">
     <mu-list :value="currentListValue">
       <mu-list-item button v-for="(info, index) in baseTimeLineInfoList" :value="info.value"
-                    :key="index" :to="info.to" @click="updateIsDrawerOpened(false)">
+                    :key="index" :to="info.to" @click="!shouldDrawerDocked && updateDrawerOpenStatus(false)">
         <mu-list-item-action>
           <mu-icon :value="info.icon" />
         </mu-list-item-action>
@@ -24,7 +25,7 @@
   import { Vue, Component } from 'vue-property-decorator'
   import { State, Mutation } from 'vuex-class'
   import { getTimeLineTypeAndHashName, isBaseTimeLine } from '@/util'
-  import { TimeLineTypes } from '@/constant'
+  import { TimeLineTypes, UiWidthCheckConstants } from '@/constant'
 
   const baseTimeLineInfoList = [
     {
@@ -46,7 +47,20 @@
 
     @State('appStatus') appStatus
 
-    @Mutation('updateIsDrawerOpened') updateIsDrawerOpened
+    @Mutation('updateDrawerOpenStatus') updateDrawerOpenStatus
+
+    get shouldDrawerDocked () {
+      return this.appStatus.documentWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY
+    }
+
+    get drawerStyle () {
+      if (this.shouldDrawerDocked) {
+        return {
+          top: '64px',
+          backgroundColor: '#f2f2f2'
+        }
+      }
+    }
 
     get currentListValue () {
       // @ts-ignore
@@ -66,5 +80,15 @@
 </script>
 
 <style lang="scss">
+  @import "../assets/variable";
 
+  .cuckoo-drawer {
+    .mu-item.is-selected {
+      color: $common_google_plus_red_color;
+
+      .material-icons {
+        color: $common_google_plus_red_color;
+      }
+    }
+  }
 </style>

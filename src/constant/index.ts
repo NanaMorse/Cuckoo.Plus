@@ -23,8 +23,14 @@ const VisibilityTypes = {
   PUBLIC: 'public'
 }
 
+const UiWidthCheckConstants = {
+  'DRAWER_DOCKING_BOUNDARY': 960,
+  'POST_STATUS_DIALOG_TOGGLE_WIDTH': 530
+}
+
 export {
   AttachmentTypes,
   TimeLineTypes,
-  VisibilityTypes
+  VisibilityTypes,
+  UiWidthCheckConstants
 }

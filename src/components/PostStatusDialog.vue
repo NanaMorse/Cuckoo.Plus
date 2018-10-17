@@ -70,6 +70,8 @@
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State, Getter, Action } from 'vuex-class'
+  import { UiWidthCheckConstants } from '@/constant'
+
   const autosize = require('autosize')
 
   const dialogStyleToggleWidth = 530
@@ -91,6 +93,8 @@
     @Prop() open: boolean
 
     @Prop() close: Function
+
+    @State('appStatus') appStatus
 
     @State('currentUserAccount') currentUserAccount
 
@@ -118,11 +122,12 @@
     }
 
     get dialogWidth () {
-      return document.body.clientWidth > dialogStyleToggleWidth ? dialogStyleToggleWidth : null
+      return this.appStatus.documentWidth > UiWidthCheckConstants.POST_STATUS_DIALOG_TOGGLE_WIDTH
+        ? UiWidthCheckConstants.POST_STATUS_DIALOG_TOGGLE_WIDTH : null
     }
 
     get isFullScreen () {
-      return document.body.clientWidth <= dialogStyleToggleWidth
+      return this.appStatus.documentWidth <= UiWidthCheckConstants.POST_STATUS_DIALOG_TOGGLE_WIDTH
     }
 
     get transition () {
