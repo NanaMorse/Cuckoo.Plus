@@ -1,6 +1,8 @@
 # Cuckoo.Plus
 A GooglePlus-Like third-party web client for mastodon.
 
+alpha view link: [Cuckoo.Social](http://www.cuckoo.social)
+
 Start project.
 ```
 npm i
