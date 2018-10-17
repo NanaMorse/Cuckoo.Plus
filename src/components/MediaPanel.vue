@@ -1,8 +1,8 @@
 <template>
-  <div class="media-panel-container" v-if="mediaList.length">
+  <div class="media-panel-container" v-if="hasMediaInfo">
 
-    <div class="single-media-area" v-if="mediaList.length === 1">
-      <img :src="mediaList[0].url"/>
+    <div class="single-media-area" v-if="(mediaList.length === 1) || pixivCards.length">
+      <img :src="singleMediaInfo.imageUrl"/>
     </div>
 
     <div class="multi-media-area" v-if="mediaList.length > 1">
@@ -26,9 +26,35 @@
   @Component({})
   class MediaPanel extends Vue {
 
-    @Prop() mediaList: Array<mastodonentities.Attachment>
+    @Prop({ default: () => [] }) mediaList?: Array<mastodonentities.Attachment>
+
+    @Prop({ default: () => [] }) pixivCards?: Array<{ url: string, image_url: string }>
 
     mediaTypes = AttachmentTypes
+
+    get hasMediaInfo () {
+      return (this.mediaList.length > 0) || (this.pixivCards.length > 0)
+    }
+
+    get singleMediaInfo () {
+      const info = {
+        imageUrl: '',
+        clickUrl: ''
+      }
+
+      if (this.mediaList[0]) {
+        info.imageUrl = this.mediaList[0].url
+        info.clickUrl = this.mediaList[0].url
+      }
+
+      if (this.pixivCards[0]) {
+        info.imageUrl = this.pixivCards[0].image_url
+        info.clickUrl = this.pixivCards[0].url
+      }
+
+      // todo multi pixiv cards?
+      return info
+    }
 
     isSameMediaType (typeA: string, typeB: string) {
       return typeA === typeB

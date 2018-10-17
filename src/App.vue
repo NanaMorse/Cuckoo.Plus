@@ -46,4 +46,11 @@
   .container {
     padding: 0;
   }
+
+  a, .mu-load-more {
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
+    user-select: auto;
+  }
 </style>
