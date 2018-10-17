@@ -45,7 +45,7 @@
         <div class="simple-reply-list" @click="onSimpleReplyListClick">
           <div class="simple-reply-list-item" v-for="replyStatus in lastedThreeReplyStatuses" :key="replyStatus.id">
             <span class="reply-account-display-name">{{getAccountDisplayName(replyStatus.account)}}:</span>
-            <span class="status-content simple-reply-status-content" v-html="replyStatus.content"></span>
+            <span class="status-content simple-reply-status-content" v-html="insertHtmlDelsToHtml(replyStatus.content)"></span>
           </div>
         </div>
       </div>
@@ -66,7 +66,7 @@
                       class="reply-favorites-count" :class="{ 'user-favorites': replyStatus.favourited }">+{{replyStatus.favourites_count}}</span>
               </div>
 
-              <div class="status-content full-reply-status-content" v-html="replyStatus.content"></div>
+              <div class="status-content full-reply-status-content" v-html="insertHtmlDelsToHtml(replyStatus.content)"></div>
 
               <div class="reply-action-list">
                 <a class="reply-button">{{$t($i18nTags.statusCard.reply_to_replier)}}</a>
