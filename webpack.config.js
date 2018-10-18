@@ -1,4 +1,19 @@
-const path = require('path');
+const webpack = require('webpack')
+const path = require('path')
+const yargs = require('yargs')
+const fs = require('fs')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+
+let { env } = yargs.argv
+if (!env) env = 'develop'
+const isEnvProduction = env === 'production'
+
+if (isEnvProduction) {
+  // 删除source-map数据 / remove source map data
+  fs.unlink(path.join(__dirname, './public/dist/bundle.js.map'), (err) => {
+    if (err) console.error(err)
+  })
+}
 
 module.exports = {
 
@@ -14,9 +29,10 @@ module.exports = {
 
   entry: './src/index.ts',
 
-  devtool: '#source-map',
+  devtool: isEnvProduction ? '' : '#source-map',
 
   output: {
+    libraryExport: 'default',
     path: path.resolve(__dirname, 'public/dist/'),
     filename: 'bundle.js'
   },
@@ -96,5 +112,17 @@ module.exports = {
     alias: {
       '@': path.join(__dirname, '/src')
     }
-  }
+  },
+
+  externals: {
+    'moment': 'moment'
+    // todo muse ui has bug
+  },
+
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(env)
+    }),
+    new BundleAnalyzerPlugin()
+  ]
 };

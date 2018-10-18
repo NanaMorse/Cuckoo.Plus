@@ -53,7 +53,7 @@
   }
 
   @Component({})
-  class App extends Vue {
+  class OAuth extends Vue {
 
     @State('OAuthInfo') OAuthInfo: cuckoostore.OAuthInfo
 
@@ -105,7 +105,7 @@
     }
   }
 
-  export default App
+  export default OAuth
 </script>
 
 <style lang="scss" scoped>
