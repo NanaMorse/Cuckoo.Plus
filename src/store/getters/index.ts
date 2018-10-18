@@ -4,6 +4,10 @@ import { isBaseTimeLine } from '@/util'
 const accounts = {
   getAccountDisplayName () {
     return (account: mastodonentities.Account) => account.display_name || account.username || account.acct
+  },
+
+  getAccountAtName () {
+    return (account: mastodonentities.Account) => account.username || account.acct
   }
 }
 

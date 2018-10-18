@@ -1,6 +1,6 @@
 <template>
   <div class="status-card-container">
-    <mu-card class="status-card" @mouseover="onCardMouseOver" @mouseout="onCardMouseOut">
+    <mu-card class="status-card" v-loading="isReplyLoading" @mouseover="onCardMouseOver" @mouseout="onCardMouseOut">
 
       <mu-card-header class="mu-card-header">
         <div class="left-area">
@@ -8,7 +8,10 @@
             <img :src="status.account.avatar_static">
           </mu-avatar>
           <div class="user-and-status-info">
-            <a class="user-name">{{getAccountDisplayName(status.account)}}</a>
+            <a class="user-name">
+              {{getAccountDisplayName(status.account)}}
+              <span class="at-name">@{{getAccountAtName(status.account)}}</span>
+            </a>
             <div class="visibility-row">
               <div class="arrow-container">
                 <svg viewBox="0 0 48 48" height="100%" width="100%"><path fill="rgba(0, 0, 0, 0.54)" d="M20 14l10 10-10 10z"></path></svg>
@@ -43,44 +46,56 @@
         </template>
 
         <div class="simple-reply-list" @click="onSimpleReplyListClick">
-          <div class="simple-reply-list-item" v-for="replyStatus in lastedThreeReplyStatuses" :key="replyStatus.id">
-            <span class="reply-account-display-name">{{getAccountDisplayName(replyStatus.account)}}:</span>
-            <span class="status-content simple-reply-status-content" v-html="replyStatus.content"></span>
+          <div class="simple-reply-list-item" v-for="replierStatus in lastedThreeReplyStatuses" :key="replierStatus.id">
+            <span class="reply-account-display-name">{{getAccountDisplayName(replierStatus.account)}}:</span>
+            <span class="status-content simple-reply-status-content" v-html="replierStatus.content"></span>
           </div>
         </div>
       </div>
 
       <div class="reply-area-full" v-if="shouldShowFullReplyListArea">
         <div class="full-reply-list">
-          <div class="full-reply-list-item" v-for="replyStatus in context.descendants" :key="replyStatus.id">
+          <div class="full-reply-list-item" v-for="replierStatus in context.descendants" :key="replierStatus.id">
             <div class="left-area">
               <mu-avatar class="status-replier-avatar" slot="avatar" size="34">
-                <img :src="replyStatus.account.avatar_static">
+                <img :src="replierStatus.account.avatar_static">
               </mu-avatar>
             </div>
             <div class="center-area">
 
               <div class="reply-user-display-name">
-                <p>{{getAccountDisplayName(replyStatus.account)}}</p>
-                <span v-if="replyStatus.favourites_count > 0"
-                      class="reply-favorites-count" :class="{ 'user-favorites': replyStatus.favourited }">+{{replyStatus.favourites_count}}</span>
+                <p>
+                  {{getAccountDisplayName(replierStatus.account)}}
+                  <span class="at-name">@{{getAccountAtName(replierStatus.account)}}</span>
+                </p>
+                <span v-if="replierStatus.favourites_count > 0"
+                      class="reply-favorites-count" :class="{ 'user-favorites': replierStatus.favourited }">+{{replierStatus.favourites_count}}</span>
               </div>
 
-              <div class="status-content full-reply-status-content" v-html="replyStatus.content"></div>
+              <div class="status-content full-reply-status-content" v-html="replierStatus.content"></div>
 
               <div class="reply-action-list">
-                <a class="reply-button">{{$t($i18nTags.statusCard.reply_to_replier)}}</a>
-                <div class="plus-one-button" @click="onFavoriteButtonClick(replyStatus)" :class="{ 'user-favorites': replyStatus.favourited }">
+                <a class="reply-button" @click="onReplyToReplierStatus(replierStatus)">{{$t($i18nTags.statusCard.reply_to_replier)}}</a>
+                <div class="plus-one-button" @click="onFavoriteButtonClick(replierStatus)" :class="{ 'user-favorites': replierStatus.favourited }">
                   <a>+1</a>
                 </div>
               </div>
 
             </div>
             <div class="right-area">
-              <span class="reply-from-now">{{getFromNowTime(replyStatus.created_at)}}</span>
+              <span class="reply-from-now">{{getFromNowTime(replierStatus.created_at)}}</span>
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="current-reply-to-info-area" v-if="currentReplyToStatus">
+        <mu-chip class="reply-to-account-info" color="#db4437" @delete="clearReplyToStatus" delete>
+          <mu-avatar :size="32">
+            <img :src="currentReplyToStatus.account.avatar_static">
+          </mu-avatar>
+          {{getAccountDisplayName(currentReplyToStatus.account)}} @{{currentReplyToStatus.account.username}}
+        </mu-chip>
       </div>
 
       <mu-card-actions class="card-action-area" :style="shouldShowFullReplyListArea && { backgroundColor: '#fff' }">
@@ -92,7 +107,7 @@
               <img :src="currentUserAccount.avatar_static">
             </mu-avatar>
 
-            <div class="active-reply-entry" @click="onShowFullReplyActionArea">
+            <div class="active-reply-entry" @click="showFullReplyActionArea">
               {{$t($i18nTags.statusCard.reply_to_main_status)}}
             </div>
           </div>
@@ -140,7 +155,7 @@
             <div class="right-area">
               <mu-button flat class="operate-btn cancel"
                          color="primary" @click="onHideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_post)}}</mu-button>
-              <mu-button flat class="operate-btn submit" @click="onSubmitReplyContent"
+              <mu-button flat class="operate-btn submit" @click="onSubmitReplyContent()"
                          :disabled="!replyInputValue">{{$t($i18nTags.statusCard.submit_post)}}</mu-button>
             </div>
           </div>
@@ -178,11 +193,14 @@
     @Action('postStatus') postStatus
 
     @Getter('getAccountDisplayName') getAccountDisplayName
+    @Getter('getAccountAtName') getAccountAtName
 
     mounted () {
       this.updateContextData(this.status.id)
       autosize(this.$refs.replayTextInput)
     }
+
+    currentReplyToStatus: mastodonentities.Status = null
 
     shouldShowHeaderActionButtonGroup: boolean = false
 
@@ -191,6 +209,8 @@
     hasTryToExtendSimpleReplyArea = false
 
     replyInputValue: string = ''
+
+    isReplyLoading = false
 
     get context (): mastodonentities.Context {
       return this.contextsMap[this.status.id]
@@ -225,7 +245,7 @@
     }
 
     get shouldShowFullReplyListArea () {
-      return this.context && this.context.descendants.length && ( this.context.descendants.length < 4 || this.hasTryToExtendSimpleReplyArea)
+      return this.context && this.context.descendants.length && ( this.context.descendants.length <= 4 || this.hasTryToExtendSimpleReplyArea)
     }
 
     onCardMouseOver () {
@@ -254,7 +274,7 @@
       })
     }
 
-    onShowFullReplyActionArea () {
+    showFullReplyActionArea () {
       this.shouldShowFullReplyActionArea = true
       this.$nextTick(() => {
         this.$refs.replayTextInput.focus()
@@ -263,20 +283,36 @@
 
     onHideFullReplyActionArea () {
       this.shouldShowFullReplyActionArea = false
+      this.clearReplyToStatus()
+    }
+
+    onReplyToReplierStatus (status: mastodonentities.Status) {
+      this.currentReplyToStatus = status
+
+      this.replyInputValue = `@${this.currentReplyToStatus.account.username} `
+
+      this.showFullReplyActionArea()
+    }
+
+    clearReplyToStatus () {
+      this.currentReplyToStatus = null
       this.replyInputValue = ''
     }
 
-    onSubmitReplyContent () {
-      // todo 先只回复主po
-      this.postStatus({
+    async onSubmitReplyContent () {
+      const currentReplyToStatus = this.currentReplyToStatus || this.status
+
+      this.isReplyLoading = true
+      await this.postStatus({
         mainStatusId: this.status.id,
         formData: {
           status: this.replyInputValue,
-          inReplyToId: this.status.id
+          inReplyToId: currentReplyToStatus.id
         }
       })
+      this.isReplyLoading = false
 
-      this.replyInputValue = ''
+      this.clearReplyToStatus()
     }
 
     getFromNowTime (createdAt: string) {
@@ -299,6 +335,11 @@
     max-width: 530px;
     margin: 0 auto;
     background-color: #fafafa;
+  }
+
+  .at-name {
+    font-size: 13px;
+    color: $common_grey_color;
   }
 
   .mu-card-header {
@@ -498,6 +539,16 @@
           font-size: 13px;
         }
       }
+    }
+  }
+
+  .current-reply-to-info-area {
+    height: 44px;
+    line-height: 44px;
+    padding-left: 16px;
+
+    .reply-to-account-info {
+      margin-top: 6px;
     }
   }
 

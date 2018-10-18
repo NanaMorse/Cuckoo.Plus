@@ -4,7 +4,7 @@
   "description": "A third-party client for mastodon",
   "scripts": {
     "dev": "webpack-dev-server",
-    "build": "webpack --optimize-minimize",
+    "build": "webpack --optimize-minimize --env=production",
     "start": "node server.js"
   },
   "dependencies": {
@@ -46,7 +46,9 @@
     "vue-template-compiler": "^2.5.13",
     "vuex-class": "^0.3.1",
     "webpack": "^3.11.0",
-    "webpack-dev-server": "^2.11.3"
+    "webpack-bundle-analyzer": "^3.0.3",
+    "webpack-dev-server": "^2.11.3",
+    "yargs": "^12.0.2"
   },
   "babel": {
     "presets": [
