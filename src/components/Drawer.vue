@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-  import { Vue, Component } from 'vue-property-decorator'
+  import { Vue, Component, Watch } from 'vue-property-decorator'
   import { State, Mutation } from 'vuex-class'
   import { getTimeLineTypeAndHashName, isBaseTimeLine } from '@/util'
   import { TimeLineTypes, UiWidthCheckConstants } from '@/constant'
@@ -48,6 +48,13 @@
     @State('appStatus') appStatus
 
     @Mutation('updateDrawerOpenStatus') updateDrawerOpenStatus
+
+    @Watch('shouldDrawerDocked')
+    onShouldDrawerDockedChanged () {
+      if (!this.shouldDrawerDocked && this.appStatus.isDrawerOpened) {
+        this.updateDrawerOpenStatus(false)
+      }
+    }
 
     get shouldDrawerDocked () {
       return this.appStatus.documentWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY

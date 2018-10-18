@@ -92,6 +92,8 @@
       } else {
         this.loadStatuses(false, true)
       }
+
+      window.scrollTo(0, 0)
     }
 
     async mounted () {

@@ -114,10 +114,15 @@ module.exports = {
     }
   },
 
+  externals: {
+    'moment': 'moment'
+    // todo muse ui has bug
+  },
+
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(env)
     }),
     new BundleAnalyzerPlugin()
-  ],
+  ]
 };
