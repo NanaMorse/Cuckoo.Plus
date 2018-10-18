@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <cuckoo-plus-header v-if="shouldShowHeader"/>
-    <cuckoo-plus-drawer />
+    <cuckoo-plus-header v-if="!isOAuthPage"/>
+    <cuckoo-plus-drawer v-if="!isOAuthPage"/>
     <mu-container class="app-content" :style="appContentStyle">
       <router-view />
     </mu-container>
@@ -33,7 +33,7 @@
     }
 
     get appContentStyle () {
-      if (this.appStatus.isDrawerOpened &&
+      if (this.appStatus.isDrawerOpened && !this.isOAuthPage &&
         (this.appStatus.documentWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY)) {
         return {
           paddingLeft: '256px'
@@ -41,9 +41,9 @@
       }
     }
 
-    get shouldShowHeader () {
+    get isOAuthPage () {
       // @ts-ignore
-      return this.$route.name !== this.$routersInfo.oauth.name
+      return this.$route.name === this.$routersInfo.oauth.name
     }
 
   }
