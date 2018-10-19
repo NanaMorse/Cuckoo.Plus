@@ -100,7 +100,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.name !== RoutersInfo.oauth.name) {
     // need register
     if (shouldReRegisterApplication) {
-      localStorage.clear()
+      store.commit('clearAllOAuthInfo')
       return next(RoutersInfo.oauth.path)
     }
 
@@ -110,7 +110,7 @@ router.beforeEach(async (to, from, next) => {
         const result = await api.oauth.fetchOAuthToken()
         store.commit('updateOAuthAccessToken', result.data.access_token)
       } catch (e) {
-        localStorage.clear()
+        store.commit('clearAllOAuthInfo')
         return next(RoutersInfo.oauth.path)
       }
     }
@@ -123,7 +123,10 @@ router.beforeEach(async (to, from, next) => {
         const result = await api.accounts.fetchCurrentUserAccountInfo()
         store.commit('updateCurrentUserAccount', result.data)
       } catch (e) {
-
+        if (e.status === 401) {
+          store.commit('clearAllOAuthInfo')
+          return next(RoutersInfo.oauth.path)
+        }
       }
     }
   }

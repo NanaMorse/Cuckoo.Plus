@@ -6,6 +6,15 @@ import { cuckoostore, mastodonentities } from '@/interface'
 
 const oAuthInfoMutations = {
 
+  clearAllOAuthInfo (state: cuckoostore.stateInfo) {
+    state.OAuthInfo.clientId = ''
+    state.OAuthInfo.clientSecret = ''
+    state.OAuthInfo.code = ''
+    state.OAuthInfo.accessToken = ''
+
+    localStorage.clear()
+  },
+
   updateClientInfo (state: cuckoostore.stateInfo, { clientId, clientSecret }) {
     state.OAuthInfo.clientId = clientId
     state.OAuthInfo.clientSecret = clientSecret
