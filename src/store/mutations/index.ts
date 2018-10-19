@@ -106,8 +106,10 @@ const mutations = {
     state.currentUserAccount = currentUserAccount
   },
 
-  updateContextData (state: cuckoostore.stateInfo, { statusId, context }) {
-    Vue.set(state.contexts, statusId, context)
+  updateContextData (state: cuckoostore.stateInfo, newContextDataMap) {
+    Object.keys(newContextDataMap).forEach(statusId => {
+      Vue.set(state.contexts, statusId, newContextDataMap[statusId])
+    })
   },
 
   ...oAuthInfoMutations,

@@ -43,7 +43,7 @@ const statuses = {
 
     try {
       const result = await api.statuses.getStatusContextById(statusId)
-      commit('updateContextData', { statusId, context: result.data })
+      commit('updateContextData', { [statusId]: result.data })
     } catch (e) {
 
     }
