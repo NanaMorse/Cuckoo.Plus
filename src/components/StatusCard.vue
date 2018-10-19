@@ -546,6 +546,7 @@
     height: 44px;
     line-height: 44px;
     padding-left: 16px;
+    background-color: #fff;
 
     .reply-to-account-info {
       margin-top: 6px;
