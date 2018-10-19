@@ -10,7 +10,7 @@
 
         <mu-form-item class="server-input-form-item" prop="mastodonServerUri" :rules="uriRules" :label="$t($i18nTags.oauth.server_input_label)">
           <mu-auto-complete prop="mastodonServerUri" class="server-input" :data="mastodonServerUriList" :full-width="true"
-                            :max-search-results="5" label-float
+                            :max-search-results="5" label-float :prefix="prefix"
                             v-model="validateForm.mastodonServerUri" avatar>
             <template slot-scope="scope">
               <mu-list-item-action>
@@ -44,7 +44,9 @@
   // and store this token
 
   const mastodonServerUriList = [
-    { value: 'https://pawoo.net', favicon: 'https://pawoo.net/favicon.png' }
+    { value: 'pawoo.net', favicon: 'https://pawoo.net/favicon.png' },
+    // todo get mastodon favicon
+    { value: 'mastodon.social', favicon: 'https://raw.githubusercontent.com/tootsuite/mastodon/master/public/favicon.ico' }
   ]
 
   function isURL(str) {
@@ -61,6 +63,8 @@
 
     @Mutation('updateClientInfo') updateClientInfo
 
+    prefix = 'https://'
+
     mastodonServerUriList = mastodonServerUriList
 
     get uriRules () {
@@ -68,7 +72,7 @@
         // @ts-ignore
         { validate: (val) => !!val, message: this.$t(this.$i18nTags.oauth.please_input_server_url) },
         // @ts-ignore
-        { validate: (val) => isURL(val), message: this.$t(this.$i18nTags.oauth.please_input_correct_server_url) }
+        { validate: (val) => isURL(this.prefix + val), message: this.$t(this.$i18nTags.oauth.please_input_correct_server_url) }
       ]
     }
 
@@ -80,7 +84,7 @@
       (this.$refs as any).form.validate().then(async (pass) => {
         if (!pass) return
 
-        this.updateMastodonServerUri(this.validateForm.mastodonServerUri)
+        this.updateMastodonServerUri(this.prefix + this.validateForm.mastodonServerUri)
 
         try {
           const result = await apps.registerApplication()
@@ -99,7 +103,7 @@
     }
 
     goToMastodonServerForOAuth () {
-      window.location.href = `${this.validateForm.mastodonServerUri}/oauth/authorize?client_id=${this.OAuthInfo.clientId}` +
+      window.location.href = `${this.prefix + this.validateForm.mastodonServerUri}/oauth/authorize?client_id=${this.OAuthInfo.clientId}` +
         `&redirect_uri=${location.origin}` +
         `&response_type=code&scope=read write follow`
     }
