@@ -1,7 +1,7 @@
 const DelOpenTag = "<del>"
 const DelCloseTag = "</del>"
 
-export function insertHtmlDelsToText(text: string): string {
+export function insertDels(text: string): string {
   const length = text.length
   let firstOpenTagIndex = -1
   let lastCloseTagIndex = -1
