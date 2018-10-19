@@ -3,7 +3,7 @@ import { mastodonentities } from '@/interface'
 import { isBaseTimeLine } from '@/util'
 
 export default {
-  async updateTimeLineStatuses ({ commit, state }, { timeLineType, hashName, isLoadMore, isFetchMore }: {
+  async updateTimeLineStatuses ({ commit, dispatch, state }, { timeLineType, hashName, isLoadMore, isFetchMore }: {
     timeLineType: string
     hashName?: string
     isLoadMore?: boolean
@@ -33,6 +33,16 @@ export default {
 
     try {
       const result = await api.timelines.getTimeLineStatuses({ timeLineType, hashName, maxId, sinceId })
+
+      Promise.all(result.data.map((status: mastodonentities.Status) => {
+        return api.statuses.getStatusContextById(status.id)
+      })).then(results => {
+        const newContextMap = {}
+        results.forEach((contextResult, index) => {
+          newContextMap[result.data[index].id] = contextResult.data
+        })
+        commit('updateContextData', newContextMap)
+      })
 
       commit(mutationName, { newStatuses: result.data, timeLineType, hashName })
     } catch (e) {

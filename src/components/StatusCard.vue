@@ -195,7 +195,6 @@
     @Getter('getAccountAtName') getAccountAtName
 
     mounted () {
-      this.updateContextData(this.status.id)
       autosize(this.$refs.replayTextInput)
     }
 
