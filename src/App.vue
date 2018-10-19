@@ -82,4 +82,8 @@
     -ms-user-select: auto;
     user-select: auto;
   }
+
+  .mu-loading-wrap {
+    z-index: 20141222 !important;
+  }
 </style>

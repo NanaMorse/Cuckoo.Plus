@@ -46,6 +46,6 @@
     top: 0;
     bottom: 0;
     right: 0;
-    z-index: 999999999;
+    z-index: 20141223;
   }
 </style>
