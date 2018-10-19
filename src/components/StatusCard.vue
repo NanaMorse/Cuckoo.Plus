@@ -32,7 +32,7 @@
 
       </mu-card-header>
 
-      <mu-card-text class="status-content main-status-content" v-html="status.content" />
+      <mu-card-text class="status-content main-status-content" v-html="formatHtml(status.content)" />
 
       <mu-divider />
 
@@ -48,7 +48,7 @@
         <div class="simple-reply-list" @click="onSimpleReplyListClick">
           <div class="simple-reply-list-item" v-for="replierStatus in lastedThreeReplyStatuses" :key="replierStatus.id">
             <span class="reply-account-display-name">{{getAccountDisplayName(replierStatus.account)}}:</span>
-            <span class="status-content simple-reply-status-content" v-html="replierStatus.content"></span>
+            <span class="status-content simple-reply-status-content" v-html="formatHtml(replierStatus.content)"></span>
           </div>
         </div>
       </div>
@@ -71,9 +71,7 @@
                 <span v-if="replierStatus.favourites_count > 0"
                       class="reply-favorites-count" :class="{ 'user-favorites': replierStatus.favourited }">+{{replierStatus.favourites_count}}</span>
               </div>
-
-              <div class="status-content full-reply-status-content" v-html="replierStatus.content"></div>
-
+              <div class="status-content full-reply-status-content" v-html="formatHtml(replierStatus.content)"></div>
               <div class="reply-action-list">
                 <a class="reply-button" @click="onReplyToReplierStatus(replierStatus)">{{$t($i18nTags.statusCard.reply_to_replier)}}</a>
                 <div class="plus-one-button" @click="onFavoriteButtonClick(replierStatus)" :class="{ 'user-favorites': replierStatus.favourited }">
@@ -173,6 +171,7 @@
   import { AttachmentTypes } from '@/constant'
   import MediaPanel from './MediaPanel'
   import { mastodonentities } from '@/interface'
+  import { formatHtml } from '@/util'
   const autosize = require('autosize')
 
   @Component({
@@ -210,6 +209,7 @@
 
     replyInputValue: string = ''
 
+    formatHtml = formatHtml
     isReplyLoading = false
 
     get context (): mastodonentities.Context {

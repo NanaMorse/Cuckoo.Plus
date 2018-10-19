@@ -1,6 +1,7 @@
 import store from '@/store'
 import { TimeLineTypes, RoutersInfo } from '@/constant'
 import { Route } from "vue-router";
+import { insertDels } from "./formatter"
 
 export function patchApiUri (uri: string): string {
   return `${store.state.mastodonServerUri}${uri}`
@@ -39,4 +40,29 @@ export function getTimeLineTypeAndHashName (route: Route) {
   }
 
   return { timeLineType, hashName }
+}
+
+export function formatHtml(html: string): string {
+  // create a parent node to contain the input html
+  const parentNode = document.createElement('template')
+  parentNode.innerHTML = html
+
+  walkTextNodes(parentNode.content)
+
+  return parentNode.innerHTML
+}
+
+function walkTextNodes(node) {
+  if (node) {
+    for (let i = 0; i < node.childNodes.length; ++i) {
+      const childNode = node.childNodes[i]
+      if (childNode.nodeType === 3) {
+        const spanNode = document.createElement('span')
+        spanNode.innerHTML = insertDels(childNode.textContent)
+        node.replaceChild(spanNode, childNode)
+      } else if (childNode.nodeType === 1 || childNode.nodeType === 9 || childNode.nodeType === 11) {
+        walkTextNodes(childNode)
+      }
+    }
+  }
 }
