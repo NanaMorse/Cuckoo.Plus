@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import timelinesMutations from './timelines'
+import { isBaseTimeLine } from '@/util'
+import { TimeLineTypes } from '@/constant'
 import { cuckoostore, mastodonentities } from '@/interface'
 
 const oAuthInfoMutations = {
@@ -25,23 +27,39 @@ const oAuthInfoMutations = {
   }
 }
 
-const statusesMutations = {
-  updateStatusInfo (state: cuckoostore.stateInfo, newStatus: mastodonentities.Status) {
-    // get all status list
-    Object.keys(state.timelines).forEach(timeLineType => {
-      const currentTimeLine = state.timelines[timeLineType]
-      const targetStatusIndex = currentTimeLine.findIndex(status => status.id === newStatus.id)
-      if (targetStatusIndex !== -1) {
-        Vue.set(currentTimeLine, targetStatusIndex, newStatus)
-      }
+function getAllTimeLineList (state: cuckoostore.stateInfo): Array<Array<mastodonentities.Status>> {
+  const result = [];
+
+  // get base timeline
+  [TimeLineTypes.PUBLIC, TimeLineTypes.HOME].forEach(timeLineType => {
+    result.push(state.timelines[timeLineType])
+  });
+
+  // get sub timeline
+  [TimeLineTypes.TAG, TimeLineTypes.LIST].forEach(timeLineType => {
+    const currentSubTimeLineMap = state.timelines[timeLineType]
+    Object.keys(currentSubTimeLineMap).forEach(hashName => {
+      result.push(currentSubTimeLineMap[hashName] || [])
     })
-  },
+  });
+
+  return result
+}
+
+const statusesMutations = {
+  // updateStatusInfo (state: cuckoostore.stateInfo, newStatus: mastodonentities.Status) {
+  //   getAllTimeLineList(state).forEach(timeLine => {
+  //     const targetStatusIndex = timeLine.findIndex(status => status.id === newStatus.id)
+  //     if (targetStatusIndex !== -1) {
+  //       Vue.set(timeLine, targetStatusIndex, newStatus)
+  //     }
+  //   })
+  // },
 
   updateFavouriteStatusById (state: cuckoostore.stateInfo, { favourited, mainStatusId, targetStatusId }) {
     if (mainStatusId === targetStatusId) {
-      Object.keys(state.timelines).forEach(timeLineType => {
-        const currentTimeLine = state.timelines[timeLineType]
-        const targetStatus = currentTimeLine.find(status => status.id === mainStatusId)
+      getAllTimeLineList(state).forEach(timeLine => {
+        const targetStatus = timeLine.find(status => status.id === mainStatusId)
         if (targetStatus) {
           Vue.set(targetStatus, 'favourited', favourited)
           Vue.set(targetStatus, 'favourites_count', favourited ? targetStatus.favourites_count + 1 : targetStatus.favourites_count -1)
