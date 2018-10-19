@@ -8,11 +8,19 @@ let { env } = yargs.argv
 if (!env) env = 'develop'
 const isEnvProduction = env === 'production'
 
+const plugins = [
+  new webpack.DefinePlugin({
+  'process.env.NODE_ENV': JSON.stringify(env)
+  }),
+]
+
 if (isEnvProduction) {
   // 删除source-map数据 / remove source map data
   fs.unlink(path.join(__dirname, './public/dist/bundle.js.map'), (err) => {
     if (err) console.error(err)
   })
+} else {
+  plugins.push(new BundleAnalyzerPlugin())
 }
 
 module.exports = {
@@ -119,10 +127,5 @@ module.exports = {
     // todo muse ui has bug
   },
 
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(env)
-    }),
-    new BundleAnalyzerPlugin()
-  ]
+  plugins: plugins
 };
