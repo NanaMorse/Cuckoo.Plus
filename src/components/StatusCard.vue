@@ -32,12 +32,26 @@
 
       </mu-card-header>
 
-      <mu-card-text class="status-content main-status-content" v-html="formatHtml(status.content)" />
+      <mu-card-text v-if="!status.reblog" class="status-content main-status-content" v-html="formatHtml(status.content)" />
 
       <mu-divider />
 
-      <div class="main-attachment-area">
+      <div v-if="!status.reblog" class="main-attachment-area">
         <media-panel :mediaList="status.media_attachments" :pixivCards="status.pixiv_cards"/>
+      </div>
+
+      <div v-if="status.reblog" class="reblog-area">
+        <div class="reblog-plain-info-area">
+          <a class="reblog-source-link">
+            此信息最初是由{{getAccountDisplayName(status.reblog.account)}}
+            <span class="at-name">@{{getAccountAtName(status.reblog.account)}}</span>
+            分享的
+          </a>
+          <mu-card-text class="status-content reblog-status-content" v-html="formatHtml(status.reblog.content)" />
+        </div>
+        <div class="reblog-attachment-area">
+          <media-panel :mediaList="status.reblog.media_attachments" :pixivCards="status.reblog.pixiv_cards"/>
+        </div>
       </div>
 
       <div class="reply-area-simple" v-if="shouldShowSimpleReplyListArea">
@@ -409,6 +423,26 @@
       > img {
         width: 100%;
         height: auto;
+      }
+    }
+  }
+
+  .reblog-area {
+    .reblog-plain-info-area {
+      margin: 16px;
+
+      .reblog-source-link {
+        cursor: pointer;
+        font-weight: 500;
+
+        .at-name {
+          color: unset;
+        }
+      }
+
+      .reblog-status-content {
+        padding: 0;
+        margin-top: 8px;
       }
     }
   }

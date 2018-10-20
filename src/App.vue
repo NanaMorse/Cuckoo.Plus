@@ -83,6 +83,10 @@
     user-select: auto;
   }
 
+  a {
+    color: #2962ff;
+  }
+
   // header z-index 20141223
   // drawer z-index 20141224
 
