@@ -1,6 +1,6 @@
 <template>
   <div class="status-card-container">
-    <mu-card class="status-card" v-loading="isReplyLoading" @mouseover="onCardMouseOver" @mouseout="onCardMouseOut">
+    <mu-card class="status-card" v-loading="isCardLoading" @mouseover="onCardMouseOver" @mouseout="onCardMouseOut">
 
       <mu-card-header class="mu-card-header">
         <div class="left-area">
@@ -32,12 +32,26 @@
 
       </mu-card-header>
 
-      <mu-card-text class="status-content main-status-content" v-html="formatHtml(status.content)" />
+      <mu-card-text v-if="!status.reblog && status.content" class="status-content main-status-content" v-html="formatHtml(status.content)" />
 
       <mu-divider />
 
-      <div class="main-attachment-area">
+      <div v-if="!status.reblog" class="main-attachment-area">
         <media-panel :mediaList="status.media_attachments" :pixivCards="status.pixiv_cards"/>
+      </div>
+
+      <div v-if="status.reblog" class="reblog-area">
+        <div class="reblog-plain-info-area">
+          <a class="reblog-source-link">
+            此信息最初是由{{getAccountDisplayName(status.reblog.account)}}
+            <span class="at-name">@{{getAccountAtName(status.reblog.account)}}</span>
+            分享的
+          </a>
+          <mu-card-text v-if="status.reblog.content" class="status-content reblog-status-content" v-html="formatHtml(status.reblog.content)" />
+        </div>
+        <div class="reblog-attachment-area">
+          <media-panel :mediaList="status.reblog.media_attachments" :pixivCards="status.reblog.pixiv_cards"/>
+        </div>
       </div>
 
       <div class="reply-area-simple" v-if="shouldShowSimpleReplyListArea">
@@ -119,7 +133,8 @@
               <span v-if="status.favourites_count > 0" class="count">{{status.favourites_count}}</span>
             </div>
             <div class="share operate-btn-group">
-              <mu-button class="button unset-display" :class="{ 'has-operated': status.reblogged }" icon>
+              <mu-button class="button unset-display" @click="onReBlogMainStatus()"
+                         :class="{ 'has-operated': status.reblogged }" icon>
                 <mu-icon class="share-icon" value="share" />
               </mu-button>
               <span v-if="status.reblogs_count > 0" class="count">{{status.reblogs_count}}</span>
@@ -209,7 +224,7 @@
     replyInputValue: string = ''
 
     formatHtml = formatHtml
-    isReplyLoading = false
+    isCardLoading = false
 
     get context (): mastodonentities.Context {
       return this.contextsMap[this.status.id]
@@ -273,6 +288,13 @@
       })
     }
 
+    // todo
+    async onReBlogMainStatus () {
+//      this.isCardLoading = true
+//
+//      this.isCardLoading = false
+    }
+
     showFullReplyActionArea () {
       this.shouldShowFullReplyActionArea = true
       this.$nextTick(() => {
@@ -301,7 +323,7 @@
     async onSubmitReplyContent () {
       const currentReplyToStatus = this.currentReplyToStatus || this.status
 
-      this.isReplyLoading = true
+      this.isCardLoading = true
       await this.postStatus({
         mainStatusId: this.status.id,
         formData: {
@@ -309,7 +331,7 @@
           inReplyToId: currentReplyToStatus.id
         }
       })
-      this.isReplyLoading = false
+      this.isCardLoading = false
 
       this.clearReplyToStatus()
     }
@@ -409,6 +431,26 @@
       > img {
         width: 100%;
         height: auto;
+      }
+    }
+  }
+
+  .reblog-area {
+    .reblog-plain-info-area {
+      margin: 16px;
+
+      .reblog-source-link {
+        cursor: pointer;
+        font-weight: 500;
+
+        .at-name {
+          color: unset;
+        }
+      }
+
+      .reblog-status-content {
+        padding: 0;
+        margin-top: 8px;
       }
     }
   }

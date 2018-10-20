@@ -64,6 +64,14 @@ async function unFavouriteStatusById (id: string): Promise<{ data: mastodonentit
   return Vue.http.post(patchApiUri(`/api/v1/statuses/${id}/unfavourite`)) as any
 }
 
+async function reblogStatusById (id: string): Promise<{ data: mastodonentities.Status }> {
+  return Vue.http.post(patchApiUri(`/api/v1/statuses/${id}/reblog`)) as any
+}
+
+async function unReblogStatusById (id: string): Promise<{ data: mastodonentities.Status }> {
+  return Vue.http.post(patchApiUri(`/api/v1/statuses/${id}/unreblog`)) as any
+}
+
 export {
   getStatusById,
   postStatus,
@@ -71,5 +79,7 @@ export {
   getReBloggedAccountsById,
   getFavouritedAccountsById,
   favouriteStatusById,
-  unFavouriteStatusById
+  unFavouriteStatusById,
+  reblogStatusById,
+  unReblogStatusById
 }
