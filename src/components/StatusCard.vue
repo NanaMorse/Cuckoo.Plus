@@ -32,7 +32,7 @@
 
       </mu-card-header>
 
-      <mu-card-text v-if="!status.reblog" class="status-content main-status-content" v-html="formatHtml(status.content)" />
+      <mu-card-text v-if="!status.reblog && status.content" class="status-content main-status-content" v-html="formatHtml(status.content)" />
 
       <mu-divider />
 
@@ -47,7 +47,7 @@
             <span class="at-name">@{{getAccountAtName(status.reblog.account)}}</span>
             分享的
           </a>
-          <mu-card-text class="status-content reblog-status-content" v-html="formatHtml(status.reblog.content)" />
+          <mu-card-text v-if="status.reblog.content" class="status-content reblog-status-content" v-html="formatHtml(status.reblog.content)" />
         </div>
         <div class="reblog-attachment-area">
           <media-panel :mediaList="status.reblog.media_attachments" :pixivCards="status.reblog.pixiv_cards"/>
