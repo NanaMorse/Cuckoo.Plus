@@ -11,6 +11,7 @@ declare module "vue/types/vue" {
       empty: routerInfo
       home: routerInfo
       oauth: routerInfo
+      settings: routerInfo
       timelines: routerInfo
       defaulttimelines: routerInfo
       tagtimelines: routerInfo

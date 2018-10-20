@@ -324,15 +324,8 @@
 
 <style lang="scss" scoped>
   @import "../assets/variable";
-
-  .status-card-container {
-    margin: 16px 0;
-  }
-
   .status-card {
     width: 100%;
-    max-width: 530px;
-    margin: 0 auto;
     background-color: #fafafa;
   }
 

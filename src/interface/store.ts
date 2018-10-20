@@ -26,6 +26,9 @@ export namespace cuckoostore {
     appStatus: {
       documentWidth: number
       isDrawerOpened: boolean
+      settings: {
+        multiWaterFallLayout: boolean
+      }
     }
   }
 

@@ -1,6 +1,7 @@
 import * as api from '@/api'
 import { mastodonentities } from '@/interface'
 import { isBaseTimeLine } from '@/util'
+const Toast = require('muse-ui-toast').default
 
 export default {
   async updateTimeLineStatuses ({ commit, dispatch, state }, { timeLineType, hashName, isLoadMore, isFetchMore }: {
@@ -45,6 +46,8 @@ export default {
       })
 
       commit(mutationName, { newStatuses: result.data, timeLineType, hashName })
+
+      return result
     } catch (e) {
       throw new Error(e)
     }

@@ -1,9 +1,10 @@
 <template>
   <mu-drawer class="cuckoo-drawer" :open.sync="appStatus.isDrawerOpened" :style="drawerStyle"
              :docked="shouldDrawerDocked" :z-depth="shouldDrawerDocked ? 0 : 16">
+
     <mu-list :value="currentListValue">
       <mu-list-item button v-for="(info, index) in baseTimeLineInfoList" :value="info.value"
-                    :key="index" :to="info.to" @click="!shouldDrawerDocked && updateDrawerOpenStatus(false)">
+                    :key="index" @click="onTimeLineItemClick(info.value)">
         <mu-list-item-action>
           <mu-icon :value="info.icon" />
         </mu-list-item-action>
@@ -13,17 +14,18 @@
 
     <mu-divider></mu-divider>
 
-    <mu-list>
-      <mu-list-item button>
+    <mu-list class="second-list">
+      <mu-list-item button :to="$routersInfo.settings.path">
         <mu-list-item-title>Settings</mu-list-item-title>
       </mu-list-item>
     </mu-list>
+
   </mu-drawer>
 </template>
 
 <script lang="ts">
   import { Vue, Component, Watch } from 'vue-property-decorator'
-  import { State, Mutation } from 'vuex-class'
+  import { State, Mutation, Action } from 'vuex-class'
   import { getTimeLineTypeAndHashName, isBaseTimeLine } from '@/util'
   import { TimeLineTypes, UiWidthCheckConstants } from '@/constant'
 
@@ -45,9 +47,21 @@
   @Component({})
   class Drawer extends Vue {
 
+    $route
+
+    $router
+
+    $progress
+
+    $toast
+
     @State('appStatus') appStatus
 
     @Mutation('updateDrawerOpenStatus') updateDrawerOpenStatus
+
+    @Action('updateTimeLineStatuses') updateTimeLineStatuses
+
+    baseTimeLineInfoList = baseTimeLineInfoList
 
     @Watch('shouldDrawerDocked')
     onShouldDrawerDockedChanged () {
@@ -64,7 +78,12 @@
       if (this.shouldDrawerDocked) {
         return {
           top: '64px',
-          backgroundColor: '#f2f2f2'
+          backgroundColor: '#f2f2f2',
+          width: '210px'
+        }
+      } else {
+        return {
+          width: '300px'
         }
       }
     }
@@ -80,7 +99,43 @@
       }
     }
 
-    baseTimeLineInfoList = baseTimeLineInfoList
+    async onTimeLineItemClick (clickedTypeLineType: string, clickedHashName: string = '') {
+      const { timeLineType, hashName } = getTimeLineTypeAndHashName(this.$route)
+
+      if ((clickedTypeLineType === timeLineType) && (hashName === clickedHashName)) {
+        this.fetchTimeLineStatuses(timeLineType, hashName)
+      }
+
+      // route to target
+      const targetPath = '/timelines/' +
+        (isBaseTimeLine(clickedTypeLineType) ? clickedTypeLineType : `${clickedTypeLineType}/${clickedHashName}`)
+
+      this.$router.push(targetPath)
+
+      if (!this.shouldDrawerDocked) this.updateDrawerOpenStatus(false)
+
+      window.scrollTo(0, 0)
+    }
+
+    /**
+     * @desc if clicked timeline item is just current timeline
+     * */
+    async fetchTimeLineStatuses (timeLineType: string, hashName: string = '') {
+      this.$progress.start()
+      const result = await this.updateTimeLineStatuses({
+        isFetchMore: true,
+        timeLineType, hashName
+      })
+
+      if (!result.data.length) {
+        this.$toast.info({
+          message: '没有更多了',
+          position: 'top'
+        });
+      }
+
+      this.$progress.done()
+    }
   }
 
   export default Drawer
@@ -96,6 +151,20 @@
       .material-icons {
         color: $common_google_plus_red_color;
       }
+    }
+
+    .second-list {
+      .mu-item-title {
+        color: $common_grey_color;
+      }
+    }
+
+    .mu-item-wrapper {
+      -webkit-transition: background-color .3s cubic-bezier(0,0,0.2,1);
+      -moz-transition: background-color .3s cubic-bezier(0,0,0.2,1);
+      -ms-transition: background-color .3s cubic-bezier(0,0,0.2,1);
+      -o-transition: background-color .3s cubic-bezier(0,0,0.2,1);
+      transition: background-color .3s cubic-bezier(0,0,0.2,1);
     }
   }
 </style>

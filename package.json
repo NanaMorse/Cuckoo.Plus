@@ -41,6 +41,8 @@
     "chai": "^4.2.0",
     "css-loader": "^0.28.9",
     "husky": "^1.1.2",
+    "less": "^3.8.1",
+    "less-loader": "^4.1.0",
     "mocha": "^5.2.0",
     "node-sass": "^4.9.3",
     "sass-loader": "^7.1.0",
