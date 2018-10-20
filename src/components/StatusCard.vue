@@ -1,5 +1,5 @@
 <template>
-  <div class="status-card-container">
+  <div class="status-card-container" ref="statusCardContainer">
     <mu-card class="status-card" v-loading="isCardLoading" @mouseover="onCardMouseOver" @mouseout="onCardMouseOut">
 
       <mu-card-header class="mu-card-header">
@@ -8,7 +8,7 @@
             <img :src="status.account.avatar_static">
           </mu-avatar>
           <div class="user-and-status-info">
-            <a class="user-name">
+            <a class="user-name" :style="userNameAreaStyle">
               {{getAccountDisplayName(status.account)}}
               <span class="at-name">@{{getAccountAtName(status.account)}}</span>
             </a>
@@ -197,6 +197,7 @@
   class StatusCard extends Vue {
 
     $refs: {
+      statusCardContainer: HTMLDivElement
       replayTextInput: HTMLTextAreaElement
     }
 
@@ -209,10 +210,6 @@
     @Getter('getAccountDisplayName') getAccountDisplayName
     @Getter('getAccountAtName') getAccountAtName
 
-    mounted () {
-      autosize(this.$refs.replayTextInput)
-    }
-
     currentReplyToStatus: mastodonentities.Status = null
 
     shouldShowHeaderActionButtonGroup: boolean = false
@@ -224,10 +221,14 @@
     replyInputValue: string = ''
 
     formatHtml = formatHtml
+
     isCardLoading = false
 
-    get context (): mastodonentities.Context {
-      return this.contextsMap[this.status.id]
+    userNameAreaStyle = {}
+
+    mounted () {
+      autosize(this.$refs.replayTextInput)
+      this.setMainStatusUserNameAreaStyle()
     }
 
     @Prop() status: mastodonentities.Status
@@ -243,6 +244,10 @@
 
         }
       }
+    }
+
+    get context (): mastodonentities.Context {
+      return this.contextsMap[this.status.id]
     }
 
     get lastedThreeReplyStatuses (): Array<mastodonentities.Status> {
@@ -339,6 +344,26 @@
     getFromNowTime (createdAt: string) {
       return moment(createdAt).fromNow(true)
     }
+
+    /**
+     * @desc set max-width
+     * */
+    setMainStatusUserNameAreaStyle () {
+      const cardWidth = this.$refs.statusCardContainer.clientWidth
+      const headerPadding = 16
+      const avatarWidth = 34
+      const avatarRightMargin = 8
+      const visibilityInfoWidth = 50
+      const rightAreaWidth = 50
+      const leftToRightMargin = 5
+
+      const maxWidth = cardWidth - headerPadding * 2 - avatarWidth - avatarRightMargin -
+        visibilityInfoWidth - rightAreaWidth - leftToRightMargin
+
+      this.userNameAreaStyle = {
+        maxWidth: `${maxWidth}px`
+      }
+    }
   }
 
   export default StatusCard
@@ -379,6 +404,9 @@
           cursor: pointer;
           font-size: 15px;
           color: $common_black_color;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap
         }
 
         .visibility-row {
