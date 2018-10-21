@@ -201,10 +201,10 @@
       replayTextInput: HTMLTextAreaElement
     }
 
-    @State('contexts') contextsMap
+    @State('contextMap') contextMap
 
     @Action('updateFavouriteStatusById') updateFavouriteStatusById
-    @Action('updateContextData') updateContextData
+    @Action('updateContextMap') updateContextMap
     @Action('postStatus') postStatus
 
     @Getter('getAccountDisplayName') getAccountDisplayName
@@ -239,7 +239,7 @@
     async onShowCompleteReplyArea () {
       if (this.shouldShowFullReplyListArea) {
         try {
-          this.updateContextData(this.status.id)
+          this.updateContextMap(this.status.id)
         } catch (e) {
 
         }
@@ -247,7 +247,7 @@
     }
 
     get context (): mastodonentities.Context {
-      return this.contextsMap[this.status.id]
+      return this.contextMap[this.status.id]
     }
 
     get lastedThreeReplyStatuses (): Array<mastodonentities.Status> {

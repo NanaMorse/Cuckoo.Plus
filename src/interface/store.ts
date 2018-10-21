@@ -8,18 +8,18 @@ export namespace cuckoostore {
     currentUserAccount: mastodonentities.Account
 
     timelines: {
-      home: Array<mastodonentities.Status>
-      public: Array<mastodonentities.Status>
-      direct: Array<mastodonentities.Status>
+      home: Array<string>
+      public: Array<string>
+      direct: Array<string>
       tag: {
-        [index: string]: Array<mastodonentities.Status>
+        [index: string]: Array<string>
       }
       list: {
-        [index: string]: Array<mastodonentities.Status>
+        [index: string]: Array<string>
       }
     }
 
-    contexts: {
+    contextMap: {
       [statusId: string]: mastodonentities.Context
     }
 

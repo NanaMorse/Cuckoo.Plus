@@ -31,7 +31,7 @@ const state: cuckoostore.stateInfo = {
     list: {}
   },
 
-  contexts: {},
+  contextMap: {},
 
   statusMap: {},
 

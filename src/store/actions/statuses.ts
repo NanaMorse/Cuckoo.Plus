@@ -38,12 +38,12 @@ const statuses = {
     }
   },
 
-  async updateContextData ({ commit }, statusId: string) {
+  async updateContextMap ({ commit }, statusId: string) {
     if (!statusId) throw new Error('unknown status id!')
 
     try {
       const result = await api.statuses.getStatusContextById(statusId)
-      commit('updateContextData', { [statusId]: result.data })
+      commit('updateContextMap', { [statusId]: result.data })
     } catch (e) {
 
     }
@@ -65,7 +65,7 @@ const statuses = {
         })
       } else {
         // update the reply status's context
-        dispatch('updateContextData', mainStatusId)
+        dispatch('updateContextMap', mainStatusId)
       }
 
     } catch (e) {
