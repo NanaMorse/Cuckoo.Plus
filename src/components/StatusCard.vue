@@ -770,6 +770,8 @@
 <style lang="scss">
 
   .status-content {
+    // https://stackoverflow.com/questions/5241369/word-wrap-a-link-so-it-doesnt-overflow-its-parent-div-width
+    word-wrap: break-word;
     > p {
       margin: 0;
       padding: 0;
