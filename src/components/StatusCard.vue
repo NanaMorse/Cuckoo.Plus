@@ -1,6 +1,6 @@
 <template>
-  <div class="status-card-container">
-    <mu-card class="status-card" v-loading="isReplyLoading" @mouseover="onCardMouseOver" @mouseout="onCardMouseOut">
+  <div class="status-card-container" ref="statusCardContainer">
+    <mu-card class="status-card" v-loading="isCardLoading" @mouseover="onCardMouseOver" @mouseout="onCardMouseOut">
 
       <mu-card-header class="mu-card-header">
         <div class="left-area">
@@ -8,7 +8,7 @@
             <img :src="status.account.avatar_static">
           </mu-avatar>
           <div class="user-and-status-info">
-            <a class="user-name">
+            <a class="user-name" :style="userNameAreaStyle">
               {{getAccountDisplayName(status.account)}}
               <span class="at-name">@{{getAccountAtName(status.account)}}</span>
             </a>
@@ -32,12 +32,26 @@
 
       </mu-card-header>
 
-      <mu-card-text class="status-content main-status-content" v-html="formatHtml(status.content)" />
+      <mu-card-text v-if="!status.reblog && status.content" class="status-content main-status-content" v-html="formatHtml(status.content)" />
 
       <mu-divider />
 
-      <div class="main-attachment-area">
+      <div v-if="!status.reblog" class="main-attachment-area">
         <media-panel :mediaList="status.media_attachments" :pixivCards="status.pixiv_cards"/>
+      </div>
+
+      <div v-if="status.reblog" class="reblog-area">
+        <div class="reblog-plain-info-area">
+          <a class="reblog-source-link">
+            此信息最初是由{{getAccountDisplayName(status.reblog.account)}}
+            <span class="at-name">@{{getAccountAtName(status.reblog.account)}}</span>
+            分享的
+          </a>
+          <mu-card-text v-if="status.reblog.content" class="status-content reblog-status-content" v-html="formatHtml(status.reblog.content)" />
+        </div>
+        <div class="reblog-attachment-area">
+          <media-panel :mediaList="status.reblog.media_attachments" :pixivCards="status.reblog.pixiv_cards"/>
+        </div>
       </div>
 
       <div class="reply-area-simple" v-if="shouldShowSimpleReplyListArea">
@@ -119,7 +133,8 @@
               <span v-if="status.favourites_count > 0" class="count">{{status.favourites_count}}</span>
             </div>
             <div class="share operate-btn-group">
-              <mu-button class="button unset-display" :class="{ 'has-operated': status.reblogged }" icon>
+              <mu-button class="button unset-display" @click="onReBlogMainStatus()"
+                         :class="{ 'has-operated': status.reblogged }" icon>
                 <mu-icon class="share-icon" value="share" />
               </mu-button>
               <span v-if="status.reblogs_count > 0" class="count">{{status.reblogs_count}}</span>
@@ -182,6 +197,7 @@
   class StatusCard extends Vue {
 
     $refs: {
+      statusCardContainer: HTMLDivElement
       replayTextInput: HTMLTextAreaElement
     }
 
@@ -194,10 +210,6 @@
     @Getter('getAccountDisplayName') getAccountDisplayName
     @Getter('getAccountAtName') getAccountAtName
 
-    mounted () {
-      autosize(this.$refs.replayTextInput)
-    }
-
     currentReplyToStatus: mastodonentities.Status = null
 
     shouldShowHeaderActionButtonGroup: boolean = false
@@ -209,10 +221,14 @@
     replyInputValue: string = ''
 
     formatHtml = formatHtml
-    isReplyLoading = false
 
-    get context (): mastodonentities.Context {
-      return this.contextsMap[this.status.id]
+    isCardLoading = false
+
+    userNameAreaStyle = {}
+
+    mounted () {
+      autosize(this.$refs.replayTextInput)
+      this.setMainStatusUserNameAreaStyle()
     }
 
     @Prop() status: mastodonentities.Status
@@ -228,6 +244,10 @@
 
         }
       }
+    }
+
+    get context (): mastodonentities.Context {
+      return this.contextsMap[this.status.id]
     }
 
     get lastedThreeReplyStatuses (): Array<mastodonentities.Status> {
@@ -273,6 +293,13 @@
       })
     }
 
+    // todo
+    async onReBlogMainStatus () {
+//      this.isCardLoading = true
+//
+//      this.isCardLoading = false
+    }
+
     showFullReplyActionArea () {
       this.shouldShowFullReplyActionArea = true
       this.$nextTick(() => {
@@ -301,7 +328,7 @@
     async onSubmitReplyContent () {
       const currentReplyToStatus = this.currentReplyToStatus || this.status
 
-      this.isReplyLoading = true
+      this.isCardLoading = true
       await this.postStatus({
         mainStatusId: this.status.id,
         formData: {
@@ -309,13 +336,33 @@
           inReplyToId: currentReplyToStatus.id
         }
       })
-      this.isReplyLoading = false
+      this.isCardLoading = false
 
       this.clearReplyToStatus()
     }
 
     getFromNowTime (createdAt: string) {
       return moment(createdAt).fromNow(true)
+    }
+
+    /**
+     * @desc set max-width
+     * */
+    setMainStatusUserNameAreaStyle () {
+      const cardWidth = this.$refs.statusCardContainer.clientWidth
+      const headerPadding = 16
+      const avatarWidth = 34
+      const avatarRightMargin = 8
+      const visibilityInfoWidth = 50
+      const rightAreaWidth = 50
+      const leftToRightMargin = 5
+
+      const maxWidth = cardWidth - headerPadding * 2 - avatarWidth - avatarRightMargin -
+        visibilityInfoWidth - rightAreaWidth - leftToRightMargin
+
+      this.userNameAreaStyle = {
+        maxWidth: `${maxWidth}px`
+      }
     }
   }
 
@@ -324,15 +371,8 @@
 
 <style lang="scss" scoped>
   @import "../assets/variable";
-
-  .status-card-container {
-    margin: 16px 0;
-  }
-
   .status-card {
     width: 100%;
-    max-width: 530px;
-    margin: 0 auto;
     background-color: #fafafa;
   }
 
@@ -364,6 +404,9 @@
           cursor: pointer;
           font-size: 15px;
           color: $common_black_color;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap
         }
 
         .visibility-row {
@@ -416,6 +459,26 @@
       > img {
         width: 100%;
         height: auto;
+      }
+    }
+  }
+
+  .reblog-area {
+    .reblog-plain-info-area {
+      margin: 16px;
+
+      .reblog-source-link {
+        cursor: pointer;
+        font-weight: 500;
+
+        .at-name {
+          color: unset;
+        }
+      }
+
+      .reblog-status-content {
+        padding: 0;
+        margin-top: 8px;
       }
     }
   }
@@ -707,6 +770,8 @@
 <style lang="scss">
 
   .status-content {
+    // https://stackoverflow.com/questions/5241369/word-wrap-a-link-so-it-doesnt-overflow-its-parent-div-width
+    word-wrap: break-word;
     > p {
       margin: 0;
       padding: 0;

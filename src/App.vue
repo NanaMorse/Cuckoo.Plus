@@ -2,7 +2,7 @@
   <div id="app">
     <cuckoo-plus-header v-if="!isOAuthPage"/>
     <cuckoo-plus-drawer v-if="!isOAuthPage"/>
-    <mu-container class="app-content" :style="appContentStyle">
+    <mu-container :fluid="true" class="app-content" :style="appContentStyle">
       <router-view />
     </mu-container>
   </div>
@@ -36,7 +36,7 @@
       if (this.appStatus.isDrawerOpened && !this.isOAuthPage &&
         (this.appStatus.documentWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY)) {
         return {
-          paddingLeft: '256px'
+          paddingLeft: '210px'
         }
       }
     }
@@ -81,6 +81,10 @@
     -moz-user-select: auto;
     -ms-user-select: auto;
     user-select: auto;
+  }
+
+  a {
+    color: #2962ff;
   }
 
   // header z-index 20141223

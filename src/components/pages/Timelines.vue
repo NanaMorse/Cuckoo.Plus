@@ -2,14 +2,16 @@
   <div class="timelines-container">
 
     <template v-for="(timeLineName, index) in allTimeLineNameList">
-      <mu-load-more :key="index" @load="loadStatuses(true)" v-show="isTimeLineNameEqualCurrentRoute(timeLineName)"
-                    :loading="isLoading" loading-text="">
-        <div class="status-cards-container">
-          <template v-for="status in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
-            <status-card :key="status.id" :status="status"/>
-          </template>
-        </div>
-      </mu-load-more>
+      <transition name="slide-fade">
+        <mu-load-more :key="index" @load="loadStatuses(true)" v-show="isTimeLineNameEqualCurrentRoute(timeLineName)"
+                      :loading="isLoading" loading-text="">
+          <div class="status-cards-container">
+            <template v-for="status in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
+              <status-card class="status-card-container" :key="status.id" :status="status"/>
+            </template>
+          </div>
+        </mu-load-more>
+      </transition>
     </template>
 
     <!-- todo move those widgets to a common area -->
@@ -92,12 +94,10 @@
       } else {
         this.loadStatuses(false, true)
       }
-
-      window.scrollTo(0, 0)
     }
 
     async mounted () {
-      this.loadStatuses()
+      await this.loadStatuses()
     }
 
     async loadStatuses (isLoadMore: boolean = false, isFetchMore: boolean = false) {
@@ -155,5 +155,23 @@
         bottom: 32px;
       }
     }
+
+    .status-cards-container {
+
+      .status-card-container {
+        max-width: 530px;
+        margin: 16px auto;
+      }
+
+    }
+
+  }
+
+  .slide-fade-enter-active {
+    transition: all .3s ease;
+  }
+  .slide-fade-enter, .slide-fade-leave-to {
+    transform: translateY(30px);
+    opacity: 0;
   }
 </style>

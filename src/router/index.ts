@@ -8,6 +8,7 @@ import { isBaseTimeLine } from '@/util'
 import TimeLinesPage from '@/components/pages/Timelines.vue'
 import OAuthPage from '@/components/pages/OAuth.vue'
 import StatusPage from '@/components/pages/Status.vue'
+import Settings from '@/components/pages/Settings.vue'
 
 Vue.use(Router)
 
@@ -66,6 +67,12 @@ const router = new Router({
       meta: {
         hideHeader: true
       }
+    },
+
+    {
+      path: RoutersInfo.settings.path,
+      name: RoutersInfo.settings.name,
+      component: Settings
     }
   ]
 } as any);

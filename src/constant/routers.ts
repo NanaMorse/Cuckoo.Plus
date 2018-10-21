@@ -37,5 +37,10 @@ export const RoutersInfo = {
   oauth: {
     path: '/oauth',
     name: 'oauth'
+  },
+
+  settings: {
+    path: '/settings',
+    name: 'settings'
   }
 };

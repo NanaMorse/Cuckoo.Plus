@@ -43,6 +43,8 @@ const i18n = new VueI18n({
   messages: i18nMessages
 });
 
+console.log(moment.locale)
+
 moment.locale(currentLocale)
 
 const httpInterceptor: any = (request) => {
