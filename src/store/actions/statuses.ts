@@ -19,6 +19,16 @@ interface postStatusFormData {
 }
 
 const statuses = {
+  async fetchStatusById ({ commit, dispatch }, statusId: string) {
+    try {
+      const result = await api.statuses.getStatusById(statusId)
+      commit('updateStatusMap', { [statusId]: result.data })
+      dispatch('updateContextMap', statusId)
+    } catch (e) {
+      throw new Error(e)
+    }
+  },
+
   async updateFavouriteStatusById ({ commit }, { favourited, mainStatusId, targetStatusId }: {
     favourited: boolean
     mainStatusId: string
@@ -38,12 +48,20 @@ const statuses = {
     }
   },
 
-  async updateContextData ({ commit }, statusId: string) {
+  async updateContextMap ({ commit }, statusId: string) {
     if (!statusId) throw new Error('unknown status id!')
 
     try {
       const result = await api.statuses.getStatusContextById(statusId)
-      commit('updateContextData', { [statusId]: result.data })
+      const descendants = result.data.descendants
+
+      if (descendants.length) {
+        commit('updateContextMap', { [statusId]: descendants.map(status => status.id) })
+
+        const newStatusMap = {}
+        descendants.forEach(status => newStatusMap[status.id] = status)
+        commit('updateStatusMap', newStatusMap)
+      }
     } catch (e) {
 
     }
@@ -60,13 +78,16 @@ const statuses = {
       if (!formData.inReplyToId) {
         // todo 默认只有home信息流，真的好吗？
         commit('unShiftTimeLineStatuses', {
-          newStatuses: [result.data],
+          newStatusIdList: [result.data.id],
           timeLineType: TimeLineTypes.HOME
         })
       } else {
         // update the reply status's context
-        dispatch('updateContextData', mainStatusId)
+        dispatch('updateContextMap', mainStatusId)
       }
+
+      // update status map
+      commit('updateStatusMap', { [result.data.id]: result.data })
 
     } catch (e) {
       throw new Error(e)

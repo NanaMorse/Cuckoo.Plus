@@ -97,7 +97,7 @@
     }
 
     async mounted () {
-      await this.loadStatuses()
+      this.onRouteChanged()
     }
 
     async loadStatuses (isLoadMore: boolean = false, isFetchMore: boolean = false) {

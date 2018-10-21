@@ -14,13 +14,15 @@ const accounts = {
 const timelines = {
   getRootStatuses (state: cuckoostore.stateInfo) {
     return (timeLineType: string, hashName?: string): Array<mastodonentities.Status> => {
-      const targetStatuses = isBaseTimeLine(timeLineType) ? state.timelines[timeLineType] :
+      const targetStatusIdList = isBaseTimeLine(timeLineType) ? state.timelines[timeLineType] :
         state.timelines[timeLineType][hashName]
 
       // todo avoid this situation
-      if (!targetStatuses) return []
+      if (!targetStatusIdList) return []
 
-      return targetStatuses.filter((status: mastodonentities.Status) => !status.in_reply_to_id)
+      return targetStatusIdList
+        .map(statusId => state.statusMap[statusId])
+        .filter((status: mastodonentities.Status) => !status.in_reply_to_id)
     }
   }
 }

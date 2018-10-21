@@ -12,19 +12,19 @@ export default {
   }) {
     if (!timeLineType) throw new Error('set time line type!')
 
-    let targetTimeLineStatuses: Array<mastodonentities.Status>
+    let targetStatusIdList: Array<string>
 
     if (isBaseTimeLine(timeLineType)) {
-      targetTimeLineStatuses = state.timelines[timeLineType]
+      targetStatusIdList = state.timelines[timeLineType]
     } else {
-      targetTimeLineStatuses = state.timelines[timeLineType][hashName] || []
+      targetStatusIdList = state.timelines[timeLineType][hashName] || []
     }
 
     let maxId, sinceId
     if (isLoadMore) {
-      maxId = targetTimeLineStatuses[targetTimeLineStatuses.length - 1].id
+      maxId = targetStatusIdList[targetStatusIdList.length - 1]
     } else if (isFetchMore) {
-      sinceId = targetTimeLineStatuses[0].id
+      sinceId = targetStatusIdList[0]
     }
 
     let mutationName = ''
@@ -35,17 +35,30 @@ export default {
     try {
       const result = await api.timelines.getTimeLineStatuses({ timeLineType, hashName, maxId, sinceId })
 
+      // update context map
       Promise.all(result.data.map((status: mastodonentities.Status) => {
         return api.statuses.getStatusContextById(status.id)
       })).then(results => {
         const newContextMap = {}
+        const newStatusMap = {}
         results.forEach((contextResult, index) => {
-          newContextMap[result.data[index].id] = contextResult.data
+          const descendantIdList = contextResult.data.descendants.map(status => status.id)
+          if (descendantIdList.length) {
+            newContextMap[result.data[index].id] = descendantIdList
+            contextResult.data.descendants.forEach(status => newStatusMap[status.id] = status)
+          }
         })
-        commit('updateContextData', newContextMap)
+        Object.keys(newContextMap).length && commit('updateContextMap', newContextMap)
+        // also update status map
+        Object.keys(newStatusMap).length && commit('updateStatusMap', newStatusMap)
       })
 
-      commit(mutationName, { newStatuses: result.data, timeLineType, hashName })
+      // update status map
+      const newStatusMap = {}
+      result.data.forEach(status => newStatusMap[status.id] = status)
+      commit('updateStatusMap', newStatusMap)
+
+      commit(mutationName, { newStatusIdList: result.data.map(status => status.id), timeLineType, hashName })
 
       return result
     } catch (e) {

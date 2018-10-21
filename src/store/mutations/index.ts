@@ -36,52 +36,23 @@ const oAuthInfoMutations = {
   }
 }
 
-function getAllTimeLineList (state: cuckoostore.stateInfo): Array<Array<mastodonentities.Status>> {
-  const result = [];
-
-  // get base timeline
-  [TimeLineTypes.PUBLIC, TimeLineTypes.HOME].forEach(timeLineType => {
-    result.push(state.timelines[timeLineType])
-  });
-
-  // get sub timeline
-  [TimeLineTypes.TAG, TimeLineTypes.LIST].forEach(timeLineType => {
-    const currentSubTimeLineMap = state.timelines[timeLineType]
-    Object.keys(currentSubTimeLineMap).forEach(hashName => {
-      result.push(currentSubTimeLineMap[hashName] || [])
-    })
-  });
-
-  return result
-}
-
 const statusesMutations = {
-  // updateStatusInfo (state: cuckoostore.stateInfo, newStatus: mastodonentities.Status) {
-  //   getAllTimeLineList(state).forEach(timeLine => {
-  //     const targetStatusIndex = timeLine.findIndex(status => status.id === newStatus.id)
-  //     if (targetStatusIndex !== -1) {
-  //       Vue.set(timeLine, targetStatusIndex, newStatus)
-  //     }
-  //   })
-  // },
+  updateStatusMap (state: cuckoostore.stateInfo, newStatusMap) {
+    Object.keys(newStatusMap).forEach(statusId => {
+      Vue.set(state.statusMap, statusId, newStatusMap[statusId])
+    })
+  },
 
-  updateFavouriteStatusById (state: cuckoostore.stateInfo, { favourited, mainStatusId, targetStatusId }) {
-    if (mainStatusId === targetStatusId) {
-      getAllTimeLineList(state).forEach(timeLine => {
-        const targetStatus = timeLine.find(status => status.id === mainStatusId)
-        if (targetStatus) {
-          Vue.set(targetStatus, 'favourited', favourited)
-          Vue.set(targetStatus, 'favourites_count', favourited ? targetStatus.favourites_count + 1 : targetStatus.favourites_count -1)
-        }
-      })
-    } else {
-      state.contexts[mainStatusId].descendants.forEach(status => {
-        if (status.id === targetStatusId) {
-          Vue.set(status, 'favourited', favourited)
-          Vue.set(status, 'favourites_count', favourited ? status.favourites_count + 1 : status.favourites_count -1)
-        }
-      })
+  updateFavouriteStatusById (state: cuckoostore.stateInfo, { favourited, targetStatusId }) {
+    const targetStatus = state.statusMap[targetStatusId]
+
+    if (!targetStatus) {
+      throw new Error('no such status!')
     }
+
+    Vue.set(targetStatus, 'favourited', favourited)
+    Vue.set(targetStatus, 'favourites_count', favourited ?
+      targetStatus.favourites_count + 1 : targetStatus.favourites_count - 1)
   }
 }
 
@@ -106,9 +77,9 @@ const mutations = {
     state.currentUserAccount = currentUserAccount
   },
 
-  updateContextData (state: cuckoostore.stateInfo, newContextDataMap) {
-    Object.keys(newContextDataMap).forEach(statusId => {
-      Vue.set(state.contexts, statusId, newContextDataMap[statusId])
+  updateContextMap (state: cuckoostore.stateInfo, newContextMap) {
+    Object.keys(newContextMap).forEach(statusId => {
+      Vue.set(state.contextMap, statusId, newContextMap[statusId])
     })
   },
 

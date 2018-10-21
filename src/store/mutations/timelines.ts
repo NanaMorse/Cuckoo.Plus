@@ -3,17 +3,17 @@ import { cuckoostore } from '@/interface'
 import { isBaseTimeLine } from '@/util'
 
 export default {
-  setTimeLineStatuses (state: cuckoostore.stateInfo, { newStatuses, timeLineType, hashName }) {
+  setTimeLineStatuses (state: cuckoostore.stateInfo, { newStatusIdList, timeLineType, hashName }) {
     if (isBaseTimeLine(timeLineType)) {
-      Vue.set(state.timelines, timeLineType, newStatuses)
+      Vue.set(state.timelines, timeLineType, newStatusIdList)
     } else {
       if (!hashName) throw new Error('need a hash name!')
 
-      Vue.set(state.timelines[timeLineType], hashName, newStatuses)
+      Vue.set(state.timelines[timeLineType], hashName, newStatusIdList)
     }
   },
 
-  pushTimeLineStatuses (state: cuckoostore.stateInfo, { newStatuses, timeLineType, hashName }) {
+  pushTimeLineStatuses (state: cuckoostore.stateInfo, { newStatusIdList, timeLineType, hashName }) {
     let targetTimeLines
     if (isBaseTimeLine(timeLineType)) {
       targetTimeLines = state.timelines[timeLineType]
@@ -22,10 +22,10 @@ export default {
       targetTimeLines = state.timelines[timeLineType][hashName]
     }
 
-    targetTimeLines.push(...newStatuses)
+    targetTimeLines.push(...newStatusIdList)
   },
 
-  unShiftTimeLineStatuses (state: cuckoostore.stateInfo, { newStatuses, timeLineType, hashName }) {
+  unShiftTimeLineStatuses (state: cuckoostore.stateInfo, { newStatusIdList, timeLineType, hashName }) {
     let targetTimeLines
     if (isBaseTimeLine(timeLineType)) {
       targetTimeLines = state.timelines[timeLineType]
@@ -34,6 +34,6 @@ export default {
       targetTimeLines = state.timelines[timeLineType][hashName]
     }
 
-    targetTimeLines.unshift(...newStatuses)
+    targetTimeLines.unshift(...newStatusIdList)
   }
 }
