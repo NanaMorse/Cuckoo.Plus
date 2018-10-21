@@ -33,6 +33,8 @@ const state: cuckoostore.stateInfo = {
 
   contexts: {},
 
+  statusMap: {},
+
   appStatus: {
     documentWidth: document.body.clientWidth,
     isDrawerOpened: document.body.clientWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY

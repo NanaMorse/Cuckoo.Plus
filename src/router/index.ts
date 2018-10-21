@@ -7,6 +7,7 @@ import { isBaseTimeLine } from '@/util'
 
 import TimeLinesPage from '@/components/pages/Timelines.vue'
 import OAuthPage from '@/components/pages/OAuth.vue'
+import StatusPage from '@/components/pages/Status.vue'
 
 Vue.use(Router)
 
@@ -23,6 +24,12 @@ const router = new Router({
     {
       path: RoutersInfo.timelines.path,
       redirect: homePath
+    },
+
+    {
+      path: RoutersInfo.status.path,
+      name: RoutersInfo.status.name,
+      component: StatusPage
     },
 
     {

@@ -24,6 +24,11 @@ export const RoutersInfo = {
     name: 'listtimelines'
   },
 
+  status: {
+    path: '/status/:statusId',
+    name: 'status'
+  },
+
   home: {
     path: '/home',
     name: 'home'
