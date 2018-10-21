@@ -40,10 +40,17 @@ export default {
         return api.statuses.getStatusContextById(status.id)
       })).then(results => {
         const newContextMap = {}
+        const newStatusMap = {}
         results.forEach((contextResult, index) => {
-          newContextMap[result.data[index].id] = contextResult.data
+          const descendantIdList = contextResult.data.descendants.map(status => status.id)
+          if (descendantIdList.length) {
+            newContextMap[result.data[index].id] = descendantIdList
+            contextResult.data.descendants.forEach(status => newStatusMap[status.id] = status)
+          }
         })
-        commit('updateContextMap', newContextMap)
+        Object.keys(newContextMap).length && commit('updateContextMap', newContextMap)
+        // also update status map
+        Object.keys(newStatusMap).length && commit('updateStatusMap', newStatusMap)
       })
 
       // update status map

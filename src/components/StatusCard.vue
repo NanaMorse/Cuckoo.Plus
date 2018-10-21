@@ -25,7 +25,7 @@
           <span v-show="!shouldShowHeaderActionButtonGroup" class="status-from-now">{{getFromNowTime(status.created_at)}}</span>
 
           <div v-show="shouldShowHeaderActionButtonGroup" class="card-header-action">
-            <mu-icon class="header-icon" value="open_in_new" />
+            <mu-icon class="header-icon" value="open_in_new" @click="onCheckStatusInSinglePage"/>
             <mu-icon class="header-icon" value="more_vert" />
           </div>
         </div>
@@ -55,8 +55,8 @@
       </div>
 
       <div class="reply-area-simple" v-if="shouldShowSimpleReplyListArea">
-        <template v-if="context.descendants.length > 3">
-          <mu-sub-header class="show-all-reply-btn" @click="onShowAllReplyButtonClick">显示所有评论（共 {{context.descendants.length}} 条）</mu-sub-header>
+        <template v-if="descendantStatusList.length > 3">
+          <mu-sub-header class="show-all-reply-btn" @click="onShowAllReplyButtonClick">显示所有评论（共 {{descendantStatusList.length}} 条）</mu-sub-header>
         </template>
 
         <div class="simple-reply-list" @click="onSimpleReplyListClick">
@@ -69,7 +69,7 @@
 
       <div class="reply-area-full" v-if="shouldShowFullReplyListArea">
         <div class="full-reply-list">
-          <div class="full-reply-list-item" v-for="replierStatus in context.descendants" :key="replierStatus.id">
+          <div class="full-reply-list-item" v-for="replierStatus in descendantStatusList" :key="replierStatus.id">
             <div class="left-area">
               <mu-avatar class="status-replier-avatar" slot="avatar" size="34">
                 <img :src="replierStatus.account.avatar_static">
@@ -196,12 +196,17 @@
   })
   class StatusCard extends Vue {
 
+    $router
+
+    $routersInfo
+
     $refs: {
       statusCardContainer: HTMLDivElement
       replayTextInput: HTMLTextAreaElement
     }
 
     @State('contextMap') contextMap
+    @State('statusMap') statusMap
 
     @Action('updateFavouriteStatusById') updateFavouriteStatusById
     @Action('updateContextMap') updateContextMap
@@ -246,25 +251,31 @@
       }
     }
 
-    get context (): mastodonentities.Context {
-      return this.contextMap[this.status.id]
+    get descendantStatusList (): Array<mastodonentities.Status> {
+      if (!this.contextMap[this.status.id]) return []
+
+      return this.contextMap[this.status.id].map(descendantStatusId => {
+        return this.statusMap[descendantStatusId]
+      })
     }
 
     get lastedThreeReplyStatuses (): Array<mastodonentities.Status> {
-      if (!this.context) return []
+      const descendantListLength = this.descendantStatusList.length
 
-      if (this.context.descendants.length <= 3) return this.context.descendants
+      if (!descendantListLength) return []
 
-      return [...this.context.descendants].splice(this.context.descendants.length - 3, this.context.descendants.length)
+      if (descendantListLength <= 3) return this.descendantStatusList
+
+      return [...this.descendantStatusList].splice(descendantListLength - 3, descendantListLength)
     }
 
     get shouldShowSimpleReplyListArea () {
-      return this.context && this.context.descendants.length && this.context.descendants.length > 4 &&
+      return this.descendantStatusList.length && this.descendantStatusList.length > 4 &&
         !this.hasTryToExtendSimpleReplyArea
     }
 
     get shouldShowFullReplyListArea () {
-      return this.context && this.context.descendants.length && ( this.context.descendants.length <= 4 || this.hasTryToExtendSimpleReplyArea)
+      return this.descendantStatusList.length && ( this.descendantStatusList.length <= 4 || this.hasTryToExtendSimpleReplyArea)
     }
 
     onCardMouseOver () {
@@ -273,6 +284,15 @@
 
     onCardMouseOut () {
       this.shouldShowHeaderActionButtonGroup = false
+    }
+
+    onCheckStatusInSinglePage () {
+      this.$router.push({
+        name: this.$routersInfo.statuses.name,
+        params: {
+          statusId: this.status.id
+        }
+      })
     }
 
     onShowAllReplyButtonClick () {

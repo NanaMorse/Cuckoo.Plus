@@ -20,7 +20,7 @@ export namespace cuckoostore {
     }
 
     contextMap: {
-      [statusId: string]: mastodonentities.Context
+      [statusId: string]: Array<string>
     }
 
     statusMap: {

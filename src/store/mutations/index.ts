@@ -36,25 +36,6 @@ const oAuthInfoMutations = {
   }
 }
 
-function getAllTimeLineList (state: cuckoostore.stateInfo): Array<Array<mastodonentities.Status>> {
-  const result = [];
-
-  // get base timeline
-  [TimeLineTypes.PUBLIC, TimeLineTypes.HOME].forEach(timeLineType => {
-    result.push(state.timelines[timeLineType])
-  });
-
-  // get sub timeline
-  [TimeLineTypes.TAG, TimeLineTypes.LIST].forEach(timeLineType => {
-    const currentSubTimeLineMap = state.timelines[timeLineType]
-    Object.keys(currentSubTimeLineMap).forEach(hashName => {
-      result.push(currentSubTimeLineMap[hashName] || [])
-    })
-  });
-
-  return result
-}
-
 const statusesMutations = {
   updateStatusMap (state: cuckoostore.stateInfo, newStatusMap) {
     Object.keys(newStatusMap).forEach(statusId => {
@@ -62,23 +43,16 @@ const statusesMutations = {
     })
   },
 
-  updateFavouriteStatusById (state: cuckoostore.stateInfo, { favourited, mainStatusId, targetStatusId }) {
-    if (mainStatusId === targetStatusId) {
-      getAllTimeLineList(state).forEach(timeLine => {
-        const targetStatus = timeLine.find(status => status.id === mainStatusId)
-        if (targetStatus) {
-          Vue.set(targetStatus, 'favourited', favourited)
-          Vue.set(targetStatus, 'favourites_count', favourited ? targetStatus.favourites_count + 1 : targetStatus.favourites_count -1)
-        }
-      })
-    } else {
-      state.contextMap[mainStatusId].descendants.forEach(status => {
-        if (status.id === targetStatusId) {
-          Vue.set(status, 'favourited', favourited)
-          Vue.set(status, 'favourites_count', favourited ? status.favourites_count + 1 : status.favourites_count -1)
-        }
-      })
+  updateFavouriteStatusById (state: cuckoostore.stateInfo, { favourited, targetStatusId }) {
+    const targetStatus = state.statusMap[targetStatusId]
+
+    if (!targetStatus) {
+      throw new Error('no such status!')
     }
+
+    Vue.set(targetStatus, 'favourited', favourited)
+    Vue.set(targetStatus, 'favourites_count', favourited ?
+      targetStatus.favourites_count + 1 : targetStatus.favourites_count - 1)
   }
 }
 

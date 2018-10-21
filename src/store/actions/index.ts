@@ -1,4 +1,3 @@
-import * as api from '@/api'
 import statuses from './statuses'
 import timelines from './timelines'
 

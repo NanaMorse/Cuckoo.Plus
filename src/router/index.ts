@@ -7,7 +7,7 @@ import { isBaseTimeLine } from '@/util'
 
 import TimeLinesPage from '@/components/pages/Timelines.vue'
 import OAuthPage from '@/components/pages/OAuth.vue'
-import StatusPage from '@/components/pages/Status.vue'
+import StatusesPage from '@/components/pages/Statuses.vue'
 import Settings from '@/components/pages/Settings.vue'
 
 Vue.use(Router)
@@ -28,9 +28,9 @@ const router = new Router({
     },
 
     {
-      path: RoutersInfo.status.path,
-      name: RoutersInfo.status.name,
-      component: StatusPage
+      path: RoutersInfo.statuses.path,
+      name: RoutersInfo.statuses.name,
+      component: StatusesPage
     },
 
     {
