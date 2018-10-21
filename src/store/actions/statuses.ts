@@ -19,10 +19,11 @@ interface postStatusFormData {
 }
 
 const statuses = {
-  async fetchStatusById ({ commit }, statusId: string) {
+  async fetchStatusById ({ commit, dispatch }, statusId: string) {
     try {
       const result = await api.statuses.getStatusById(statusId)
       commit('updateStatusMap', { [statusId]: result.data })
+      dispatch('updateContextMap', statusId)
     } catch (e) {
       throw new Error(e)
     }
