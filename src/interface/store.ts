@@ -23,6 +23,10 @@ export namespace cuckoostore {
       [statusId: string]: mastodonentities.Context
     }
 
+    statusMap: {
+      [statusId: string]: mastodonentities.Status
+    }
+
     appStatus: {
       documentWidth: number
       isDrawerOpened: boolean

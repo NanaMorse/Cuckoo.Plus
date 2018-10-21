@@ -27,7 +27,7 @@ describe('StringReplacer', () => {
     })
 })
 
-describe('insertHtmlDelsToText', () => {
+describe('insertDels', () => {
     it('ignores strings with no dashes', () => {
         expect(insertDels("aaaaaa")).to.equal("aaaaaa")
     })
