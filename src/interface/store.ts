@@ -34,6 +34,8 @@ export namespace cuckoostore {
         multiWaterFallLayout: boolean
       }
     }
+
+    notifications: Array<mastodonentities.Notification>
   }
 
   export interface OAuthInfo {

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import timelinesMutations from './timelines'
+import notificationsMutations from './notifications'
 import { isBaseTimeLine } from '@/util'
 import { TimeLineTypes } from '@/constant'
 import { cuckoostore, mastodonentities } from '@/interface'
@@ -87,6 +88,7 @@ const mutations = {
   ...timelinesMutations,
   ...statusesMutations,
   ...appStatusMutations,
+  ...notificationsMutations
 }
 
 export default mutations

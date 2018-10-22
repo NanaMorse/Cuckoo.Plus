@@ -41,7 +41,9 @@ const state: cuckoostore.stateInfo = {
     settings: {
       multiWaterFallLayout: true
     }
-  }
+  },
+
+  notifications: []
 }
 
 export default new Vuex.Store({
