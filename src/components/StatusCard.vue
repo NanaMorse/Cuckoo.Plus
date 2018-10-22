@@ -1,6 +1,6 @@
 <template>
   <div class="status-card-container" ref="statusCardContainer">
-    <mu-card class="status-card" v-loading="isCardLoading" @mouseover="onCardMouseOver" @mouseout="onCardMouseOut">
+    <mu-card class="status-card status-card-bg-color" v-loading="isCardLoading" @mouseover="onCardMouseOver" @mouseout="onCardMouseOut">
 
       <mu-card-header class="mu-card-header">
         <div class="left-area">
@@ -8,25 +8,25 @@
             <img :src="status.account.avatar_static">
           </mu-avatar>
           <div class="user-and-status-info">
-            <a class="user-name mu-primary-text-color" :style="userNameAreaStyle">
+            <a class="user-name primary-read-text-color" :style="userNameAreaStyle">
               {{getAccountDisplayName(status.account)}}
-              <span class="at-name mu-secondary-text-color">@{{getAccountAtName(status.account)}}</span>
+              <span class="at-name secondary-read-text-color">@{{getAccountAtName(status.account)}}</span>
             </a>
-            <div class="visibility-row mu-secondary-text-color">
+            <div class="visibility-row secondary-read-text-color">
               <div class="arrow-container">
                 <svg viewBox="0 0 48 48" height="100%" width="100%"><path fill="rgba(0, 0, 0, 0.54)" d="M20 14l10 10-10 10z"></path></svg>
               </div>
-              <div class="visibility-info">{{$t(status.visibility)}}</div>
+              <div class="visibility-info secondary-read-text-color">{{$t(status.visibility)}}</div>
             </div>
           </div>
         </div>
 
         <div class="right-area">
-          <span v-show="!shouldShowHeaderActionButtonGroup" class="status-from-now">{{getFromNowTime(status.created_at)}}</span>
+          <span v-show="!shouldShowHeaderActionButtonGroup" class="status-from-now secondary-read-text-color">{{getFromNowTime(status.created_at)}}</span>
 
           <div v-show="shouldShowHeaderActionButtonGroup" class="card-header-action">
-            <mu-icon class="header-icon" value="open_in_new" @click="onCheckStatusInSinglePage"/>
-            <mu-icon class="header-icon" value="more_vert" />
+            <mu-icon class="header-icon secondary-read-text-color" value="open_in_new" @click="onCheckStatusInSinglePage"/>
+            <mu-icon class="header-icon secondary-read-text-color" value="more_vert" />
           </div>
         </div>
 
@@ -56,12 +56,12 @@
 
       <div class="reply-area-simple" v-if="shouldShowSimpleReplyListArea">
         <template v-if="descendantStatusList.length > 3">
-          <mu-sub-header class="show-all-reply-btn" @click="onShowAllReplyButtonClick">显示所有评论（共 {{descendantStatusList.length}} 条）</mu-sub-header>
+          <mu-sub-header class="show-all-reply-btn secondary-theme-text-color" @click="onShowAllReplyButtonClick">显示所有评论（共 {{descendantStatusList.length}} 条）</mu-sub-header>
         </template>
 
         <div class="simple-reply-list" @click="onSimpleReplyListClick">
           <div class="simple-reply-list-item" v-for="replierStatus in lastedThreeReplyStatuses" :key="replierStatus.id">
-            <span class="reply-account-display-name">{{getAccountDisplayName(replierStatus.account)}}:</span>
+            <span class="reply-account-display-name primary-read-text-color">{{getAccountDisplayName(replierStatus.account)}}:</span>
             <span class="status-content simple-reply-status-content" v-html="formatHtml(replierStatus.content)"></span>
           </div>
         </div>
@@ -78,24 +78,33 @@
             <div class="center-area">
 
               <div class="reply-user-display-name">
-                <p class="mu-primary-text-color">
+                <p class="primary-read-text-color">
                   {{getAccountDisplayName(replierStatus.account)}}
-                  <span class="at-name mu-secondary-text-color">@{{getAccountAtName(replierStatus.account)}}</span>
+                  <span class="at-name secondary-read-text-color">@{{getAccountAtName(replierStatus.account)}}</span>
                 </p>
                 <span v-if="replierStatus.favourites_count > 0"
-                      class="reply-favorites-count mu-secondary-text-color" :class="{ 'mu-primary-color': replierStatus.favourited }">+{{replierStatus.favourites_count}}</span>
+                      class="reply-favorites-count"
+                      :class="[ replierStatus.favourited ? 'primary-theme-text-color' : 'secondary-read-text-color' ]">
+                  +{{replierStatus.favourites_count}}
+                </span>
               </div>
               <div class="status-content full-reply-status-content" v-html="formatHtml(replierStatus.content)"></div>
               <div class="reply-action-list">
-                <a class="reply-button" @click="onReplyToReplierStatus(replierStatus)">{{$t($i18nTags.statusCard.reply_to_replier)}}</a>
-                <div class="plus-one-button" @click="onFavoriteButtonClick(replierStatus)" :class="{ 'mu-primary-color': replierStatus.favourited }">
+
+                <a class="reply-button secondary-theme-text-color"
+                   @click="onReplyToReplierStatus(replierStatus)">{{$t($i18nTags.statusCard.reply_to_replier)}}</a>
+
+                <div class="plus-one-button secondary-theme-text-color"
+                     @click="onFavoriteButtonClick(replierStatus)"
+                     :class="{ 'primary-theme-bg-color': replierStatus.favourited }">
                   <a>+1</a>
                 </div>
+
               </div>
 
             </div>
             <div class="right-area">
-              <span class="reply-from-now mu-secondary-text-color">{{getFromNowTime(replierStatus.created_at)}}</span>
+              <span class="reply-from-now secondary-read-text-color">{{getFromNowTime(replierStatus.created_at)}}</span>
             </div>
           </div>
         </div>
@@ -126,15 +135,15 @@
 
           <div class="right-area">
             <div class="plus-one operate-btn-group">
-              <mu-button class="button" icon @click="onFavoriteButtonClick(status)"
-                         :class="{ 'has-operated': status.favourited }">
+              <mu-button class="status-card-circle-btn" icon @click="onFavoriteButtonClick(status)"
+                         :class="{ 'primary-theme-bg-color': status.favourited }">
                 +1
               </mu-button>
               <span v-if="status.favourites_count > 0" class="count">{{status.favourites_count}}</span>
             </div>
             <div class="share operate-btn-group">
-              <mu-button class="button unset-display" @click="onReBlogMainStatus()"
-                         :class="{ 'has-operated': status.reblogged }" icon>
+              <mu-button class="status-card-circle-btn unset-display" @click="onReBlogMainStatus()"
+                         :class="{ 'primary-theme-bg-color': status.reblogged }" icon>
                 <mu-icon class="share-icon" value="share" />
               </mu-button>
               <span v-if="status.reblogs_count > 0" class="count">{{status.reblogs_count}}</span>
@@ -158,17 +167,17 @@
           </div>
           <div class="reply-action-area">
             <div class="left-area">
-              <mu-button class="operate-btn add-image mu-secondary-text-color" icon>
+              <mu-button class="operate-btn add-image secondary-read-text-color" icon>
                 <mu-icon class="reply-action-icon" value="local_see" />
               </mu-button>
-              <mu-button class="operate-btn add-link mu-secondary-text-color" icon>
+              <mu-button class="operate-btn add-link secondary-read-text-color" icon>
                 <mu-icon class="reply-action-icon" value="link" />
               </mu-button>
             </div>
             <div class="right-area">
-              <mu-button flat class="operate-btn cancel mu-secondary-text-color"
-                         color="primary" @click="onHideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_post)}}</mu-button>
-              <mu-button flat class="operate-btn submit mu-secondary-text-color" @click="onSubmitReplyContent()"
+              <mu-button flat class="operate-btn cancel"
+                         color="secondary" @click="onHideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_post)}}</mu-button>
+              <mu-button flat class="operate-btn submit secondary-theme-text-color" @click="onSubmitReplyContent()"
                          :disabled="!replyInputValue">{{$t($i18nTags.statusCard.submit_post)}}</mu-button>
             </div>
           </div>
@@ -390,12 +399,8 @@
 </script>
 
 <style lang="less" scoped>
-  @import "../assets/themes/base.less";
-  @import "../assets/variable.less";
-
   .status-card {
     width: 100%;
-    background-color: #fafafa;
   }
 
   .at-name {
@@ -403,7 +408,6 @@
   }
 
   .mu-card-header {
-    background-color: #fff;
     line-height: 1;
     display: flex;
     justify-content: space-between;
@@ -426,7 +430,8 @@
           font-size: 15px;
           overflow: hidden;
           text-overflow: ellipsis;
-          white-space: nowrap
+          white-space: nowrap;
+          font-weight: 700;
         }
 
         .visibility-row {
@@ -452,7 +457,6 @@
       align-items: center;
 
       .status-from-now {
-        color: #9e9e9e;
         font-size: 13px;
         font-weight: 400;
       }
@@ -460,7 +464,6 @@
       .card-header-action {
         .header-icon {
           cursor: pointer;
-          color: #757575;
           font-size: 18px;
           margin-left: 10px;
         }
@@ -469,7 +472,6 @@
   }
 
   .main-status-content {
-    background-color: #fff;
     padding: 0 16px 16px;
   }
 
@@ -508,7 +510,6 @@
     cursor: pointer;
     font-size: 13px;
     line-height: 1;
-    color: #2962ff;
   }
 
   .simple-reply-list {
@@ -529,7 +530,6 @@
   }
 
   .reply-area-full {
-    background-color: #fff;
 
     .full-reply-list {
       max-height: 400px;
@@ -573,7 +573,6 @@
           .common-style-mixin() {
             cursor: pointer;
             font-size: 13px;
-            color: #2962ff;
             margin: 0 8px;
           }
 
@@ -589,17 +588,6 @@
             line-height: 24px;
             text-align: center;
             border-radius: 50%;
-
-            &.mu-primary-color {
-
-              a {
-                color: #fff;
-              }
-            }
-
-            a {
-              color: #2962ff;
-            }
           }
         }
       }
@@ -643,7 +631,6 @@
         .active-reply-entry {
           margin-left: 16px;
           height: 36px;
-          color: #999;
           font-size: 14px;
           line-height: 36px;
           font-weight: 300;
@@ -660,11 +647,10 @@
         .operate-btn-group {
           display: flex;
 
-          .button {
+          .status-card-circle-btn {
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background-color: #eeeeee;
             cursor: pointer;
             -webkit-transition: background .3s;
             -moz-transition: background .3s;
@@ -689,20 +675,6 @@
             &.hover:before {
               background-color: unset;
             }
-
-            &:hover {
-              background-color: #f5f5f5;
-              box-shadow: 0 1px 3px 0 rgba(0,0,0,0.26);
-            }
-
-            &.has-operated {
-              .mu-primary-color();
-              color: #fff;
-
-              &:hover {
-                background-color: #c53929;
-              }
-            }
           }
 
           &.plus-one {
@@ -715,7 +687,6 @@
 
           .count {
             line-height: 36px;
-            color: #777;
             font-size: 13px;
             margin-right: 6px;
           }
@@ -786,7 +757,6 @@
       margin: 0;
       padding: 0;
     }
-    span.h-card, span.h-card > a, span.h-card > span { color: #2962ff }
   }
 
   .simple-reply-status-content {
@@ -799,7 +769,6 @@
       outline: none;
       border: none;
       padding: 0;
-      background-color: #fafafa;
       resize: none;
     }
   }

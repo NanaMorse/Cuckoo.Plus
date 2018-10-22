@@ -30,7 +30,7 @@
     @Mutation('updateDocumentWidth') updateDocumentWidth
 
     mounted () {
-      ThemeManager.setTheme(ThemeNames.GOOGLE_PLUS)
+      ThemeManager.setTheme(ThemeNames.DARK)
       window.addEventListener('resize', _.debounce(() => this.updateDocumentWidth(), 200))
     }
 
@@ -75,7 +75,6 @@
 
   body {
     height: 100%;
-    background-color: #f2f2f2;
   }
 
   a, .mu-load-more {

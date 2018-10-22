@@ -1,9 +1,60 @@
 @import "~muse-ui/lib/styles/theme.less";
 
-.mu-primary-text-color {
+body {
+  background-color: @backgroundColor;
+}
+
+a {
+  color: @secondaryColor;
+}
+
+// class for mixin
+.primary-theme-bg-color {
+  background-color: @primaryColor;
+
+  > * {
+    color: @alternateTextColor;
+  }
+}
+
+.primary-theme-text-color {
+  color: @primaryColor;
+}
+
+.secondary-theme-text-color {
+  color: @secondaryColor;
+}
+
+.primary-read-text-color {
   color: @textColor;
 }
 
-.mu-secondary-text-color {
+.secondary-read-text-color {
   color: @secondaryTextColor;
 }
+
+// class for certain component
+.status-card-bg-color {
+  background-color: @dialogBackgroundColor;
+}
+
+.status-card-circle-btn {
+  background-color: @backgroundColor;
+
+  &:hover {
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,1.26);
+  }
+
+  &.primary-theme-bg-color {
+    background-color: @primaryColor;
+  }
+}
+
+
+//.mu-primary-text-color {
+//  color: @textColor;
+//}
+//
+//.mu-secondary-text-color {
+//  color: @secondaryTextColor;
+//}

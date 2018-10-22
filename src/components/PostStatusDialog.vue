@@ -227,7 +227,6 @@
         .card-header-action {
           .header-icon {
             cursor: pointer;
-            color: #757575;
             font-size: 18px;
             margin-left: 10px;
           }
@@ -239,7 +238,6 @@
       .common-auto-size-text-area {
         height: 187px;
         padding: 0 16px;
-        background-color: #fff;
         max-height: 373px;
 
         @media (max-width: 530px) {

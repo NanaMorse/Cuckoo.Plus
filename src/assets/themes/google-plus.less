@@ -1,7 +1,5 @@
 @import "~muse-ui/lib/styles/vars.less";
-
-
-// 修改基础变量
+@import "extend-color";
 
 @primaryColor: #db4437;
 @secondaryColor: #2962ff;
@@ -9,29 +7,8 @@
 @textColor: rgba(0,0,0,.87);
 @secondaryTextColor: rgba(0,0,0,.54);
 
+// status card
+@backgroundColor: @grey150;
+@dialogBackgroundColor: @grey50;
+
 @import "./base.less";
-
-
-//@darkerPrimaryColor: @lightBlue700;
-//@lighterPrimaryColor: @grey600;
-//@accentColor: @blue-color;
-//@darkerAccentColor: @pinkA400;
-//@lighterAccentColor: @pinkA100;
-//
-//@textColor: @dark-font-color;
-//@secondaryTextColor: fade(@fullWhite, 70%);
-//@alternateTextColor: #303030;
-//@borderColor: fade(@fullBlack, 30%);
-//@disabledColor: fade(@fullWhite, 30%);
-//
-//// background
-//@backgroundColor: @dark-bg-color;
-//@statusBarBackgroundColor: @fullBlack;
-//@appbarBackgroundColor: @grey900;
-//@dialogBackgroundColor: #424242; // dialogs or cards
-//
-//// icon
-//@activeIconColor: fade(@fullWhite, 100%);
-//@inActiveIconColor: fade(@fullWhite, 50%);
-//@iconSize: 18px;
-
