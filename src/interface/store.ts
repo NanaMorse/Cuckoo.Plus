@@ -30,6 +30,7 @@ export namespace cuckoostore {
     appStatus: {
       documentWidth: number
       isDrawerOpened: boolean
+      isNotificationsPanelOpened: boolean
       settings: {
         multiWaterFallLayout: boolean
       }

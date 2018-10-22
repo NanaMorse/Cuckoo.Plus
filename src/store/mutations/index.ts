@@ -62,6 +62,10 @@ const appStatusMutations = {
     state.appStatus.isDrawerOpened = isDrawerOpened
   },
 
+  updateNotificationsPanelStatus (state: cuckoostore.stateInfo, isNotificationsPanelOpened: boolean) {
+    state.appStatus.isNotificationsPanelOpened = isNotificationsPanelOpened
+  },
+
   updateDocumentWidth (state: cuckoostore.stateInfo) {
     state.appStatus.documentWidth = document.body.clientWidth
   }

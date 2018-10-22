@@ -38,6 +38,7 @@ const state: cuckoostore.stateInfo = {
   appStatus: {
     documentWidth: document.body.clientWidth,
     isDrawerOpened: document.body.clientWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY,
+    isNotificationsPanelOpened: false,
     settings: {
       multiWaterFallLayout: true
     }
