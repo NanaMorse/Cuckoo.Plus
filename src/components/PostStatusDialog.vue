@@ -4,7 +4,7 @@
              :overlay-opacity="1" @close="onTryCloseDialog" :transition="transition"
              :width="dialogWidth" :fullscreen="isFullScreen">
 
-    <mu-appbar v-if="isFullScreen" class="dialog-fullscreen-bar" color="#db4437">
+    <mu-appbar v-if="isFullScreen" class="dialog-fullscreen-bar" color="primary">
       <mu-button slot="left" icon @click="onTryCloseDialog">
         <mu-icon value="close"></mu-icon>
       </mu-button>
@@ -20,8 +20,8 @@
           <img :src="currentUserAccount.avatar_static">
         </mu-avatar>
         <div class="user-and-status-info">
-          <a class="user-name">{{getAccountDisplayName(currentUserAccount)}}</a>
-          <div class="visibility-row">
+          <a class="user-name mu-primary-text-color">{{getAccountDisplayName(currentUserAccount)}}</a>
+          <div class="visibility-row mu-secondary-text-color">
             <div class="arrow-container">
               <svg viewBox="0 0 48 48" height="100%" width="100%"><path fill="rgba(0, 0, 0, 0.54)" d="M20 14l10 10-10 10z"></path></svg>
             </div>
@@ -45,10 +45,10 @@
 
       <div class="attachment-select-btn-group">
         <mu-button icon>
-          <mu-icon class="common-icon" value="camera_alt" />
+          <mu-icon class="mu-secondary-text-color" value="camera_alt" />
         </mu-button>
         <mu-button icon>
-          <mu-icon class="common-icon" value="link" />
+          <mu-icon class="mu-secondary-text-color" value="link" />
         </mu-button>
       </div>
     </section>
@@ -152,7 +152,7 @@
       }
 
       // @ts-ignore
-      const loading = this.$loading()
+      const loading = this.$loading({})
 
       await this.postStatus({ formData })
 
@@ -171,7 +171,7 @@
   export default PostStatusDialog
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   @import "../assets/variable";
 
   .post-status-dialog-container {
@@ -198,13 +198,11 @@
           .user-name {
             cursor: pointer;
             font-size: 15px;
-            color: $common_black_color;
           }
 
           .visibility-row {
             display: flex;
             align-items: center;
-            color: $common_grey_color;
 
             .arrow-container {
               width: 18px;
@@ -264,7 +262,7 @@
   }
 </style>
 
-<style lang="scss">
+<style lang="less">
   .post-status-dialog-container {
     border-radius: 4px;
 

@@ -21,7 +21,7 @@
       <mu-button flat slot="action" color="#fff" @click="isSnackBarOpening = false">Close</mu-button>
     </mu-snackbar>
 
-    <mu-button fab class="post-new-status-button" v-show="!isPostStatusDialogOpening"
+    <mu-button fab class="post-new-status-button" color="primary" v-show="!isPostStatusDialogOpening"
                @click="showNewPostDialogPanel">
       <mu-icon value="edit" />
     </mu-button>
@@ -141,14 +141,13 @@
   export default TimeLines
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .timelines-container {
 
     .post-new-status-button {
       position: fixed;
       right: 16px;
       bottom: 16px;
-      background-color: #db4437;
 
       @media (min-width: 768px) {
         right: 32px;

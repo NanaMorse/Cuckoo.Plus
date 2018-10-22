@@ -13,6 +13,7 @@ import router from './router'
 import App from './App.vue'
 import * as moment from 'moment'
 import i18nMessages from './i18n'
+import '@/themes'
 import { I18nTags, I18nLocales, RoutersInfo } from '@/constant'
 
 Vue.use({
@@ -33,7 +34,7 @@ Vue.use(NProgress, {
 Vue.use(Loading, {
   overlayColor: 'hsla(0,0%,100%,.9)',
   size: 48,
-  color: '#db4437',
+  color: 'primary',
 })
 
 const currentLocale = I18nLocales.ZH_CN

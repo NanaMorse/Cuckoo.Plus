@@ -16,6 +16,6 @@
   export default Setting
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 
 </style>

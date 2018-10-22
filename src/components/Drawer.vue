@@ -6,7 +6,7 @@
       <mu-list-item button v-for="(info, index) in baseTimeLineInfoList" :value="info.value"
                     :key="index" @click="onTimeLineItemClick(info.value)">
         <mu-list-item-action>
-          <mu-icon :value="info.icon" />
+          <mu-icon :value="info.icon"/>
         </mu-list-item-action>
         <mu-list-item-title>{{info.title}}</mu-list-item-title>
       </mu-list-item>
@@ -141,24 +141,10 @@
   export default Drawer
 </script>
 
-<style lang="scss">
+<style lang="less">
   @import "../assets/variable";
 
   .cuckoo-drawer {
-    .mu-item.is-selected {
-      color: $common_google_plus_red_color;
-
-      .material-icons {
-        color: $common_google_plus_red_color;
-      }
-    }
-
-    .second-list {
-      .mu-item-title {
-        color: $common_grey_color;
-      }
-    }
-
     .mu-item-wrapper {
       -webkit-transition: background-color .3s cubic-bezier(0,0,0.2,1);
       -moz-transition: background-color .3s cubic-bezier(0,0,0.2,1);

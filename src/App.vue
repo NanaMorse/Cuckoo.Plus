@@ -12,7 +12,8 @@
   import { Vue, Component } from 'vue-property-decorator'
   import { Mutation, State } from 'vuex-class'
   import * as _ from 'underscore'
-  import { UiWidthCheckConstants } from '@/constant'
+  import { UiWidthCheckConstants, ThemeNames } from '@/constant'
+  import ThemeManager from '@/themes'
   import Header from '@/components/Header.vue'
   import Drawer from '@/components/Drawer.vue'
 
@@ -29,6 +30,7 @@
     @Mutation('updateDocumentWidth') updateDocumentWidth
 
     mounted () {
+      ThemeManager.setTheme(ThemeNames.GOOGLE_PLUS)
       window.addEventListener('resize', _.debounce(() => this.updateDocumentWidth(), 200))
     }
 
@@ -51,7 +53,7 @@
   export default App
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .app-content {
     padding: 56px 0 0 0;
     -webkit-transition: padding-left .45s cubic-bezier(.23,1,.32,1);
@@ -68,7 +70,7 @@
   }
 </style>
 
-<style lang="scss">
+<style lang="less">
   @import "assets/common";
 
   body {
@@ -81,10 +83,6 @@
     -moz-user-select: auto;
     -ms-user-select: auto;
     user-select: auto;
-  }
-
-  a {
-    color: #2962ff;
   }
 
   // header z-index 20141223

@@ -8,11 +8,11 @@
             <img :src="status.account.avatar_static">
           </mu-avatar>
           <div class="user-and-status-info">
-            <a class="user-name" :style="userNameAreaStyle">
+            <a class="user-name mu-primary-text-color" :style="userNameAreaStyle">
               {{getAccountDisplayName(status.account)}}
-              <span class="at-name">@{{getAccountAtName(status.account)}}</span>
+              <span class="at-name mu-secondary-text-color">@{{getAccountAtName(status.account)}}</span>
             </a>
-            <div class="visibility-row">
+            <div class="visibility-row mu-secondary-text-color">
               <div class="arrow-container">
                 <svg viewBox="0 0 48 48" height="100%" width="100%"><path fill="rgba(0, 0, 0, 0.54)" d="M20 14l10 10-10 10z"></path></svg>
               </div>
@@ -78,31 +78,31 @@
             <div class="center-area">
 
               <div class="reply-user-display-name">
-                <p>
+                <p class="mu-primary-text-color">
                   {{getAccountDisplayName(replierStatus.account)}}
-                  <span class="at-name">@{{getAccountAtName(replierStatus.account)}}</span>
+                  <span class="at-name mu-secondary-text-color">@{{getAccountAtName(replierStatus.account)}}</span>
                 </p>
                 <span v-if="replierStatus.favourites_count > 0"
-                      class="reply-favorites-count" :class="{ 'user-favorites': replierStatus.favourited }">+{{replierStatus.favourites_count}}</span>
+                      class="reply-favorites-count mu-secondary-text-color" :class="{ 'mu-primary-color': replierStatus.favourited }">+{{replierStatus.favourites_count}}</span>
               </div>
               <div class="status-content full-reply-status-content" v-html="formatHtml(replierStatus.content)"></div>
               <div class="reply-action-list">
                 <a class="reply-button" @click="onReplyToReplierStatus(replierStatus)">{{$t($i18nTags.statusCard.reply_to_replier)}}</a>
-                <div class="plus-one-button" @click="onFavoriteButtonClick(replierStatus)" :class="{ 'user-favorites': replierStatus.favourited }">
+                <div class="plus-one-button" @click="onFavoriteButtonClick(replierStatus)" :class="{ 'mu-primary-color': replierStatus.favourited }">
                   <a>+1</a>
                 </div>
               </div>
 
             </div>
             <div class="right-area">
-              <span class="reply-from-now">{{getFromNowTime(replierStatus.created_at)}}</span>
+              <span class="reply-from-now mu-secondary-text-color">{{getFromNowTime(replierStatus.created_at)}}</span>
             </div>
           </div>
         </div>
       </div>
 
       <div class="current-reply-to-info-area" v-if="currentReplyToStatus">
-        <mu-chip class="reply-to-account-info" color="#db4437" @delete="clearReplyToStatus" delete>
+        <mu-chip class="reply-to-account-info" color="primary" @delete="clearReplyToStatus" delete>
           <mu-avatar :size="32">
             <img :src="currentReplyToStatus.account.avatar_static">
           </mu-avatar>
@@ -158,17 +158,17 @@
           </div>
           <div class="reply-action-area">
             <div class="left-area">
-              <mu-button class="operate-btn add-image" icon>
+              <mu-button class="operate-btn add-image mu-secondary-text-color" icon>
                 <mu-icon class="reply-action-icon" value="local_see" />
               </mu-button>
-              <mu-button class="operate-btn add-link" icon>
+              <mu-button class="operate-btn add-link mu-secondary-text-color" icon>
                 <mu-icon class="reply-action-icon" value="link" />
               </mu-button>
             </div>
             <div class="right-area">
-              <mu-button flat class="operate-btn cancel"
+              <mu-button flat class="operate-btn cancel mu-secondary-text-color"
                          color="primary" @click="onHideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_post)}}</mu-button>
-              <mu-button flat class="operate-btn submit" @click="onSubmitReplyContent()"
+              <mu-button flat class="operate-btn submit mu-secondary-text-color" @click="onSubmitReplyContent()"
                          :disabled="!replyInputValue">{{$t($i18nTags.statusCard.submit_post)}}</mu-button>
             </div>
           </div>
@@ -182,10 +182,10 @@
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State, Action, Getter } from 'vuex-class'
   import * as moment from 'moment'
-  import * as api from '@/api'
   import { AttachmentTypes } from '@/constant'
   import MediaPanel from './MediaPanel'
   import { mastodonentities } from '@/interface'
+  import ThemeManager from 'muse-ui/lib/theme'
   import { formatHtml } from '@/util'
   const autosize = require('autosize')
 
@@ -389,8 +389,10 @@
   export default StatusCard
 </script>
 
-<style lang="scss" scoped>
-  @import "../assets/variable";
+<style lang="less" scoped>
+  @import "../assets/themes/base.less";
+  @import "../assets/variable.less";
+
   .status-card {
     width: 100%;
     background-color: #fafafa;
@@ -398,7 +400,6 @@
 
   .at-name {
     font-size: 13px;
-    color: $common_grey_color;
   }
 
   .mu-card-header {
@@ -423,7 +424,6 @@
         .user-name {
           cursor: pointer;
           font-size: 15px;
-          color: $common_black_color;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap
@@ -432,7 +432,6 @@
         .visibility-row {
           display: flex;
           align-items: center;
-          color: $common_grey_color;
 
           .arrow-container {
             width: 18px;
@@ -555,20 +554,14 @@
             margin: 0;
             font-size: 15px;
             font-weight: 500;
-            color: $common_black_color;
             text-overflow: ellipsis;
             overflow: hidden;
           }
 
           .reply-favorites-count {
             font-size: 13px;
-            color: $common_grey_color;
             font-weight: 500;
             margin-left: 8px;
-
-            &.user-favorites {
-              color: #b93221;
-            }
           }
         }
 
@@ -577,7 +570,7 @@
           align-items: center;
           margin-top: 6px;
 
-          .common-style {
+          .common-style-mixin() {
             cursor: pointer;
             font-size: 13px;
             color: #2962ff;
@@ -585,20 +578,19 @@
           }
 
           .reply-button {
-            @extend .common-style;
+            .common-style-mixin();
             margin-left: 0;
           }
 
           .plus-one-button {
-            @extend .common-style;
+            .common-style-mixin();
             width: 24px;
             height: 24px;
             line-height: 24px;
             text-align: center;
             border-radius: 50%;
 
-            &.user-favorites {
-              background-color: $common_google_plus_red_color;
+            &.mu-primary-color {
 
               a {
                 color: #fff;
@@ -617,7 +609,6 @@
 
         .reply-from-now {
           width: 32px;
-          color: $common_grey_color;
           font-size: 13px;
         }
       }
@@ -705,7 +696,7 @@
             }
 
             &.has-operated {
-              background-color: $common_google_plus_red_color;
+              .mu-primary-color();
               color: #fff;
 
               &:hover {
@@ -771,7 +762,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: $common_grey_color;
 
             .reply-action-icon {
               font-size: 18px;
@@ -787,7 +777,7 @@
   }
 </style>
 
-<style lang="scss">
+<style lang="less">
 
   .status-content {
     // https://stackoverflow.com/questions/5241369/word-wrap-a-link-so-it-doesnt-overflow-its-parent-div-width
