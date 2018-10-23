@@ -64,7 +64,7 @@
         <div class="simple-reply-list" @click="onSimpleReplyListClick">
           <div class="simple-reply-list-item" v-for="replierStatus in lastedThreeReplyStatuses" :key="replierStatus.id">
             <span class="reply-account-display-name primary-read-text-color">{{getAccountDisplayName(replierStatus.account)}}:</span>
-            <span class="status-content simple-reply-status-content" v-html="formatHtml(replierStatus.content)"></span>
+            <mu-card-text class="status-content simple-reply-status-content" v-html="formatHtml(replierStatus.content)"></mu-card-text>
           </div>
         </div>
       </div>
@@ -90,7 +90,7 @@
                   +{{replierStatus.favourites_count}}
                 </span>
               </div>
-              <div class="status-content full-reply-status-content" v-html="formatHtml(replierStatus.content)"></div>
+              <mu-card-text class="status-content full-reply-status-content" v-html="formatHtml(replierStatus.content)"></mu-card-text>
               <div class="reply-action-list">
 
                 <a class="reply-button secondary-theme-text-color"
@@ -529,6 +529,11 @@
     overflow: hidden;
     word-break: break-word;
     font-size: 14px;
+
+    .simple-reply-status-content {
+      display: inline;
+      padding: 0;
+    }
   }
 
   .reply-area-full {
@@ -536,6 +541,10 @@
     .full-reply-list {
       max-height: 400px;
       overflow-y: auto;
+    }
+
+    .full-reply-status-content {
+      padding: 0;
     }
 
     .full-reply-list-item {

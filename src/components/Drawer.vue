@@ -14,8 +14,8 @@
 
     <mu-divider></mu-divider>
 
-    <mu-list class="second-list">
-      <mu-list-item button :to="$routersInfo.settings.path">
+    <mu-list class="secondary-list">
+      <mu-list-item button :to="$routersInfo.settings.path" @click="onSecondaryItemClick">
         <mu-list-item-title>Settings</mu-list-item-title>
       </mu-list-item>
     </mu-list>
@@ -113,6 +113,11 @@
 
       if (!this.shouldDrawerDocked) this.updateDrawerOpenStatus(false)
 
+      window.scrollTo(0, 0)
+    }
+
+    onSecondaryItemClick () {
+      if (!this.shouldDrawerDocked) this.updateDrawerOpenStatus(false)
       window.scrollTo(0, 0)
     }
 

@@ -39,13 +39,7 @@ a {
 
 // class for certain component
 // 复杂的或者通用的会放在这里，其余尽量使用mixin
-.status-card-bg-color {
-  background-color: @dialogBackgroundColor;
-
-  .status-content {
-    color: @textColor;
-  }
-
+.status-card {
   .operate-btn-group {
     .status-card-circle-btn {
       background-color: @backgroundColor;
@@ -94,6 +88,39 @@ a {
 
   .mu-dialog-body {
     color: @textColor;
+  }
+}
+
+.mu-card {
+  color: @textColor;
+  background-color: @dialogBackgroundColor;
+
+  .mu-card-text {
+    color: @textColor;
+  }
+}
+
+.mu-input {
+  color: @secondaryTextColor;
+
+  .mu-select-content {
+    color: @textColor;
+
+    .mu-select-input {
+      color: @textColor;
+    }
+  }
+}
+
+.mu-popover {
+  background-color: @dialogBackgroundColor;
+}
+
+.mu-option {
+  color: @textColor;
+
+  &.is-selected .mu-item {
+    color: @primaryColor;
   }
 }
 

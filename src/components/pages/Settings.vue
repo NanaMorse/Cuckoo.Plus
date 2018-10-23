@@ -1,21 +1,86 @@
 <template>
   <div class="setting-page-container">
-    Setting Page!(on developing)
+    <mu-card>
+      <mu-card-actions class="setting-card">
+        <p class="card-label">常规</p>
+        <div class="setting-row select-row">
+          <span class="setting-label primary-read-text-color">选择主题：</span>
+          <mu-select class="setting-select" v-model="themeName">
+            <mu-option v-for="(themeInfo, index) in themeOptions" :key="index"
+                       :label="themeInfo.label" :value="themeInfo.value" />
+          </mu-select>
+        </div>
+      </mu-card-actions>
+    </mu-card>
   </div>
 </template>
 
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
-  import {} from 'vuex-class'
+  import { State, Mutation } from 'vuex-class'
+  import { ThemeNames } from '@/constant'
 
   @Component({})
   class Setting extends Vue {
 
+    @State('appStatus') appStatus
+
+    @Mutation('updateTheme') updateTheme
+
+    themeOptions = [
+      { label: 'Google Plus', value: ThemeNames.GOOGLE_PLUS },
+      { label: 'Dark', value: ThemeNames.DARK }
+    ]
+
+    get themeName (): string {
+      return this.appStatus.theme
+    }
+
+    set themeName (val) {
+      this.updateTheme(val)
+    }
   }
 
   export default Setting
 </script>
 
 <style lang="less" scoped>
+  .setting-page-container {
+    max-width: 600px;
+    min-width: 320px;
+    margin: 0 auto;
 
+    p {
+      margin: 0;
+    }
+
+    .setting-card {
+      padding: 10px;
+
+      .card-label {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 5px;
+      }
+
+      .setting-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .setting-label {
+          font-size: 13px;
+        }
+      }
+
+      .select-row {
+        .setting-select {
+          width: 170px;
+          padding: 0;
+          margin: 0;
+          min-height: unset;
+        }
+      }
+    }
+  }
 </style>

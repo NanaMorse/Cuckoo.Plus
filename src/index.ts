@@ -52,7 +52,7 @@ const httpInterceptor: any = (request) => {
 
 Vue.http.interceptors.push(httpInterceptor)
 
-ThemeManager.setTheme(ThemeNames.DARK)
+ThemeManager.setTheme(store.state.appStatus.theme)
 
 new Vue({
   el: '#app',

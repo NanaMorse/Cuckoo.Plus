@@ -33,6 +33,7 @@ export namespace cuckoostore {
       settings: {
         multiWaterFallLayout: boolean
       }
+      theme: string
     }
   }
 
