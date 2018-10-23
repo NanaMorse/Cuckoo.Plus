@@ -20,12 +20,16 @@
           <img :src="currentUserAccount.avatar_static">
         </mu-avatar>
         <div class="user-and-status-info">
-          <a class="user-name mu-primary-text-color">{{getAccountDisplayName(currentUserAccount)}}</a>
-          <div class="visibility-row mu-secondary-text-color">
+          <a class="user-name primary-read-text-color">
+            {{getAccountDisplayName(currentUserAccount)}}
+          </a>
+          <div class="visibility-row">
             <div class="arrow-container">
-              <svg viewBox="0 0 48 48" height="100%" width="100%"><path fill="rgba(0, 0, 0, 0.54)" d="M20 14l10 10-10 10z"></path></svg>
+              <svg viewBox="0 0 48 48" height="100%" width="100%">
+                <path class="header-svg-fill" d="M20 14l10 10-10 10z" />
+              </svg>
             </div>
-            <div class="visibility-info">公开</div>
+            <div class="visibility-info secondary-read-text-color">公开</div>
           </div>
         </div>
       </div>
@@ -38,7 +42,7 @@
     </div>
 
     <section>
-      <textarea ref="textArea" class="common-auto-size-text-area" v-model="textContentValue"
+      <textarea ref="textArea" class="auto-size-text-area" v-model="textContentValue"
                 :placeholder="$t($i18nTags.statusCard.post_new_status_placeholder)"/>
 
       <div class="media-preview-area"></div>
@@ -235,7 +239,7 @@
     }
 
     section {
-      .common-auto-size-text-area {
+      .auto-size-text-area {
         height: 187px;
         padding: 0 16px;
         max-height: 373px;

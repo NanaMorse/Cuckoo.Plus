@@ -14,7 +14,9 @@
             </a>
             <div class="visibility-row secondary-read-text-color">
               <div class="arrow-container">
-                <svg viewBox="0 0 48 48" height="100%" width="100%"><path fill="rgba(0, 0, 0, 0.54)" d="M20 14l10 10-10 10z"></path></svg>
+                <svg viewBox="0 0 48 48" height="100%" width="100%">
+                  <path class="header-svg-fill" d="M20 14l10 10-10 10z" />
+                </svg>
               </div>
               <div class="visibility-info secondary-read-text-color">{{$t(status.visibility)}}</div>
             </div>
@@ -119,7 +121,7 @@
         </mu-chip>
       </div>
 
-      <mu-card-actions class="card-action-area" :style="shouldShowFullReplyListArea && { backgroundColor: '#fff' }">
+      <mu-card-actions class="card-action-area">
 
         <div class="simple-action-bar" v-show="!shouldShowFullReplyActionArea">
 
@@ -128,7 +130,7 @@
               <img :src="currentUserAccount.avatar_static">
             </mu-avatar>
 
-            <div class="active-reply-entry" @click="showFullReplyActionArea">
+            <div class="active-reply-entry secondary-read-text-color" @click="showFullReplyActionArea">
               {{$t($i18nTags.statusCard.reply_to_main_status)}}
             </div>
           </div>
@@ -159,8 +161,7 @@
             </mu-avatar>
 
             <div class="input-container">
-              <textarea ref="replayTextInput" class="common-auto-size-text-area" v-model="replyInputValue"
-                        :style="shouldShowFullReplyListArea && { backgroundColor: '#fff' }"
+              <textarea ref="replayTextInput" class="auto-size-text-area" v-model="replyInputValue"
                         :placeholder="$t($i18nTags.statusCard.reply_to_main_status)"/>
             </div>
 
@@ -404,6 +405,7 @@
   }
 
   .at-name {
+    font-weight: 400;
     font-size: 13px;
   }
 
@@ -607,7 +609,6 @@
     height: 44px;
     line-height: 44px;
     padding-left: 16px;
-    background-color: #fff;
 
     .reply-to-account-info {
       margin-top: 6px;
@@ -701,7 +702,7 @@
         display: flex;
 
         .current-user-avatar {
-          margin-top: 7px;
+          margin-top: 6px;
         }
 
         .input-container {
@@ -711,7 +712,7 @@
           margin-left: 16px;
           padding: 9px 12px 8px 0;
 
-          .common-auto-size-text-area {
+          .auto-size-text-area {
             height: 18px;
           }
         }

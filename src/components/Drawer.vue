@@ -1,5 +1,5 @@
 <template>
-  <mu-drawer class="cuckoo-drawer" :open.sync="appStatus.isDrawerOpened" :style="drawerStyle"
+  <mu-drawer class="cuckoo-drawer default-theme-bg-color primary-read-text-color" :open.sync="appStatus.isDrawerOpened" :style="drawerStyle"
              :docked="shouldDrawerDocked" :z-depth="shouldDrawerDocked ? 0 : 16">
 
     <mu-list :value="currentListValue">
@@ -78,7 +78,6 @@
       if (this.shouldDrawerDocked) {
         return {
           top: '64px',
-          backgroundColor: '#f2f2f2',
           width: '210px'
         }
       } else {

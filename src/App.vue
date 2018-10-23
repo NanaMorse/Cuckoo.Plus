@@ -12,8 +12,7 @@
   import { Vue, Component } from 'vue-property-decorator'
   import { Mutation, State } from 'vuex-class'
   import * as _ from 'underscore'
-  import { UiWidthCheckConstants, ThemeNames } from '@/constant'
-  import ThemeManager from '@/themes'
+  import { UiWidthCheckConstants } from '@/constant'
   import Header from '@/components/Header.vue'
   import Drawer from '@/components/Drawer.vue'
 
@@ -30,7 +29,6 @@
     @Mutation('updateDocumentWidth') updateDocumentWidth
 
     mounted () {
-      ThemeManager.setTheme(ThemeNames.DARK)
       window.addEventListener('resize', _.debounce(() => this.updateDocumentWidth(), 200))
     }
 
@@ -71,7 +69,9 @@
 </style>
 
 <style lang="less">
-  @import "assets/common";
+  * {
+    transition: background-color .45s cubic-bezier(.23,1,.32,1), color .45s cubic-bezier(.23,1,.32,1);
+  }
 
   body {
     height: 100%;

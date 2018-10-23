@@ -13,8 +13,8 @@ import router from './router'
 import App from './App.vue'
 import * as moment from 'moment'
 import i18nMessages from './i18n'
-import '@/themes'
-import { I18nTags, I18nLocales, RoutersInfo } from '@/constant'
+import { I18nTags, I18nLocales, RoutersInfo, ThemeNames } from '@/constant'
+import ThemeManager from '@/themes'
 
 Vue.use({
   install (Vue) {
@@ -51,6 +51,8 @@ const httpInterceptor: any = (request) => {
 }
 
 Vue.http.interceptors.push(httpInterceptor)
+
+ThemeManager.setTheme(ThemeNames.DARK)
 
 new Vue({
   el: '#app',

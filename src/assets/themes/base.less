@@ -17,6 +17,10 @@ a {
   }
 }
 
+.default-theme-bg-color {
+  background-color: @backgroundColor;
+}
+
 .primary-theme-text-color {
   color: @primaryColor;
 }
@@ -34,27 +38,84 @@ a {
 }
 
 // class for certain component
+// 复杂的或者通用的会放在这里，其余尽量使用mixin
 .status-card-bg-color {
   background-color: @dialogBackgroundColor;
-}
 
-.status-card-circle-btn {
-  background-color: @backgroundColor;
-
-  &:hover {
-    box-shadow: 0 1px 3px 0 rgba(0,0,0,1.26);
+  .status-content {
+    color: @textColor;
   }
 
-  &.primary-theme-bg-color {
-    background-color: @primaryColor;
+  .operate-btn-group {
+    .status-card-circle-btn {
+      background-color: @backgroundColor;
+      color: @textColor;
+
+      &:hover {
+        box-shadow: 0 1px 3px 0 rgba(0,0,0,1.26);
+      }
+
+      &.primary-theme-bg-color {
+        background-color: @primaryColor;
+      }
+    }
+
+    .count {
+      color: @textColor;
+    }
   }
 }
 
+.header-svg-fill {
+  fill: @secondaryTextColor;
+}
 
-//.mu-primary-text-color {
-//  color: @textColor;
-//}
-//
-//.mu-secondary-text-color {
-//  color: @secondaryTextColor;
-//}
+.auto-size-text-area {
+  width: 100%;
+  font-size: 15px;
+  line-height: 18px;
+  outline: none;
+  border: none;
+  padding: 0;
+  resize: none;
+  background-color: @dialogBackgroundColor;
+  color: @textColor;
+
+  &::placeholder {
+    color: @secondaryTextColor;
+    font-size: 14px;
+    font-weight: 300;
+  }
+}
+
+// for overwrite muse-ui style
+.mu-dialog {
+  background-color: @dialogBackgroundColor;
+
+  .mu-dialog-body {
+    color: @textColor;
+  }
+}
+
+.mu-flat-button.disabled {
+  color: @disabledColor;
+}
+
+.mu-item {
+  color: @textColor;
+
+  .mu-item-action {
+    color: @textColor;
+  }
+
+  &.is-selected {
+    color: @primaryColor;
+
+    .mu-item-action {
+      color: @primaryColor;
+    }
+  }
+
+}
+
+
