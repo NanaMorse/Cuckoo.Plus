@@ -4,7 +4,7 @@ import mutations from './mutations'
 import actions from './actions'
 import getters from './getters'
 import { cuckoostore } from '@/interface'
-import { UiWidthCheckConstants } from '@/constant'
+import { UiWidthCheckConstants, ThemeNames } from '@/constant'
 
 Vue.use(Vuex)
 
@@ -44,7 +44,9 @@ const state: cuckoostore.stateInfo = {
     }
   },
 
-  notifications: []
+  notifications: [],
+    
+  theme: localStorage.getItem('theme') || ThemeNames.GOOGLE_PLUS
 }
 
 export default new Vuex.Store({

@@ -13,7 +13,8 @@ import router from './router'
 import App from './App.vue'
 import * as moment from 'moment'
 import i18nMessages from './i18n'
-import { I18nTags, I18nLocales, RoutersInfo } from '@/constant'
+import { I18nTags, I18nLocales, RoutersInfo, ThemeNames } from '@/constant'
+import ThemeManager from '@/themes'
 
 Vue.use({
   install (Vue) {
@@ -33,7 +34,7 @@ Vue.use(NProgress, {
 Vue.use(Loading, {
   overlayColor: 'hsla(0,0%,100%,.9)',
   size: 48,
-  color: '#db4437',
+  color: 'primary',
 })
 
 const currentLocale = I18nLocales.ZH_CN
@@ -50,6 +51,8 @@ const httpInterceptor: any = (request) => {
 }
 
 Vue.http.interceptors.push(httpInterceptor)
+
+ThemeManager.setTheme(store.state.appStatus.theme)
 
 new Vue({
   el: '#app',

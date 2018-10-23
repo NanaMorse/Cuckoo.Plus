@@ -51,7 +51,7 @@
   export default App
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .app-content {
     padding: 56px 0 0 0;
     -webkit-transition: padding-left .45s cubic-bezier(.23,1,.32,1);
@@ -68,12 +68,13 @@
   }
 </style>
 
-<style lang="scss">
-  @import "assets/common";
+<style lang="less">
+  * {
+    transition: background-color .45s cubic-bezier(.23,1,.32,1), color .45s cubic-bezier(.23,1,.32,1);
+  }
 
   body {
     height: 100%;
-    background-color: #f2f2f2;
   }
 
   a, .mu-load-more {
@@ -81,10 +82,6 @@
     -moz-user-select: auto;
     -ms-user-select: auto;
     user-select: auto;
-  }
-
-  a {
-    color: #2962ff;
   }
 
   // header z-index 20141223

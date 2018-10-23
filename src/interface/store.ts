@@ -34,6 +34,7 @@ export namespace cuckoostore {
       settings: {
         multiWaterFallLayout: boolean
       }
+      theme: string
     }
 
     notifications: Array<mastodonentities.Notification>

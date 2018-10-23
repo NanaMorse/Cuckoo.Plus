@@ -73,7 +73,7 @@
   export default MediaPanel
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .media-panel-container {
 
     img, video {

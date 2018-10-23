@@ -43,7 +43,7 @@
   export default Statuses
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .statuses-page-container {
     max-width: 530px;
     margin: 16px auto;

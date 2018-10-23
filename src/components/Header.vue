@@ -1,6 +1,6 @@
 <template>
   <div class="header-container">
-    <mu-appbar class="header" color="#db4437">
+    <mu-appbar class="header" color="primary">
       <mu-button icon @click="onMenuBtnClick" slot="left">
         <mu-icon value="menu"></mu-icon>
       </mu-button>
@@ -59,9 +59,8 @@
   export default Header
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .header {
-    background-color: rgba(255, 255, 255, 1);
     padding-left: 8px;
     position: fixed;
     left: 0;

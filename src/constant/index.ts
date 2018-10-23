@@ -28,9 +28,15 @@ const UiWidthCheckConstants = {
   'POST_STATUS_DIALOG_TOGGLE_WIDTH': 530
 }
 
+const ThemeNames = {
+  GOOGLE_PLUS: 'Google-Plus',
+  DARK: 'dark'
+}
+
 export {
   AttachmentTypes,
   TimeLineTypes,
   VisibilityTypes,
-  UiWidthCheckConstants
+  UiWidthCheckConstants,
+  ThemeNames
 }

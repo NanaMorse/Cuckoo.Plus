@@ -112,7 +112,7 @@
   export default OAuth
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .oauth-container {
     margin-top: 30px;
     padding: 20px;

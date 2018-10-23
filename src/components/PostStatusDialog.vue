@@ -4,7 +4,7 @@
              :overlay-opacity="1" @close="onTryCloseDialog" :transition="transition"
              :width="dialogWidth" :fullscreen="isFullScreen">
 
-    <mu-appbar v-if="isFullScreen" class="dialog-fullscreen-bar" color="#db4437">
+    <mu-appbar v-if="isFullScreen" class="dialog-fullscreen-bar" color="primary">
       <mu-button slot="left" icon @click="onTryCloseDialog">
         <mu-icon value="close"></mu-icon>
       </mu-button>
@@ -20,12 +20,16 @@
           <img :src="currentUserAccount.avatar_static">
         </mu-avatar>
         <div class="user-and-status-info">
-          <a class="user-name">{{getAccountDisplayName(currentUserAccount)}}</a>
+          <a class="user-name primary-read-text-color">
+            {{getAccountDisplayName(currentUserAccount)}}
+          </a>
           <div class="visibility-row">
             <div class="arrow-container">
-              <svg viewBox="0 0 48 48" height="100%" width="100%"><path fill="rgba(0, 0, 0, 0.54)" d="M20 14l10 10-10 10z"></path></svg>
+              <svg viewBox="0 0 48 48" height="100%" width="100%">
+                <path class="header-svg-fill" d="M20 14l10 10-10 10z" />
+              </svg>
             </div>
-            <div class="visibility-info">公开</div>
+            <div class="visibility-info secondary-read-text-color">公开</div>
           </div>
         </div>
       </div>
@@ -38,17 +42,17 @@
     </div>
 
     <section>
-      <textarea ref="textArea" class="common-auto-size-text-area" v-model="textContentValue"
+      <textarea ref="textArea" class="auto-size-text-area" v-model="textContentValue"
                 :placeholder="$t($i18nTags.statusCard.post_new_status_placeholder)"/>
 
       <div class="media-preview-area"></div>
 
       <div class="attachment-select-btn-group">
         <mu-button icon>
-          <mu-icon class="common-icon" value="camera_alt" />
+          <mu-icon class="mu-secondary-text-color" value="camera_alt" />
         </mu-button>
         <mu-button icon>
-          <mu-icon class="common-icon" value="link" />
+          <mu-icon class="mu-secondary-text-color" value="link" />
         </mu-button>
       </div>
     </section>
@@ -152,7 +156,7 @@
       }
 
       // @ts-ignore
-      const loading = this.$loading()
+      const loading = this.$loading({})
 
       await this.postStatus({ formData })
 
@@ -171,7 +175,7 @@
   export default PostStatusDialog
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   @import "../assets/variable";
 
   .post-status-dialog-container {
@@ -198,13 +202,11 @@
           .user-name {
             cursor: pointer;
             font-size: 15px;
-            color: $common_black_color;
           }
 
           .visibility-row {
             display: flex;
             align-items: center;
-            color: $common_grey_color;
 
             .arrow-container {
               width: 18px;
@@ -229,7 +231,6 @@
         .card-header-action {
           .header-icon {
             cursor: pointer;
-            color: #757575;
             font-size: 18px;
             margin-left: 10px;
           }
@@ -238,10 +239,9 @@
     }
 
     section {
-      .common-auto-size-text-area {
+      .auto-size-text-area {
         height: 187px;
         padding: 0 16px;
-        background-color: #fff;
         max-height: 373px;
 
         @media (max-width: 530px) {
@@ -264,7 +264,7 @@
   }
 </style>
 
-<style lang="scss">
+<style lang="less">
   .post-status-dialog-container {
     border-radius: 4px;
 

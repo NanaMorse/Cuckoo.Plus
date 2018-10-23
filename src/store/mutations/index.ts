@@ -2,8 +2,9 @@ import Vue from 'vue'
 import timelinesMutations from './timelines'
 import notificationsMutations from './notifications'
 import { isBaseTimeLine } from '@/util'
-import { TimeLineTypes } from '@/constant'
+import { TimeLineTypes, ThemeNames } from '@/constant'
 import { cuckoostore, mastodonentities } from '@/interface'
+import ThemeManager from '@/themes'
 
 const oAuthInfoMutations = {
 
@@ -68,6 +69,15 @@ const appStatusMutations = {
 
   updateDocumentWidth (state: cuckoostore.stateInfo) {
     state.appStatus.documentWidth = document.body.clientWidth
+  },
+
+  updateTheme (state: cuckoostore.stateInfo, newThemeName: string) {
+    if (!Object.keys(ThemeNames).some(key => ThemeNames[key] === newThemeName)) return
+    state.appStatus.theme = newThemeName
+
+    ThemeManager.setTheme(newThemeName)
+
+    localStorage.setItem('theme', newThemeName)
   }
 }
 
