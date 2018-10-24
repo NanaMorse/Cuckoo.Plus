@@ -60,7 +60,7 @@
 
     mediaTypes = AttachmentTypes
 
-    shouldShowLightBox: boolean = true
+    shouldShowLightBox: boolean = false
 
     shouldShowLightBoxControlBtn: boolean = true
 
