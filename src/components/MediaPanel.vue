@@ -1,7 +1,8 @@
 <template>
   <div class="media-panel-container" v-if="combinedMediaList.length > 0">
     <div class="media-area" :class="mediaAreaClass">
-      <div class="media-gallery-item" v-for="(media, index) in combinedMediaList">
+      <div class="media-gallery-item" v-for="(media, index) in combinedMediaList"
+           @click="onMediaItemClick(index)">
         <img v-if="media.type === mediaTypes.IMAGE"
              :src="media.url" :key="index"/>
 
@@ -10,11 +11,23 @@
         </div>
       </div>
     </div>
+
+    <div class="light-box" v-if="shouldShowLightBox">
+      <mu-carousel :cycle="false" :active="lightBoxActiveIndex"
+                   :hide-indicators="!shouldShowLightBoxControlBtn"
+                   :hide-controls="!shouldShowLightBoxControlBtn">
+        <mu-carousel-item v-for="(mediaInfo, index) in combinedMediaList" :key="index">
+          <div class="light-box-item" @click.stop="onLightBoxMediaItemClick">
+            <img v-if="mediaInfo.type === mediaTypes.IMAGE" :src="mediaInfo.url"/>
+          </div>
+        </mu-carousel-item>
+      </mu-carousel>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-  import { Vue, Component, Prop } from 'vue-property-decorator'
+  import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { AttachmentTypes } from '@/constant'
   import { mastodonentities } from '@/interface'
 
@@ -27,11 +40,11 @@
 
     get combinedMediaList () {
       const mediaListPart = this.mediaList.map(item => {
-        return { url: item.url, clickUrl: item.url, type: item.type }
+        return { url: item.url, originUrl: item.url, type: item.type }
       })
 
       const pixivCardsPart = this.pixivCards.map(item => {
-        return { url: item.image_url, clickUrl: item.url, type: this.mediaTypes.IMAGE }
+        return { url: item.image_url, originUrl: item.url, type: this.mediaTypes.IMAGE }
       })
 
       return [...mediaListPart, ...pixivCardsPart]
@@ -46,6 +59,27 @@
     }
 
     mediaTypes = AttachmentTypes
+
+    shouldShowLightBox: boolean = true
+
+    shouldShowLightBoxControlBtn: boolean = true
+
+    lightBoxActiveIndex: number = 0
+
+    onMediaItemClick (mediaItemIndex: number) {
+      //this.lightBoxActiveIndex = mediaItemIndex
+      //this.shouldShowLightBox = true
+    }
+
+    onLightBoxMediaItemClick () {
+      this.shouldShowLightBoxControlBtn = !this.shouldShowLightBoxControlBtn
+    }
+
+    // todo 或许应该用dialog来包裹light box
+    onHideLightBox (e) {
+      // console.log(e)
+      //this.shouldShowLightBox = false
+    }
   }
 
   export default MediaPanel
@@ -94,6 +128,8 @@
 
       .media-gallery-item {
         height: calc(50vh - 70px);
+        max-height: 350px;
+        min-height: 260px;
         width: calc(50% - 2px);
       }
 
@@ -104,6 +140,8 @@
 
       .media-gallery-item {
         height: calc(((100vw - 300px) / 2) - 100px);
+        max-height: 270px;
+        min-height: 140px;
         width: calc(50% - 2px);;
 
         &:first-child {
@@ -121,6 +159,35 @@
         &:first-child {
           width: calc(50% - 2px);
         }
+      }
+    }
+
+    .light-box {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 201412245;
+      background-color: rgba(0,0,0,.7);
+
+      .light-box-item {
+        img {
+          height: auto;
+        }
+      }
+    }
+  }
+</style>
+
+<style lang="less">
+  .light-box {
+    .mu-carousel {
+      height: 100%;
+
+      .mu-carousel-item {
+        display: flex;
+        align-items: center;
       }
     }
   }
