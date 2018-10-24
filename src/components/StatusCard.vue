@@ -36,7 +36,7 @@
 
       <mu-card-text v-if="!status.reblog && status.content" class="status-content main-status-content" v-html="formatHtml(status.content)" />
 
-      <mu-divider />
+      <mu-divider v-if="!status.media_attachments.length && !status.pixiv_cards.length"/>
 
       <div v-if="!status.reblog" class="main-attachment-area">
         <media-panel :mediaList="status.media_attachments" :pixivCards="status.pixiv_cards"/>
