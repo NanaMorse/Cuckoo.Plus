@@ -1,5 +1,5 @@
 <template>
-  <div class="timelines-container">
+  <div class="timelines-container" v-loading="isLoading">
 
     <template v-for="(timeLineName, index) in allTimeLineNameList">
       <transition name="slide-fade">
