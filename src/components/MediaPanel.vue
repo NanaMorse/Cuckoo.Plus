@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <mu-dialog class="light-box"
+    <mu-dialog class="light-box" transition="fade"
                :open.sync="shouldShowLightBox" :overlay-opacity="0.7">
       <mu-icon class="close-icon" value="close" @click="shouldShowLightBox = false"/>
       <mu-carousel :cycle="false" :active="lightBoxActiveIndex" transition="fade"
