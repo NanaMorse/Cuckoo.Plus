@@ -12,17 +12,20 @@
       </div>
     </div>
 
-    <div class="light-box" v-if="shouldShowLightBox">
-      <mu-carousel :cycle="false" :active="lightBoxActiveIndex"
-                   :hide-indicators="!shouldShowLightBoxControlBtn"
-                   :hide-controls="!shouldShowLightBoxControlBtn">
+    <mu-dialog class="light-box"
+               :open.sync="shouldShowLightBox" :overlay-opacity="0.7">
+      <mu-icon class="close-icon" value="close" @click="shouldShowLightBox = false"/>
+      <mu-carousel :cycle="false" :active="lightBoxActiveIndex" transition="fade"
+                   :hide-indicators="(combinedMediaList.length === 1) || !shouldShowLightBoxControlBtn"
+                   :hide-controls="(combinedMediaList.length === 1) || !shouldShowLightBoxControlBtn">
         <mu-carousel-item v-for="(mediaInfo, index) in combinedMediaList" :key="index">
           <div class="light-box-item" @click.stop="onLightBoxMediaItemClick">
             <img v-if="mediaInfo.type === mediaTypes.IMAGE" :src="mediaInfo.url"/>
           </div>
         </mu-carousel-item>
       </mu-carousel>
-    </div>
+    </mu-dialog>
+
   </div>
 </template>
 
@@ -66,19 +69,27 @@
 
     lightBoxActiveIndex: number = 0
 
+    @Watch('$route')
+    onRouteChanged () {
+      this.shouldShowLightBox = false
+    }
+
     onMediaItemClick (mediaItemIndex: number) {
-      //this.lightBoxActiveIndex = mediaItemIndex
-      //this.shouldShowLightBox = true
+      this.shouldShowLightBox = true
+      this.lightBoxActiveIndex = mediaItemIndex
+      // vue会帮忙处理this指向？
+      document.addEventListener('click', this.onLightBoxClick)
     }
 
     onLightBoxMediaItemClick () {
       this.shouldShowLightBoxControlBtn = !this.shouldShowLightBoxControlBtn
     }
 
-    // todo 或许应该用dialog来包裹light box
-    onHideLightBox (e) {
-      // console.log(e)
-      //this.shouldShowLightBox = false
+    onLightBoxClick (e) {
+      if (e.target && (e.target.className === 'mu-carousel-item')) {
+        this.shouldShowLightBox = false
+        document.removeEventListener('click', this.onLightBoxClick)
+      }
     }
   }
 
@@ -162,32 +173,48 @@
       }
     }
 
-    .light-box {
-      position: fixed;
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      z-index: 201412245;
-      background-color: rgba(0,0,0,.7);
-
-      .light-box-item {
-        img {
-          height: auto;
-        }
-      }
-    }
   }
 </style>
 
 <style lang="less">
   .light-box {
-    .mu-carousel {
-      height: 100%;
+    .mu-dialog {
+      background-color: transparent;
+      max-width: unset;
 
-      .mu-carousel-item {
-        display: flex;
-        align-items: center;
+      .close-icon {
+        font-size: 46px;
+        position: fixed;
+        z-index: 1;
+        right: 20px;
+        top: 20px;
+        cursor: pointer;
+        color: #fff;
+      }
+
+      .mu-dialog-body {
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+
+        .mu-carousel {
+          height: 100%;
+
+          .mu-carousel-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .light-box-item {
+              img {
+                max-width: 100vw;
+                max-height: 80vh;
+                width: auto;
+                height: auto;
+              }
+            }
+          }
+        }
       }
     }
   }
