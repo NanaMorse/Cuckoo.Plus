@@ -90,7 +90,14 @@
                   +{{replierStatus.favourites_count}}
                 </span>
               </div>
+
+
               <mu-card-text class="status-content full-reply-status-content" v-html="formatHtml(replierStatus.content)"></mu-card-text>
+
+              <div class="full-reply-attachment-area">
+                <media-panel :mediaList="replierStatus.media_attachments" :pixivCards="replierStatus.pixiv_cards"/>
+              </div>
+
               <div class="reply-action-list">
 
                 <a class="reply-button secondary-theme-text-color"
