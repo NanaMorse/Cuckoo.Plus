@@ -11,9 +11,13 @@ const oauth = {
 
 const common = {
   [I18nTags.common.status_visibility_public]: '公开',
-  [I18nTags.common.status_visibility_private]: '私密分享',
-  [I18nTags.common.status_visibility_unlisted]: '未列出',
-  [I18nTags.common.status_visibility_direct]: '指定对象'
+  [I18nTags.common.status_visibility_unlisted]: '不公开',
+  [I18nTags.common.status_visibility_private]: '仅关注者',
+  [I18nTags.common.status_visibility_direct]: '私信',
+  [I18nTags.common.status_visibility_public_desc]: '所有人可见，并会出现在公共时间轴上',
+  [I18nTags.common.status_visibility_unlisted_desc]: '所有人可见，但不会出现在公共时间轴上',
+  [I18nTags.common.status_visibility_private_desc]: '只有关注你的用户能看到',
+  [I18nTags.common.status_visibility_direct_desc]: '只有被提及的用户能看到',
 }
 
 const statusCard = {

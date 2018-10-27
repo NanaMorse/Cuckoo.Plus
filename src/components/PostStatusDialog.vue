@@ -29,7 +29,27 @@
                 <path class="header-svg-fill" d="M20 14l10 10-10 10z" />
               </svg>
             </div>
-            <div class="visibility-info secondary-read-text-color">公开</div>
+            <div class="visibility-info secondary-theme-text-color" ref="visibilitySelectBtn"
+                 @click="setVisibilitySelectPopOverDisplay(true)">
+              {{$t(visibility)}}
+              <mu-icon size="18" class="visibility-icon secondary-read-text-color" :value="getVisibilityDescInfo(visibility).icon"></mu-icon>
+            </div>
+            <mu-popover cover :open.sync="shouldOpenVisibilitySelectPopOver"
+                        :trigger="visibilityTriggerBtn">
+              <mu-list textline="two-line">
+                <mu-list-item button v-for="(visibilityType, index) in VisibilityTypeList"
+                              :class="{ 'selected-item': visibilityType === visibility }"
+                              :key="index" @click="onChangeVisibility(visibilityType)">
+                  <mu-list-item-action>
+                    <mu-icon :value="getVisibilityDescInfo(visibilityType).icon"></mu-icon>
+                  </mu-list-item-action>
+                  <mu-list-item-content>
+                    <mu-list-item-title class="primary-read-text-color">{{$t(visibilityType)}}</mu-list-item-title>
+                    <mu-list-item-sub-title class="secondary-read-text-color">{{$t(getVisibilityDescInfo(visibilityType).descTag)}}</mu-list-item-sub-title>
+                  </mu-list-item-content>
+                </mu-list-item>
+              </mu-list>
+            </mu-popover>
           </div>
         </div>
       </div>
@@ -49,21 +69,20 @@
 
       <div class="attachment-select-btn-group">
         <mu-button icon>
-          <mu-icon class="mu-secondary-text-color" value="camera_alt" />
+          <mu-icon class="secondary-read-text-color" value="camera_alt" />
         </mu-button>
         <mu-button icon>
-          <mu-icon class="mu-secondary-text-color" value="link" />
+          <mu-icon class="secondary-read-text-color" value="link" />
         </mu-button>
       </div>
     </section>
 
     <footer v-if="!isFullScreen">
-      <mu-button class="dialog-button" :disabled="!shouldEnableSubmitButton"
-                 color="primary"
+      <mu-button class="dialog-button secondary-theme-text-color" flat :disabled="!shouldEnableSubmitButton"
                  @click="onSubmitNewStatus">
         {{$t($i18nTags.statusCard.submit_post)}}
       </mu-button>
-      <mu-button class="dialog-button" flat @click="onTryCloseDialog">
+      <mu-button class="dialog-button" color="secondary" flat @click="onTryCloseDialog">
         {{$t($i18nTags.statusCard.cancel_post)}}
       </mu-button>
     </footer>
@@ -74,25 +93,34 @@
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State, Getter, Action } from 'vuex-class'
-  import { UiWidthCheckConstants } from '@/constant'
-
+  import { UiWidthCheckConstants, VisibilityTypes } from '@/constant'
+  import { getVisibilityDescInfo } from '@/util'
   const autosize = require('autosize')
 
-  const dialogStyleToggleWidth = 530
+  let isFirstTimeOpenDialog = true
 
   @Component({})
   class PostStatusDialog extends Vue {
 
     $refs: {
       textArea: HTMLTextAreaElement
+      visibilitySelectBtn: HTMLDivElement
     }
+
+    VisibilityTypeList = [
+      VisibilityTypes.PUBLIC, VisibilityTypes.PRIVATE,
+      VisibilityTypes.UNLISTED, VisibilityTypes.DIRECT
+    ]
+
+    getVisibilityDescInfo = getVisibilityDescInfo
+
+    visibility: string = VisibilityTypes.PUBLIC
+
+    visibilityTriggerBtn: HTMLDivElement = null
+
+    shouldOpenVisibilitySelectPopOver = false
 
     textContentValue: string = ''
-
-    mounted () {
-      // todo seems not working, why?
-      autosize(this.$refs.textArea)
-    }
 
     @Prop() open: boolean
 
@@ -120,8 +148,16 @@
     onDialogOpenChanged (isOpening) {
       if (isOpening) {
         this.$nextTick(() => {
+          if (isFirstTimeOpenDialog) {
+            autosize(this.$refs.textArea)
+            this.visibilityTriggerBtn = this.$refs.visibilitySelectBtn
+
+            isFirstTimeOpenDialog = false
+          }
           this.$refs.textArea.focus()
         })
+      } else {
+        this.setVisibilitySelectPopOverDisplay(false)
       }
     }
 
@@ -152,7 +188,8 @@
 
     async onSubmitNewStatus () {
       const formData = {
-        status: this.textContentValue
+        status: this.textContentValue,
+        visibility: this.visibility
       }
 
       // @ts-ignore
@@ -164,6 +201,15 @@
 
       // clear data and close dialog
       this.closeDialog()
+    }
+
+    onChangeVisibility (newVisibility: string) {
+      this.visibility = newVisibility
+      this.setVisibilitySelectPopOverDisplay(false)
+    }
+
+    setVisibilitySelectPopOverDisplay (open: boolean) {
+      this.shouldOpenVisibilitySelectPopOver = open
     }
 
     closeDialog () {
@@ -215,6 +261,12 @@
 
             .visibility-info {
               cursor: pointer;
+              display: flex;
+              align-items: center;
+
+              .visibility-icon {
+                margin-left: 4px;
+              }
             }
           }
 
@@ -270,6 +322,12 @@
 
     .mu-dialog-body {
       padding: 0;
+    }
+  }
+
+  .mu-item-wrapper {
+    &:hover {
+
     }
   }
 

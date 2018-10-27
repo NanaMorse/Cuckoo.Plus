@@ -8,7 +8,11 @@ export const I18nTags = {
     status_visibility_public: 'public',
     status_visibility_private: 'private',
     status_visibility_unlisted: 'unlisted',
-    status_visibility_direct: 'direct'
+    status_visibility_direct: 'direct',
+    status_visibility_public_desc: 'public_desc',
+    status_visibility_private_desc: 'private_desc',
+    status_visibility_unlisted_desc: 'unlisted_desc',
+    status_visibility_direct_desc: 'direct_desc',
   },
 
   statusCard: {
