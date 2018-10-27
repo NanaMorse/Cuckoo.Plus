@@ -89,6 +89,16 @@ a {
   .mu-dialog-body {
     color: @textColor;
   }
+
+  .mu-dialog-actions {
+    .mu-button {
+      color: @textColor;
+    }
+
+    .mu-primary-text-color {
+      color: @primaryColor;
+    }
+  }
 }
 
 .mu-card {
@@ -114,6 +124,22 @@ a {
 
 .mu-popover {
   background-color: @dialogBackgroundColor;
+
+  .mu-list {
+    padding: 0;
+
+    li {
+
+      &.selected-item, .mu-item-wrapper.hover {
+        background-color: @secondaryColor;
+
+        .mu-icon, .mu-item-title, .mu-item-sub-title {
+          color: #fff;
+        }
+
+      }
+    }
+  }
 }
 
 .mu-option {

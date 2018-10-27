@@ -29,7 +29,14 @@
                 <path class="header-svg-fill" d="M20 14l10 10-10 10z" />
               </svg>
             </div>
-            <div class="visibility-info secondary-read-text-color">公开</div>
+            <div class="visibility-info secondary-theme-text-color" ref="visibilitySelectBtn"
+                 @click="setVisibilitySelectPopOverDisplay(true)">
+              {{$t(visibility)}}
+              <mu-icon size="18" class="visibility-icon secondary-read-text-color" :value="getVisibilityDescInfo(visibility).icon"></mu-icon>
+            </div>
+            <visibility-select-pop-over :visibility.sync="visibility"
+                                        :open.sync="shouldOpenVisibilitySelectPopOver"
+                                        :trigger="visibilityTriggerBtn"/>
           </div>
         </div>
       </div>
@@ -49,21 +56,20 @@
 
       <div class="attachment-select-btn-group">
         <mu-button icon>
-          <mu-icon class="mu-secondary-text-color" value="camera_alt" />
+          <mu-icon class="secondary-read-text-color" value="camera_alt" />
         </mu-button>
         <mu-button icon>
-          <mu-icon class="mu-secondary-text-color" value="link" />
+          <mu-icon class="secondary-read-text-color" value="link" />
         </mu-button>
       </div>
     </section>
 
     <footer v-if="!isFullScreen">
-      <mu-button class="dialog-button" :disabled="!shouldEnableSubmitButton"
-                 color="primary"
+      <mu-button class="dialog-button secondary-theme-text-color" flat :disabled="!shouldEnableSubmitButton"
                  @click="onSubmitNewStatus">
         {{$t($i18nTags.statusCard.submit_post)}}
       </mu-button>
-      <mu-button class="dialog-button" flat @click="onTryCloseDialog">
+      <mu-button class="dialog-button" color="secondary" flat @click="onTryCloseDialog">
         {{$t($i18nTags.statusCard.cancel_post)}}
       </mu-button>
     </footer>
@@ -74,25 +80,34 @@
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State, Getter, Action } from 'vuex-class'
-  import { UiWidthCheckConstants } from '@/constant'
-
+  import { UiWidthCheckConstants, VisibilityTypes } from '@/constant'
+  import { getVisibilityDescInfo } from '@/util'
+  import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
   const autosize = require('autosize')
 
-  const dialogStyleToggleWidth = 530
+  let isFirstTimeOpenDialog = true
 
-  @Component({})
+  @Component({
+    components: {
+      'visibility-select-pop-over': VisibilitySelectPopOver
+    }
+  })
   class PostStatusDialog extends Vue {
 
     $refs: {
       textArea: HTMLTextAreaElement
+      visibilitySelectBtn: HTMLDivElement
     }
+
+    getVisibilityDescInfo = getVisibilityDescInfo
+
+    visibility: string = VisibilityTypes.PUBLIC
+
+    visibilityTriggerBtn: HTMLDivElement = null
+
+    shouldOpenVisibilitySelectPopOver = false
 
     textContentValue: string = ''
-
-    mounted () {
-      // todo seems not working, why?
-      autosize(this.$refs.textArea)
-    }
 
     @Prop() open: boolean
 
@@ -120,8 +135,15 @@
     onDialogOpenChanged (isOpening) {
       if (isOpening) {
         this.$nextTick(() => {
+          if (isFirstTimeOpenDialog) {
+            autosize(this.$refs.textArea)
+            isFirstTimeOpenDialog = false
+          }
+          this.visibilityTriggerBtn = this.$refs.visibilitySelectBtn
           this.$refs.textArea.focus()
         })
+      } else {
+        this.setVisibilitySelectPopOverDisplay(false)
       }
     }
 
@@ -152,7 +174,8 @@
 
     async onSubmitNewStatus () {
       const formData = {
-        status: this.textContentValue
+        status: this.textContentValue,
+        visibility: this.visibility
       }
 
       // @ts-ignore
@@ -164,6 +187,10 @@
 
       // clear data and close dialog
       this.closeDialog()
+    }
+
+    setVisibilitySelectPopOverDisplay (open: boolean) {
+      this.shouldOpenVisibilitySelectPopOver = open
     }
 
     closeDialog () {
@@ -215,6 +242,12 @@
 
             .visibility-info {
               cursor: pointer;
+              display: flex;
+              align-items: center;
+
+              .visibility-icon {
+                margin-left: 4px;
+              }
             }
           }
 
@@ -270,6 +303,12 @@
 
     .mu-dialog-body {
       padding: 0;
+    }
+  }
+
+  .mu-item-wrapper {
+    &:hover {
+
     }
   }
 
