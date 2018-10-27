@@ -34,22 +34,9 @@
               {{$t(visibility)}}
               <mu-icon size="18" class="visibility-icon secondary-read-text-color" :value="getVisibilityDescInfo(visibility).icon"></mu-icon>
             </div>
-            <mu-popover cover :open.sync="shouldOpenVisibilitySelectPopOver"
-                        :trigger="visibilityTriggerBtn">
-              <mu-list textline="two-line">
-                <mu-list-item button v-for="(visibilityType, index) in VisibilityTypeList"
-                              :class="{ 'selected-item': visibilityType === visibility }"
-                              :key="index" @click="onChangeVisibility(visibilityType)">
-                  <mu-list-item-action>
-                    <mu-icon :value="getVisibilityDescInfo(visibilityType).icon"></mu-icon>
-                  </mu-list-item-action>
-                  <mu-list-item-content>
-                    <mu-list-item-title class="primary-read-text-color">{{$t(visibilityType)}}</mu-list-item-title>
-                    <mu-list-item-sub-title class="secondary-read-text-color">{{$t(getVisibilityDescInfo(visibilityType).descTag)}}</mu-list-item-sub-title>
-                  </mu-list-item-content>
-                </mu-list-item>
-              </mu-list>
-            </mu-popover>
+            <visibility-select-pop-over :visibility.sync="visibility"
+                                        :open.sync="shouldOpenVisibilitySelectPopOver"
+                                        :trigger="visibilityTriggerBtn"/>
           </div>
         </div>
       </div>
@@ -95,22 +82,22 @@
   import { State, Getter, Action } from 'vuex-class'
   import { UiWidthCheckConstants, VisibilityTypes } from '@/constant'
   import { getVisibilityDescInfo } from '@/util'
+  import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
   const autosize = require('autosize')
 
   let isFirstTimeOpenDialog = true
 
-  @Component({})
+  @Component({
+    components: {
+      'visibility-select-pop-over': VisibilitySelectPopOver
+    }
+  })
   class PostStatusDialog extends Vue {
 
     $refs: {
       textArea: HTMLTextAreaElement
       visibilitySelectBtn: HTMLDivElement
     }
-
-    VisibilityTypeList = [
-      VisibilityTypes.PUBLIC, VisibilityTypes.PRIVATE,
-      VisibilityTypes.UNLISTED, VisibilityTypes.DIRECT
-    ]
 
     getVisibilityDescInfo = getVisibilityDescInfo
 
@@ -150,10 +137,9 @@
         this.$nextTick(() => {
           if (isFirstTimeOpenDialog) {
             autosize(this.$refs.textArea)
-            this.visibilityTriggerBtn = this.$refs.visibilitySelectBtn
-
             isFirstTimeOpenDialog = false
           }
+          this.visibilityTriggerBtn = this.$refs.visibilitySelectBtn
           this.$refs.textArea.focus()
         })
       } else {
@@ -201,11 +187,6 @@
 
       // clear data and close dialog
       this.closeDialog()
-    }
-
-    onChangeVisibility (newVisibility: string) {
-      this.visibility = newVisibility
-      this.setVisibilitySelectPopOverDisplay(false)
     }
 
     setVisibilitySelectPopOverDisplay (open: boolean) {

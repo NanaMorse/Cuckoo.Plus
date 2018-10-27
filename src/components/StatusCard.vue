@@ -171,8 +171,8 @@
               <mu-button class="operate-btn add-image secondary-read-text-color" icon>
                 <mu-icon class="reply-action-icon" value="local_see" />
               </mu-button>
-              <mu-button class="operate-btn add-link secondary-read-text-color" icon>
-                <mu-icon class="reply-action-icon" value="link" />
+              <mu-button ref="visibilityTriggerBtn" @click="shouldOpenVisibilitySelectPopOver = true" class="operate-btn change-visibility secondary-read-text-color" icon>
+                <mu-icon class="reply-action-icon" :value="getVisibilityDescInfo(replyVisibility).icon" />
               </mu-button>
             </div>
             <div class="right-area">
@@ -185,6 +185,10 @@
         </div>
       </mu-card-actions>
     </mu-card>
+
+    <visibility-select-pop-over :visibility.sync="replyVisibility"
+                                :open.sync="shouldOpenVisibilitySelectPopOver"
+                                :trigger="visibilityTriggerBtn"/>
   </div>
 </template>
 
@@ -192,16 +196,18 @@
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State, Action, Getter } from 'vuex-class'
   import * as moment from 'moment'
-  import { AttachmentTypes } from '@/constant'
-  import MediaPanel from './MediaPanel'
+  import { AttachmentTypes, VisibilityTypes } from '@/constant'
+  import MediaPanel from '@/components/MediaPanel'
+  import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
   import { mastodonentities } from '@/interface'
   import ThemeManager from 'muse-ui/lib/theme'
-  import { formatHtml } from '@/util'
+  import { formatHtml, getVisibilityDescInfo } from '@/util'
   const autosize = require('autosize')
 
   @Component({
     components: {
-      'media-panel': MediaPanel
+      'media-panel': MediaPanel,
+      'visibility-select-pop-over': VisibilitySelectPopOver
     }
   })
   class StatusCard extends Vue {
@@ -213,6 +219,7 @@
     $refs: {
       statusCardContainer: HTMLDivElement
       replayTextInput: HTMLTextAreaElement
+      visibilityTriggerBtn: any
     }
 
     @State('contextMap') contextMap
@@ -235,16 +242,19 @@
 
     replyInputValue: string = ''
 
-    formatHtml = formatHtml
+    replyVisibility = VisibilityTypes.PUBLIC
 
     isCardLoading = false
 
     userNameAreaStyle = {}
 
-    mounted () {
-      autosize(this.$refs.replayTextInput)
-      this.setMainStatusUserNameAreaStyle()
-    }
+    visibilityTriggerBtn: any = null
+
+    shouldOpenVisibilitySelectPopOver = false
+
+    formatHtml = formatHtml
+
+    getVisibilityDescInfo = getVisibilityDescInfo
 
     @Prop() status: mastodonentities.Status
 
@@ -286,6 +296,12 @@
 
     get shouldShowFullReplyListArea () {
       return this.descendantStatusList.length && ( this.descendantStatusList.length <= 4 || this.hasTryToExtendSimpleReplyArea)
+    }
+
+    mounted () {
+      autosize(this.$refs.replayTextInput)
+      this.setMainStatusUserNameAreaStyle()
+      this.visibilityTriggerBtn = this.$refs.visibilityTriggerBtn.$el
     }
 
     onCardMouseOver () {
@@ -363,7 +379,8 @@
         mainStatusId: this.status.id,
         formData: {
           status: this.replyInputValue,
-          inReplyToId: currentReplyToStatus.id
+          inReplyToId: currentReplyToStatus.id,
+          visibility: this.replyVisibility
         }
       })
       this.isCardLoading = false
