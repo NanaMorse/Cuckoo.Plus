@@ -6,21 +6,6 @@
       </mu-button>
       <span>{{parsedMastodonServerUri}}</span>
       <span class="route-info" v-if="shouldShowRouteInfo">{{pathToRouteInfo[$route.path].name}}</span>
-      <div class="search-input-area" v-if="shouldShowRouteInfo">
-        <mu-icon class="pre-fix-icon" value="search"/>
-        <mu-auto-complete class="search-input" :placeholder="searchInputPlaceHolder" v-model="searchKeyString"
-                          :max-search-results="5" :full-width="true"	:data="searchResult">
-          <template slot-scope="scope">
-            <mu-list-item-action>
-              <mu-avatar>
-                <img :src="scope.item.favicon">
-              </mu-avatar>
-            </mu-list-item-action>
-            <mu-list-item-content v-html="scope.item.value">
-            </mu-list-item-content>
-          </template>
-        </mu-auto-complete>
-      </div>
     </mu-appbar>
   </div>
 </template>
@@ -29,6 +14,7 @@
   import { Vue, Component } from 'vue-property-decorator'
   import { State, Mutation } from 'vuex-class'
   import { cuckoostore } from '@/interface'
+  import * as Api from '@/api'
 
   // todo 统一位置管理
   const pathToRouteInfo = {
@@ -51,10 +37,6 @@
 
     @Mutation('updateDrawerOpenStatus') updateDrawerOpenStatus
 
-    searchKeyString = ''
-
-    searchResult = []
-
     pathToRouteInfo = pathToRouteInfo
 
     get shouldShowRouteInfo () {
@@ -64,11 +46,6 @@
     get parsedMastodonServerUri () {
       const url = new URL(this.mastodonServerUri)
       return url.host.replace(url.host[0], (c) => c.toUpperCase())
-    }
-
-    get searchInputPlaceHolder () {
-      // todo i18n
-      return `搜索${this.parsedMastodonServerUri}`
     }
 
     onMenuBtnClick () {

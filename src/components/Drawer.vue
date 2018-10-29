@@ -2,6 +2,8 @@
   <mu-drawer class="cuckoo-drawer default-theme-bg-color primary-read-text-color" :open.sync="appStatus.isDrawerOpened" :style="drawerStyle"
              :docked="shouldDrawerDocked" :z-depth="shouldDrawerDocked ? 0 : 16">
 
+    <mu-divider />
+
     <mu-list :value="currentListValue">
       <mu-list-item button v-for="(info, index) in baseTimeLineInfoList" :value="info.value"
                     :key="index" @click="onTimeLineItemClick(info.value)">
@@ -12,7 +14,7 @@
       </mu-list-item>
     </mu-list>
 
-    <mu-divider></mu-divider>
+    <mu-divider />
 
     <mu-list class="secondary-list">
       <mu-list-item button :to="$routersInfo.settings.path" @click="onSecondaryItemClick">
