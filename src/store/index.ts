@@ -26,7 +26,6 @@ const state: cuckoostore.stateInfo = {
     home: [],
     public: [],
     direct: [],
-    // todo should save hash names to local
     tag: {},
     list: {}
   },
