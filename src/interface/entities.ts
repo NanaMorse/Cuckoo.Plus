@@ -182,4 +182,10 @@ export namespace mastodonentities {
   export interface Tag {
 
   }
+
+  export interface SearchResults {
+    accounts: Array<Account>
+    statuses: Array<Status>
+    hashtags: Array<string>
+  }
 }
