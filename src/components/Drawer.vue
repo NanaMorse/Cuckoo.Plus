@@ -19,11 +19,16 @@
           <mu-icon class="toggle-icon" size="24" value="keyboard_arrow_down" />
         </mu-list-item-action>
 
-        <mu-list-item v-if="info.hashList" slot="nested" button
+        <mu-list-item class="hash-list-item" v-if="info.hashList" slot="nested" button
                       v-for="(hashName, index) in info.hashList"
                       :value="info.to + '/' + hashName"
                       :key="index" @click="onHashRouteItemClick(info.value, hashName)">
-          <mu-list-item-title>{{hashName}}</mu-list-item-title>
+          <mu-list-item-title># {{hashName}}</mu-list-item-title>
+          <mu-list-item-action>
+            <mu-button class="delete-hash-btn" icon @click.stop="onDeleteHash(hashName)">
+              <mu-icon value="delete" />
+            </mu-button>
+          </mu-list-item-action>
         </mu-list-item>
 
       </mu-list-item>
@@ -46,13 +51,6 @@
   import { State, Mutation, Action } from 'vuex-class'
   import { isBaseTimeLine } from '@/util'
   import { TimeLineTypes, UiWidthCheckConstants, RoutersInfo } from '@/constant'
-
-  const routerValues = {
-    home: 'home',
-    public: 'public',
-    tags: 'tags',
-    profile: 'profile'
-  }
 
   const baseRouterInfoList = [
     {
@@ -97,9 +95,10 @@
 
     @Mutation('updateDrawerOpenStatus') updateDrawerOpenStatus
 
+    @Mutation('updateTags') updateTags
+
     @Action('updateTimeLineStatuses') updateTimeLineStatuses
 
-    baseRouterInfoList = baseRouterInfoList
 
     @Watch('shouldDrawerDocked')
     onShouldDrawerDockedChanged () {
@@ -110,6 +109,13 @@
 
     get shouldDrawerDocked () {
       return this.appStatus.documentWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY
+    }
+
+    get baseRouterInfoList () {
+      // @ts-ignore
+      baseRouterInfoList.find(info => info.value === TimeLineTypes.TAG).hashList = this.appStatus.settings.tags
+
+      return baseRouterInfoList
     }
 
     get drawerStyle () {
@@ -168,6 +174,14 @@
       window.scrollTo(0, 0)
     }
 
+    onDeleteHash (hashName: string) {
+      // todo only tag has hash now
+      const newTags = [...this.appStatus.settings.tags]
+      newTags.splice(newTags.indexOf(hashName as any), 1)
+
+      this.updateTags(newTags)
+    }
+
     /**
      * @desc if clicked timeline item is just current timeline
      * */
@@ -191,6 +205,23 @@
 
   export default Drawer
 </script>
+
+<style lang="less" scoped>
+  .hash-list-item {
+
+    .delete-hash-btn {
+      display: none;
+    }
+
+    &:hover {
+
+      .delete-hash-btn {
+        display: unset;
+      }
+
+    }
+  }
+</style>
 
 <style lang="less">
   @import "../assets/variable";

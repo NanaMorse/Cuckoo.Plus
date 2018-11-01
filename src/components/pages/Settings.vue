@@ -33,7 +33,7 @@
     ]
 
     get themeName (): string {
-      return this.appStatus.theme
+      return this.appStatus.settings.theme
     }
 
     set themeName (val) {
