@@ -4,14 +4,35 @@
 
     <mu-divider />
 
-    <mu-list :value="currentListValue">
-      <mu-list-item button v-for="(info, index) in baseTimeLineInfoList" :value="info.value"
-                    :key="index" @click="onTimeLineItemClick(info.value)">
+    <mu-list :value="currentListValue" toggle-nested>
+
+      <mu-list-item button v-for="(info, index) in baseRouterInfoList"
+                    :value="info.value"
+                    :nested="!!info.hashList" :ripple="!info.hashList"
+                    :key="index" @click="!info.hashList && onBaseRouteItemClick(info.value)">
         <mu-list-item-action>
           <mu-icon :value="info.icon"/>
         </mu-list-item-action>
         <mu-list-item-title>{{info.title}}</mu-list-item-title>
+
+        <mu-list-item-action v-if="!!info.hashList">
+          <mu-icon class="toggle-icon" size="24" value="keyboard_arrow_down" />
+        </mu-list-item-action>
+
+        <mu-list-item class="hash-list-item" v-if="info.hashList" slot="nested" button
+                      v-for="(hashName, index) in info.hashList"
+                      :value="info.to + '/' + hashName"
+                      :key="index" @click="onHashRouteItemClick(info.value, hashName)">
+          <mu-list-item-title># {{hashName}}</mu-list-item-title>
+          <mu-list-item-action>
+            <mu-button class="delete-hash-btn" icon @click.stop="onDeleteHash(hashName)">
+              <mu-icon value="delete" />
+            </mu-button>
+          </mu-list-item-action>
+        </mu-list-item>
+
       </mu-list-item>
+
     </mu-list>
 
     <mu-divider />
@@ -28,10 +49,10 @@
 <script lang="ts">
   import { Vue, Component, Watch } from 'vue-property-decorator'
   import { State, Mutation, Action } from 'vuex-class'
-  import { getTimeLineTypeAndHashName, isBaseTimeLine } from '@/util'
-  import { TimeLineTypes, UiWidthCheckConstants } from '@/constant'
+  import { isBaseTimeLine } from '@/util'
+  import { TimeLineTypes, UiWidthCheckConstants, RoutersInfo } from '@/constant'
 
-  const baseTimeLineInfoList = [
+  const baseRouterInfoList = [
     {
       value: TimeLineTypes.HOME,
       title: 'Home',
@@ -43,6 +64,19 @@
       title: 'Public',
       icon: 'public',
       to: '/timelines/public'
+    },
+    {
+      value: TimeLineTypes.TAG,
+      title: 'Tag',
+      icon: 'loyalty',
+      to: '/timelines/tag',
+      hashList: ['kimermark']
+    },
+    {
+      value: 'profile',
+      title: 'Profile',
+      icon: 'person',
+      to: ''
     }
   ]
 
@@ -61,9 +95,10 @@
 
     @Mutation('updateDrawerOpenStatus') updateDrawerOpenStatus
 
+    @Mutation('updateTags') updateTags
+
     @Action('updateTimeLineStatuses') updateTimeLineStatuses
 
-    baseTimeLineInfoList = baseTimeLineInfoList
 
     @Watch('shouldDrawerDocked')
     onShouldDrawerDockedChanged () {
@@ -74,6 +109,13 @@
 
     get shouldDrawerDocked () {
       return this.appStatus.documentWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY
+    }
+
+    get baseRouterInfoList () {
+      // @ts-ignore
+      baseRouterInfoList.find(info => info.value === TimeLineTypes.TAG).hashList = this.appStatus.settings.tags
+
+      return baseRouterInfoList
     }
 
     get drawerStyle () {
@@ -90,30 +132,39 @@
     }
 
     get currentListValue () {
-      // @ts-ignore
-      const { timeLineType, hashName } = getTimeLineTypeAndHashName(this.$route)
-
-      if (isBaseTimeLine(timeLineType)) {
-        return timeLineType
+      if (this.$route.name === RoutersInfo.tagtimelines.name) {
+        return this.$route.path
       } else {
-        return `${timeLineType}/${hashName}`
+        const currentRouterInfo = baseRouterInfoList.find(routerInfo => routerInfo.to === this.$route.path)
+
+        if (currentRouterInfo) return currentRouterInfo.value
       }
     }
 
-    async onTimeLineItemClick (clickedTypeLineType: string, clickedHashName: string = '') {
-      const { timeLineType, hashName } = getTimeLineTypeAndHashName(this.$route)
+    async onBaseRouteItemClick (clickedRouterValue: string) {
+      const targetPath = baseRouterInfoList.find(routerInfo => routerInfo.value === clickedRouterValue).to
 
-      if ((clickedTypeLineType === timeLineType) && (hashName === clickedHashName)) {
-        this.fetchTimeLineStatuses(timeLineType, hashName)
+      if (isBaseTimeLine(clickedRouterValue) && (targetPath === this.$route.path)) {
+        this.fetchTimeLineStatuses(clickedRouterValue)
       }
 
-      // route to target
-      const targetPath = '/timelines/' +
-        (isBaseTimeLine(clickedTypeLineType) ? clickedTypeLineType : `${clickedTypeLineType}/${clickedHashName}`)
+      if (!this.shouldDrawerDocked) this.updateDrawerOpenStatus(false)
 
       this.$router.push(targetPath)
 
+      window.scrollTo(0, 0)
+    }
+
+    async onHashRouteItemClick (clickedRouterValue: string, hashName: string) {
+      const targetPath = baseRouterInfoList.find(routerInfo => routerInfo.value === clickedRouterValue).to + '/' + hashName
+
+      if (targetPath === this.$route.path) {
+        this.fetchTimeLineStatuses(clickedRouterValue, hashName)
+      }
+
       if (!this.shouldDrawerDocked) this.updateDrawerOpenStatus(false)
+
+      this.$router.push(targetPath)
 
       window.scrollTo(0, 0)
     }
@@ -121,6 +172,14 @@
     onSecondaryItemClick () {
       if (!this.shouldDrawerDocked) this.updateDrawerOpenStatus(false)
       window.scrollTo(0, 0)
+    }
+
+    onDeleteHash (hashName: string) {
+      // todo only tag has hash now
+      const newTags = [...this.appStatus.settings.tags]
+      newTags.splice(newTags.indexOf(hashName as any), 1)
+
+      this.updateTags(newTags)
     }
 
     /**
@@ -147,6 +206,23 @@
   export default Drawer
 </script>
 
+<style lang="less" scoped>
+  .hash-list-item {
+
+    .delete-hash-btn {
+      display: none;
+    }
+
+    &:hover {
+
+      .delete-hash-btn {
+        display: unset;
+      }
+
+    }
+  }
+</style>
+
 <style lang="less">
   @import "../assets/variable";
 
@@ -157,6 +233,15 @@
       -ms-transition: background-color .3s cubic-bezier(0,0,0.2,1);
       -o-transition: background-color .3s cubic-bezier(0,0,0.2,1);
       transition: background-color .3s cubic-bezier(0,0,0.2,1);
+    }
+
+    .toggle-icon {
+      transform: rotate(0);
+      transition: transform .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1)
+    }
+
+    .mu-item__open .toggle-icon {
+      transform: rotate(180deg);
     }
   }
 </style>

@@ -13,8 +13,8 @@
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
   import { State, Mutation } from 'vuex-class'
+  import { TimeLineTypes, RoutersInfo } from '@/constant'
   import { cuckoostore } from '@/interface'
-  import * as Api from '@/api'
 
   // todo 统一位置管理
   const pathToRouteInfo = {
