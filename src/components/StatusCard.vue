@@ -231,6 +231,7 @@
 
     @State('contextMap') contextMap
     @State('statusMap') statusMap
+    @State('currentUserAccount') currentUserAccount: mastodonentities.AuthenticatedAccount
 
     @Action('updateFavouriteStatusById') updateFavouriteStatusById
     @Action('updateContextMap') updateContextMap
@@ -266,8 +267,6 @@
     getVisibilityDescInfo = getVisibilityDescInfo
 
     @Prop() status: mastodonentities.Status
-
-    @State('currentUserAccount') currentUserAccount: mastodonentities.AuthenticatedAccount
 
     @Watch('shouldShowFullReplyArea')
     async onShowCompleteReplyArea () {
@@ -371,9 +370,14 @@
     onReplyToStatus (status: mastodonentities.Status) {
       this.currentReplyToStatus = status
 
-      const preSetMentions: Array<{ acct: string }> = [{ acct: status.account.acct }, ...status.mentions]
+      const preSetMentions = [{
+        acct: status.account.acct,
+        id: status.account.id
+      }, ...status.mentions].filter(mention => {
+        return mention.id !== this.currentUserAccount.id
+      })
 
-      this.replyInputValue = preSetMentions.reduce((pre, cur) => pre + `@${cur.acct} \n`, '')
+      this.replyInputValue = preSetMentions.reduce((pre, cur) => pre + `@${cur.acct} `, '')
 
       this.showFullReplyActionArea()
     }
