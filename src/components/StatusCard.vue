@@ -101,7 +101,7 @@
               <div class="reply-action-list">
 
                 <a class="reply-button secondary-theme-text-color"
-                   @click="onReplyToReplierStatus(replierStatus)">{{$t($i18nTags.statusCard.reply_to_replier)}}</a>
+                   @click="onReplyToStatus(replierStatus)">{{$t($i18nTags.statusCard.reply_to_replier)}}</a>
 
                 <div class="plus-one-button secondary-theme-text-color"
                      @click="onFavoriteButtonClick(replierStatus)"
@@ -120,7 +120,7 @@
       </div>
 
       <div class="current-reply-to-info-area" v-if="currentReplyToStatus">
-        <mu-chip class="reply-to-account-info" color="primary" @delete="clearReplyToStatus" delete>
+        <mu-chip class="reply-to-account-info" color="primary" @delete="onHideFullReplyActionArea" delete>
           <mu-avatar :size="32">
             <img :src="currentReplyToStatus.account.avatar_static">
           </mu-avatar>
@@ -137,7 +137,7 @@
               <img :src="currentUserAccount.avatar_static">
             </mu-avatar>
 
-            <div class="active-reply-entry secondary-read-text-color" @click="showFullReplyActionArea">
+            <div class="active-reply-entry secondary-read-text-color" @click="onReplyToStatus(status)">
               {{$t($i18nTags.statusCard.reply_to_main_status)}}
             </div>
           </div>
@@ -240,6 +240,8 @@
     @Getter('getAccountAtName') getAccountAtName
 
     currentReplyToStatus: mastodonentities.Status = null
+
+    currentMentions: Array<mastodonentities.Mention> = []
 
     shouldShowHeaderActionButtonGroup: boolean = false
 
@@ -357,6 +359,7 @@
       this.shouldShowFullReplyActionArea = true
       this.$nextTick(() => {
         this.$refs.replayTextInput.focus()
+        this.$refs.replayTextInput.dispatchEvent(new Event('autosize:update'))
       })
     }
 
@@ -365,10 +368,12 @@
       this.clearReplyToStatus()
     }
 
-    onReplyToReplierStatus (status: mastodonentities.Status) {
+    onReplyToStatus (status: mastodonentities.Status) {
       this.currentReplyToStatus = status
 
-      this.replyInputValue = `@${this.currentReplyToStatus.account.username} `
+      const preSetMentions: Array<{ acct: string }> = [{ acct: status.account.acct }, ...status.mentions]
+
+      this.replyInputValue = preSetMentions.reduce((pre, cur) => pre + `@${cur.acct} \n`, '')
 
       this.showFullReplyActionArea()
     }
@@ -379,7 +384,7 @@
     }
 
     async onSubmitReplyContent () {
-      const currentReplyToStatus = this.currentReplyToStatus || this.status
+      const currentReplyToStatus = this.currentReplyToStatus
 
       this.isCardLoading = true
       await this.postStatus({
