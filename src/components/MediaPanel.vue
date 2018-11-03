@@ -7,7 +7,7 @@
              :src="media.url" :key="index"/>
 
         <div class="gifv-container" v-if="media.type === mediaTypes.GIFV">
-          <video autoplay :src="media.url" :key="index" />
+          <video autoplay loop :src="media.url" :key="index" />
         </div>
       </div>
     </div>
@@ -21,6 +21,7 @@
         <mu-carousel-item v-for="(mediaInfo, index) in combinedMediaList" :key="index">
           <div class="light-box-item" @click.stop="onLightBoxMediaItemClick">
             <img v-if="mediaInfo.type === mediaTypes.IMAGE" :src="mediaInfo.url"/>
+            <video v-if="mediaInfo.type === mediaTypes.GIFV" autoplay loop :src="mediaInfo.url"/>
           </div>
         </mu-carousel-item>
       </mu-carousel>
