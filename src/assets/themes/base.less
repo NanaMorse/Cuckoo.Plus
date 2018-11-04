@@ -82,12 +82,28 @@ a {
   }
 }
 
+.cuckoo-header-container {
+  .mu-text-field-input {
+    color: #fff;
+  }
+}
+
 // for overwrite muse-ui style
 .mu-dialog {
   background-color: @dialogBackgroundColor;
 
   .mu-dialog-body {
     color: @textColor;
+  }
+
+  .mu-dialog-actions {
+    .mu-button {
+      color: @textColor;
+    }
+
+    .mu-primary-text-color {
+      color: @primaryColor;
+    }
   }
 }
 
@@ -114,6 +130,22 @@ a {
 
 .mu-popover {
   background-color: @dialogBackgroundColor;
+
+  .mu-list {
+    padding: 0;
+
+    li {
+
+      &.selected-item, .mu-item-wrapper.hover {
+        background-color: @secondaryColor;
+
+        .mu-icon, .mu-item-title, .mu-item-sub-title {
+          color: #fff;
+        }
+
+      }
+    }
+  }
 }
 
 .mu-option {
@@ -145,4 +177,7 @@ a {
 
 }
 
+.mu-loading-wrap {
+  background-color: fade(@dialogBackgroundColor, 80%) !important;
+}
 

@@ -197,4 +197,10 @@ export namespace mastodonentities {
   }
 
   export type NotificationType = "mention" | "reblog" | "favourite" | "follow"
+  
+  export interface SearchResults {
+    accounts: Array<Account>
+    statuses: Array<Status>
+    hashtags: Array<string>
+  }
 }

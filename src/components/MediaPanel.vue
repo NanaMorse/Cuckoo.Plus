@@ -1,72 +1,95 @@
 <template>
-  <div class="media-panel-container" v-if="hasMediaInfo">
-
-    <div class="single-media-area pixiv-card-area" v-if="pixivCards.length">
-      <img :src="pixivCards[0].image_url"/>
-    </div>
-
-    <div class="single-media-area" v-if="mediaList.length === 1">
-      <img v-if="isSameMediaType(mediaList[0].type, mediaTypes.IMAGE)"
-           :src="mediaList[0].url"/>
-
-      <div class="gifv-container" v-if="isSameMediaType(mediaList[0].type, mediaTypes.GIFV)">
-        <video autoplay loop :src="mediaList[0].url" />
-      </div>
-    </div>
-
-    <div class="multi-media-area" v-if="mediaList.length > 1">
-      <div class="media-gallery-item" v-for="(media, index) in mediaList">
-        <img v-if="isSameMediaType(media.type, mediaTypes.IMAGE)"
+  <div class="media-panel-container" v-if="combinedMediaList.length > 0">
+    <div class="media-area" :class="mediaAreaClass">
+      <div class="media-gallery-item" v-for="(media, index) in combinedMediaList"
+           @click="onMediaItemClick(index)">
+        <img v-if="media.type === mediaTypes.IMAGE"
              :src="media.url" :key="index"/>
 
-        <div class="gifv-container" v-if="isSameMediaType(media.type, mediaTypes.GIFV)">
+        <div class="gifv-container" v-if="media.type === mediaTypes.GIFV">
           <video autoplay :src="media.url" :key="index" />
         </div>
       </div>
     </div>
+
+    <mu-dialog class="light-box" transition="fade"
+               :open.sync="shouldShowLightBox" :overlay-opacity="0.7">
+      <mu-icon class="close-icon" value="close" @click="shouldShowLightBox = false"/>
+      <mu-carousel :cycle="false" :active="lightBoxActiveIndex" transition="fade"
+                   :hide-indicators="(combinedMediaList.length === 1) || !shouldShowLightBoxControlBtn"
+                   :hide-controls="(combinedMediaList.length === 1) || !shouldShowLightBoxControlBtn">
+        <mu-carousel-item v-for="(mediaInfo, index) in combinedMediaList" :key="index">
+          <div class="light-box-item" @click.stop="onLightBoxMediaItemClick">
+            <img v-if="mediaInfo.type === mediaTypes.IMAGE" :src="mediaInfo.url"/>
+          </div>
+        </mu-carousel-item>
+      </mu-carousel>
+    </mu-dialog>
+
   </div>
 </template>
 
 <script lang="ts">
-  import { Vue, Component, Prop } from 'vue-property-decorator'
+  import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { AttachmentTypes } from '@/constant'
   import { mastodonentities } from '@/interface'
 
   @Component({})
   class MediaPanel extends Vue {
 
-    @Prop({ default: () => [] }) mediaList?: Array<mastodonentities.Attachment>
+    @Prop() mediaList?: Array<mastodonentities.Attachment>
 
-    @Prop({ default: () => [] }) pixivCards?: Array<{ url: string, image_url: string }>
+    @Prop() pixivCards?: Array<{ url: string, image_url: string }>
+
+    get combinedMediaList () {
+      const mediaListPart = this.mediaList.map(item => {
+        return { url: item.url, originUrl: item.url, type: item.type }
+      })
+
+      const pixivCardsPart = this.pixivCards.map(item => {
+        return { url: item.image_url, originUrl: item.url, type: this.mediaTypes.IMAGE }
+      })
+
+      return [...mediaListPart, ...pixivCardsPart]
+    }
+
+    get mediaAreaClass () {
+      const mediaAreaClassList = [
+        'one-media', 'two-medias', 'three-medias', 'four-medias'
+      ]
+
+      return mediaAreaClassList[this.combinedMediaList.length - 1]
+    }
 
     mediaTypes = AttachmentTypes
 
-    get hasMediaInfo () {
-      return (this.mediaList.length > 0) || (this.pixivCards.length > 0)
+    shouldShowLightBox: boolean = false
+
+    shouldShowLightBoxControlBtn: boolean = true
+
+    lightBoxActiveIndex: number = 0
+
+    @Watch('$route')
+    onRouteChanged () {
+      this.shouldShowLightBox = false
     }
 
-    get singleMediaInfo () {
-      const info = {
-        imageUrl: '',
-        clickUrl: ''
-      }
-
-      if (this.mediaList[0]) {
-        info.imageUrl = this.mediaList[0].url
-        info.clickUrl = this.mediaList[0].url
-      }
-
-      if (this.pixivCards[0]) {
-        info.imageUrl = this.pixivCards[0].image_url
-        info.clickUrl = this.pixivCards[0].url
-      }
-
-      // todo multi pixiv cards?
-      return info
+    onMediaItemClick (mediaItemIndex: number) {
+      this.shouldShowLightBox = true
+      this.lightBoxActiveIndex = mediaItemIndex
+      // vue会帮忙处理this指向？
+      document.addEventListener('click', this.onLightBoxClick)
     }
 
-    isSameMediaType (typeA: string, typeB: string) {
-      return typeA === typeB
+    onLightBoxMediaItemClick () {
+      this.shouldShowLightBoxControlBtn = !this.shouldShowLightBoxControlBtn
+    }
+
+    onLightBoxClick (e) {
+      if (e.target && (e.target.className === 'mu-carousel-item')) {
+        this.shouldShowLightBox = false
+        document.removeEventListener('click', this.onLightBoxClick)
+      }
     }
   }
 
@@ -81,39 +104,117 @@
       cursor: zoom-in;
     }
 
-    .single-media-area img {
+    img {
+      height: 100%;
       width: 100%;
-      height: auto;
-      cursor: zoom-in;
+      object-fit: cover;
+      object-position: 50% 20%;
     }
 
-    .multi-media-area{
-      height: calc(50vh - 70px);
+    .media-area {
       display: flex;
+      justify-content: space-around;
+    }
 
-      .media-gallery-item {
-        width: 50%;
+    .media-gallery-item {
+      height: 100%;
+      max-height: 1000px;
+      overflow: hidden;
+      border-radius: 4px;
+
+      .gifv-container {
+        width: 100%;
         height: 100%;
 
-        > img {
-          height: 100%;
+        > video {
           width: 100%;
+          height: 100%;
           object-fit: cover;
-          object-position: 50% 20%;
         }
+      }
 
+    }
+
+    .two-medias {
+
+      .media-gallery-item {
+        height: calc(50vh - 70px);
+        max-height: 350px;
+        min-height: 260px;
+        width: calc(50% - 2px);
+      }
+
+    }
+
+    .three-medias {
+      flex-wrap: wrap;
+
+      .media-gallery-item {
+        height: calc(((100vw - 300px) / 2) - 100px);
+        max-height: 270px;
+        min-height: 140px;
+        width: calc(50% - 2px);;
+
+        &:first-child {
+          width: 100%;
+          margin-bottom: 2px;
+        }
       }
     }
 
-    .gifv-container {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
+    .four-medias {
+      .three-medias();
 
-      > video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+      .media-gallery-item {
+
+        &:first-child {
+          width: calc(50% - 2px);
+        }
+      }
+    }
+
+  }
+</style>
+
+<style lang="less">
+  .light-box {
+    .mu-dialog {
+      background-color: transparent;
+      max-width: unset;
+
+      .close-icon {
+        font-size: 46px;
+        position: fixed;
+        z-index: 1;
+        right: 20px;
+        top: 20px;
+        cursor: pointer;
+        color: #fff;
+      }
+
+      .mu-dialog-body {
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+
+        .mu-carousel {
+          height: 100%;
+
+          .mu-carousel-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .light-box-item {
+              img {
+                max-width: 100vw;
+                max-height: 80vh;
+                width: auto;
+                height: auto;
+              }
+            }
+          }
+        }
       }
     }
   }

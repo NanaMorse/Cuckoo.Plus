@@ -15,10 +15,8 @@ const plugins = [
 ]
 
 if (isEnvProduction) {
-  // 删除source-map数据 / remove source map data
-  fs.unlink(path.join(__dirname, './public/dist/bundle.js.map'), (err) => {
-    if (err) console.error(err)
-  })
+  // remove source map data
+  fs.unlink(path.join(__dirname, './public/dist/bundle.js.map'), (err) => {})
 } else {
   plugins.push(new BundleAnalyzerPlugin())
 }

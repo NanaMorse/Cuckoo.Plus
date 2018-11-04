@@ -67,7 +67,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "npm run test"
+      "pre-push": "npm run test",
+      "pre-commit": "npm run build && git add ./public/dist/bundle.js"
     }
   },
   "repository": {

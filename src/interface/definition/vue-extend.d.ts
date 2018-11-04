@@ -31,6 +31,11 @@ declare module "vue/types/vue" {
         status_visibility_public: string
         status_visibility_private: string
         status_visibility_unlisted: string
+        status_visibility_direct: string
+        status_visibility_public_desc: string,
+        status_visibility_private_desc: string,
+        status_visibility_unlisted_desc: string,
+        status_visibility_direct_desc: string,
       },
       header: {
 

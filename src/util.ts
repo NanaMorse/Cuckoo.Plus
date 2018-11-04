@@ -1,6 +1,6 @@
 import store from '@/store'
-import { TimeLineTypes, RoutersInfo } from '@/constant'
-import { Route } from "vue-router";
+import { TimeLineTypes, RoutersInfo, I18nTags, VisibilityTypes } from '@/constant'
+import { Route } from "vue-router"
 import { insertDels } from "./formatter"
 
 export function patchApiUri (uri: string): string {
@@ -40,6 +40,28 @@ export function getTimeLineTypeAndHashName (route: Route) {
   }
 
   return { timeLineType, hashName }
+}
+
+const visibilityTypeToDescMap = {
+  [VisibilityTypes.PUBLIC]: {
+    descTag: I18nTags.common.status_visibility_public_desc,
+    icon: 'public'
+  },
+  [VisibilityTypes.UNLISTED]: {
+    descTag: I18nTags.common.status_visibility_unlisted_desc,
+    icon: 'lock_open'
+  },
+  [VisibilityTypes.PRIVATE]: {
+    descTag: I18nTags.common.status_visibility_private_desc,
+    icon: 'lock'
+  },
+  [VisibilityTypes.DIRECT]: {
+    descTag: I18nTags.common.status_visibility_direct_desc,
+    icon: 'email'
+  }
+}
+export function getVisibilityDescInfo (visibilityType: string) {
+  return visibilityTypeToDescMap[visibilityType]
 }
 
 export function formatHtml(html: string): string {

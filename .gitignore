@@ -1,4 +1,4 @@
 .idea
 package-lock.json
 node_modules
-public/dist
+public/dist/bundle.js.map
