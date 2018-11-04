@@ -47,7 +47,7 @@
   class Header extends Vue {
 
     $refs: {
-      notificationBtn: HTMLButtonElement
+      notificationBtn: any
     }
 
     $route
@@ -74,7 +74,7 @@
     }
 
     mounted () {
-      this.notificationBtnTrigger = this.$refs.notificationBtn
+      this.notificationBtnTrigger = this.$refs.notificationBtn.$el
     }
 
     onMenuBtnClick () {

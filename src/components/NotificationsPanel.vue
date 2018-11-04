@@ -1,6 +1,6 @@
 <template>
   <div v-loading="!notifications">
-    <p v-for="notification in notifications">{{ notification }}</p>
+    <notification-card v-for="(notification, index) in notifications" :key="index" :notification="notification" />
   </div>
 </template>
 
@@ -8,15 +8,20 @@
   import { Vue, Component } from 'vue-property-decorator'
   import { State, Action } from 'vuex-class'
   import { mastodonentities } from '@/interface'
+  import NotificationCard from '@/components/NotificationCard'
 
-  @Component({})
+  @Component({
+    components: {
+      'notification-card': NotificationCard
+    }
+  })
   class NotificationsPanel extends Vue {
 
     $progress
 
     @Action('fetchNotifications') fetchNotifications
 
-    @State('notifications') notifications
+    @State('notifications') notifications: Array<mastodonentities.Notification>
 
     async mounted() {
       this.$progress.start()
