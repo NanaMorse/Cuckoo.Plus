@@ -34,12 +34,22 @@
 
       </mu-card-header>
 
-      <mu-card-text v-if="!status.reblog && status.content" class="status-content main-status-content" v-html="formatHtml(status.content)" />
+      <div class="spoiler-text-area secondary-read-text-color" v-if="status.spoiler_text">
+        <span v-html="formatHtml(status.spoiler_text)"/>
+        <mu-button flat small class="secondary-theme-text-color" :style="{ minWidth: 'unset' }"
+                   @click="shouldShowContentWhileSpoilerExists = !shouldShowContentWhileSpoilerExists">
+          {{ $t(shouldShowContentWhileSpoilerExists ? $i18nTags.statusCard.hide_content : $i18nTags.statusCard.show_content) }}
+        </mu-button>
+      </div>
+
+      <mu-card-text v-if="!status.reblog && status.content" v-show="(status.spoiler_text ? shouldShowContentWhileSpoilerExists : true)"
+                    class="status-content main-status-content"
+                    v-html="formatHtml(status.content)" />
 
       <mu-divider v-if="!status.media_attachments.length && !status.pixiv_cards.length"/>
 
       <div v-if="!status.reblog" class="main-attachment-area">
-        <media-panel :mediaList="status.media_attachments" :pixivCards="status.pixiv_cards"/>
+        <media-panel :mediaList="status.media_attachments" :pixivCards="status.pixiv_cards" :sensitive="status.sensitive"/>
       </div>
 
       <div v-if="status.reblog" class="reblog-area">
@@ -52,7 +62,7 @@
           <mu-card-text v-if="status.reblog.content" class="status-content reblog-status-content" v-html="formatHtml(status.reblog.content)" />
         </div>
         <div class="reblog-attachment-area">
-          <media-panel :mediaList="status.reblog.media_attachments" :pixivCards="status.reblog.pixiv_cards"/>
+          <media-panel :mediaList="status.reblog.media_attachments" :pixivCards="status.reblog.pixiv_cards" :sensitive="status.sensitive"/>
         </div>
       </div>
 
@@ -95,7 +105,7 @@
               <mu-card-text class="status-content full-reply-status-content" v-html="formatHtml(replierStatus.content)"></mu-card-text>
 
               <div class="full-reply-attachment-area">
-                <media-panel :mediaList="replierStatus.media_attachments" :pixivCards="replierStatus.pixiv_cards"/>
+                <media-panel :mediaList="replierStatus.media_attachments" :pixivCards="replierStatus.pixiv_cards" :sensitive="replierStatus.sensitive"/>
               </div>
 
               <div class="reply-action-list">
@@ -243,6 +253,8 @@
     currentReplyToStatus: mastodonentities.Status = null
 
     currentMentions: Array<mastodonentities.Mention> = []
+
+    shouldShowContentWhileSpoilerExists: boolean = false
 
     shouldShowHeaderActionButtonGroup: boolean = false
 
@@ -504,6 +516,10 @@
         }
       }
     }
+  }
+
+  .spoiler-text-area {
+    padding: 0 16px 16px;
   }
 
   .main-status-content {

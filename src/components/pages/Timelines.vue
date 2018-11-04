@@ -1,5 +1,5 @@
 <template>
-  <div class="timelines-container" v-loading="isLoading">
+  <div class="timelines-container" v-loading="isInitLoading">
 
     <template v-for="(timeLineName, index) in allTimeLineNameList">
       <transition name="slide-fade">
@@ -9,6 +9,10 @@
             <template v-for="status in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
               <status-card class="status-card-container" :key="status.id" :status="status"/>
             </template>
+
+            <p class="no-more-status-notice secondary-read-text-color" v-if="currentTimeLineCannotLoadMore">
+              {{$t($i18nTags.timeLines.no_load_more_status_notice)}}
+            </p>
           </div>
         </mu-load-more>
       </transition>
@@ -57,7 +61,17 @@
 
     @Action('updateTimeLineStatuses') updateTimeLineStatuses
 
+    /**
+     * @description 这种loading应该是全屏白色遮罩
+     **/
+    isInitLoading: boolean = false
+
+    /**
+     * @description 这种则只需要转圈就行
+     * */
     isLoading: boolean = false
+
+    noLoadMoreTimeLineList: Array<string> = []
 
     isSnackBarOpening: boolean = false
 
@@ -81,16 +95,35 @@
       return result
     }
 
+    get isCurrentTimeLineRoute () {
+      // todo use meta?
+      return this.$route.path.startsWith('/timelines/')
+    }
+
     get currentRootStatuses (): Array<mastodonentities.Status> {
+      if (!this.isCurrentTimeLineRoute) return
+
       // @ts-ignore
       const { timeLineType, hashName } = getTimeLineTypeAndHashName(this.$route)
       return this.getRootStatuses(timeLineType, hashName)
     }
 
+    get currentTimeLineCannotLoadMore () {
+      if (!this.isCurrentTimeLineRoute) return
+
+      const { timeLineType, hashName } = getTimeLineTypeAndHashName(this.$route)
+
+      return this.noLoadMoreTimeLineList.indexOf(`${timeLineType}/${hashName}`) !== -1
+    }
+
     @Watch('$route')
-    onRouteChanged () {
+    async onRouteChanged () {
+      if (!this.isCurrentTimeLineRoute) return
+
       if (!this.currentRootStatuses.length) {
-        this.loadStatuses()
+        this.isInitLoading = true
+        await this.loadStatuses()
+        this.isInitLoading = false
       } else {
         this.loadStatuses(false, true)
       }
@@ -101,13 +134,29 @@
     }
 
     async loadStatuses (isLoadMore: boolean = false, isFetchMore: boolean = false) {
+
+      if (isLoadMore && this.currentTimeLineCannotLoadMore) return
+
+      if (!this.isCurrentTimeLineRoute) return
+
       this.isLoading = true
       this.$progress.start()
+
+      const preStatusesLength = this.currentRootStatuses.length
+      const { timeLineType, hashName } = getTimeLineTypeAndHashName(this.$route)
       await this.updateTimeLineStatuses({
         isLoadMore,
         isFetchMore,
-        ...getTimeLineTypeAndHashName(this.$route)
+        timeLineType,
+        hashName
       })
+
+      const newStatusesLength = this.currentRootStatuses.length
+
+      if (isLoadMore && (preStatusesLength === newStatusesLength)) {
+        this.noLoadMoreTimeLineList.push(`${timeLineType}/${hashName}`)
+      }
+
       this.$progress.done()
       this.isLoading = false
     }
@@ -157,9 +206,13 @@
 
     .status-cards-container {
 
-      .status-card-container {
+      .status-card-container, .no-more-status-notice {
         max-width: 530px;
         margin: 16px auto;
+      }
+
+      .no-more-status-notice {
+        text-align: center;
       }
 
     }

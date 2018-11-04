@@ -3,7 +3,11 @@
     <cuckoo-plus-header v-if="!isOAuthPage"/>
     <cuckoo-plus-drawer v-if="!isOAuthPage"/>
     <mu-container :fluid="true" class="app-content" :style="appContentStyle">
-      <router-view />
+      <keep-alive>
+        <router-view v-if="$route.meta.keepAlive" />
+      </keep-alive>
+
+      <router-view v-if="!$route.meta.keepAlive" />
     </mu-container>
   </div>
 </template>

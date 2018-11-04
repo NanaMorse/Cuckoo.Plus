@@ -26,6 +26,8 @@ declare module "vue/types/vue" {
         reply_to_main_status: string
         cancel_post: string
         submit_post: string
+        show_content: string
+        hide_content: string
       },
       common: {
         status_visibility_public: string
@@ -36,6 +38,9 @@ declare module "vue/types/vue" {
         status_visibility_private_desc: string,
         status_visibility_unlisted_desc: string,
         status_visibility_direct_desc: string,
+      },
+      timeLines: {
+        no_load_more_status_notice: string
       },
       header: {
 
