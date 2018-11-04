@@ -8,7 +8,12 @@
       <mu-button ref="notificationBtn" icon @click="onNotificationsBtnClick" slot="right">
         <mu-icon value="notifications"></mu-icon>
       </mu-button>
-      <mu-popover cover lazy placement="right" :open.sync="appStatus.isNotificationsPanelOpened" :trigger="notificationBtnTrigger">
+      <mu-popover
+        cover lazy
+        placement="bottom-start"
+        :open.sync="appStatus.isNotificationsPanelOpened"
+        :trigger="notificationBtnTrigger"
+      >
         <notification-panel/>
       </mu-popover>
       <span class="route-info" v-if="shouldShowRouteInfo">{{pathToRouteInfo[$route.path].name}}</span>
@@ -39,8 +44,14 @@
     }
   })
   class Header extends Vue {
-    notificationBtnTrigger
+
+    $refs: {
+      notificationBtn: HTMLButtonElement
+    }
+
     $route
+
+    notificationBtnTrigger: HTMLButtonElement = null
 
     @State('appStatus') appStatus
 
@@ -62,7 +73,7 @@
     }
 
     mounted () {
-      this.notificationBtnTrigger = this.$refs.notificationBtn.$el
+      this.notificationBtnTrigger = this.$refs.notificationBtn
     }
 
     onMenuBtnClick () {

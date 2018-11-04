@@ -41,12 +41,11 @@ const state: cuckoostore.stateInfo = {
     isNotificationsPanelOpened: false,
     settings: {
       multiWaterFallLayout: true
-    }
+    },
+    theme: localStorage.getItem('theme') || ThemeNames.GOOGLE_PLUS
   },
 
-  notifications: [],
-    
-  theme: localStorage.getItem('theme') || ThemeNames.GOOGLE_PLUS
+  notifications: []
 }
 
 export default new Vuex.Store({
