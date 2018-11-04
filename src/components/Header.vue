@@ -24,6 +24,7 @@
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
   import { State, Mutation } from 'vuex-class'
+  import { TimeLineTypes, RoutersInfo } from '@/constant'
   import { cuckoostore } from '@/interface'
   import NotificationsPanel from './NotificationsPanel'
   import * as Api from '@/api'

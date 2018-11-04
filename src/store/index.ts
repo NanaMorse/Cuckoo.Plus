@@ -26,7 +26,6 @@ const state: cuckoostore.stateInfo = {
     home: [],
     public: [],
     direct: [],
-    // todo should save hash names to local
     tag: {},
     list: {}
   },
@@ -40,9 +39,10 @@ const state: cuckoostore.stateInfo = {
     isDrawerOpened: document.body.clientWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY,
     isNotificationsPanelOpened: false,
     settings: {
-      multiWaterFallLayout: true
+      multiWaterFallLayout: true,
+      theme: localStorage.getItem('theme') || ThemeNames.GOOGLE_PLUS,
+      tags: JSON.parse(localStorage.getItem('tags')) || ['kimermark']
     },
-    theme: localStorage.getItem('theme') || ThemeNames.GOOGLE_PLUS
   },
 
   notifications: []

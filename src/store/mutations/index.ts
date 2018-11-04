@@ -73,11 +73,16 @@ const appStatusMutations = {
 
   updateTheme (state: cuckoostore.stateInfo, newThemeName: string) {
     if (!Object.keys(ThemeNames).some(key => ThemeNames[key] === newThemeName)) return
-    state.appStatus.theme = newThemeName
+    state.appStatus.settings.theme = newThemeName
 
     ThemeManager.setTheme(newThemeName)
 
     localStorage.setItem('theme', newThemeName)
+  },
+
+  updateTags (state: cuckoostore.stateInfo, newTags: Array<string>) {
+    Vue.set(state.appStatus.settings, 'tags', newTags)
+    localStorage.setItem('tags', JSON.stringify(newTags))
   }
 }
 

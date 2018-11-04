@@ -32,9 +32,10 @@ export namespace cuckoostore {
       isDrawerOpened: boolean
       isNotificationsPanelOpened: boolean
       settings: {
-        multiWaterFallLayout: boolean
+        multiWaterFallLayout: boolean,
+        theme: string,
+        tags: Array<string>
       }
-      theme: string
     }
 
     notifications: Array<mastodonentities.Notification>
