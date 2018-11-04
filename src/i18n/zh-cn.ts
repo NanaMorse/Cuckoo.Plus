@@ -25,11 +25,18 @@ const statusCard = {
   [I18nTags.statusCard.reply_to_main_status]: '发表评论…',
   [I18nTags.statusCard.reply_to_replier]: '回复',
   [I18nTags.statusCard.cancel_post]: '取消',
-  [I18nTags.statusCard.submit_post]: '发布'
+  [I18nTags.statusCard.submit_post]: '发布',
+  [I18nTags.statusCard.show_content]: '显示内容',
+  [I18nTags.statusCard.hide_content]: '隐藏内容'
+}
+
+const timeLines = {
+  [I18nTags.timeLines.no_load_more_status_notice]: '没有更多啦！'
 }
 
 export default {
   ...oauth,
   ...common,
-  ...statusCard
+  ...statusCard,
+  ...timeLines
 }

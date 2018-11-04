@@ -9,6 +9,14 @@
         <div class="gifv-container" v-if="media.type === mediaTypes.GIFV">
           <video autoplay loop :src="media.url" :key="index" />
         </div>
+
+        <mu-button class="hide-sensitive-btn" v-if="sensitive" @click.stop="shouldShowSensitiveCover = true">
+          <mu-icon value="visibility_off"/>
+        </mu-button>
+      </div>
+
+      <div class="sensitive-alert-cover" v-if="sensitive" v-show="shouldShowSensitiveCover" @click="shouldShowSensitiveCover = false">
+        <p>敏感内容 <br/> 点击显示</p>
       </div>
     </div>
 
@@ -41,6 +49,10 @@
     @Prop() mediaList?: Array<mastodonentities.Attachment>
 
     @Prop() pixivCards?: Array<{ url: string, image_url: string }>
+
+    @Prop() sensitive?: boolean
+
+    shouldShowSensitiveCover: boolean = true
 
     get combinedMediaList () {
       const mediaListPart = this.mediaList.map(item => {
@@ -114,7 +126,23 @@
 
     .media-area {
       display: flex;
+      position: relative;
       justify-content: space-around;
+
+      .sensitive-alert-cover {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        background-color: #000;
+        color: #606984;
+        font-weight: 700;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
     }
 
     .media-gallery-item {
@@ -122,6 +150,7 @@
       max-height: 1000px;
       overflow: hidden;
       border-radius: 4px;
+      position: relative;
 
       .gifv-container {
         width: 100%;
@@ -178,6 +207,24 @@
 </style>
 
 <style lang="less">
+  .hide-sensitive-btn {
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    background-color: rgba(0,0,0,.6);
+    min-width: unset;
+    height: auto;
+    color: hsla(0,0%,100%,.7);
+
+    &:hover {
+      background-color: rgba(0,0,0,.9);
+    }
+
+    .mu-button-wrapper {
+      padding: 0;
+    }
+  }
+
   .light-box {
     .mu-dialog {
       background-color: transparent;

@@ -20,7 +20,13 @@ export const I18nTags = {
     reply_to_replier: 'status_card_reply_to_replier',
     reply_to_main_status: 'status_card_reply_to_main_status',
     cancel_post: 'status_card_cancel_post',
-    submit_post: 'status_card_submit_post'
+    submit_post: 'status_card_submit_post',
+    show_content: 'status_card_show_content',
+    hide_content: 'status_card_hide_content'
+  },
+
+  timeLines: {
+    no_load_more_status_notice: 'no_load_more_status_notice'
   },
 
   header: {
