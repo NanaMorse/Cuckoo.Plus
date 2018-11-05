@@ -52,15 +52,20 @@
       <textarea ref="textArea" class="auto-size-text-area" v-model="textContentValue"
                 :placeholder="$t($i18nTags.statusCard.post_new_status_placeholder)"/>
 
-      <div class="media-preview-area"></div>
+      <div class="bottom-area">
+        <div class="media-preview-area"></div>
 
-      <div class="attachment-select-btn-group">
-        <mu-button icon>
-          <mu-icon class="secondary-read-text-color" value="camera_alt" />
-        </mu-button>
-        <mu-button icon>
-          <mu-icon class="secondary-read-text-color" value="link" />
-        </mu-button>
+        <div class="attachment-select-btn-group">
+          <mu-button icon @click="onSelectMediaFiles">
+            <mu-icon class="secondary-read-text-color" value="camera_alt" />
+            <input ref="fileInput" type="file" @change="onUploadMediaFiles"
+                   accept=".jpg,.jpeg,.png,.gif,.webm,.mp4,.m4v,.mov,image/jpeg,image/png,image/gif,video/webm,video/mp4,video/quicktime"
+                   style="display: none" multiple/>
+          </mu-button>
+          <mu-button icon>
+            <mu-icon class="secondary-read-text-color" value="link" />
+          </mu-button>
+        </div>
       </div>
     </section>
 
@@ -83,6 +88,7 @@
   import { UiWidthCheckConstants, VisibilityTypes } from '@/constant'
   import { getVisibilityDescInfo } from '@/util'
   import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
+  import * as Api from '@/api'
   const autosize = require('autosize')
 
   let isFirstTimeOpenDialog = true
@@ -96,6 +102,7 @@
 
     $refs: {
       textArea: HTMLTextAreaElement
+      fileInput: HTMLInputElement
       visibilitySelectBtn: HTMLDivElement
     }
 
@@ -106,6 +113,8 @@
     visibilityTriggerBtn: HTMLDivElement = null
 
     shouldOpenVisibilitySelectPopOver = false
+
+    fileListToUpload: Array<File> = []
 
     textContentValue: string = ''
 
@@ -187,6 +196,19 @@
 
       // clear data and close dialog
       this.closeDialog()
+    }
+
+    onSelectMediaFiles () {
+      this.$refs.fileInput.click()
+    }
+
+    onUploadMediaFiles () {
+      console.dir(this.$refs.fileInput.files)
+      // todo test
+      const formData = new FormData()
+      formData.append('file', this.$refs.fileInput.files[0])
+
+      Api.media.postMediaFile(formData)
     }
 
     setVisibilitySelectPopOverDisplay (open: boolean) {
@@ -272,15 +294,26 @@
     }
 
     section {
+      @media (max-width: 530px) {
+        height: calc(100vh - 56px - 72px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .auto-size-text-area {
+          max-height: unset !important;
+          flex-grow: 1;
+        }
+      }
+
       .auto-size-text-area {
         height: 187px;
         padding: 0 16px;
         max-height: 373px;
+      }
 
-        @media (max-width: 530px) {
-          height: calc(100vh - 56px - 72px - 48px);
-          max-height: calc(100vh - 56px - 72px - 48px);
-        }
+      .media-preview-area {
+        height: 212px;
       }
     }
 
