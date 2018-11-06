@@ -40,17 +40,26 @@ const router = new Router({
       children: [
         {
           path: RoutersInfo.defaulttimelines.path,
-          name: RoutersInfo.defaulttimelines.name
+          name: RoutersInfo.defaulttimelines.name,
+          meta: {
+            keepAlive: true
+          }
         },
         {
           path: RoutersInfo.tagtimelines.path,
-          name: RoutersInfo.tagtimelines.name
+          name: RoutersInfo.tagtimelines.name,
+          meta: {
+            keepAlive: true
+          }
         },
         {
           path: RoutersInfo.listtimelines.path,
-          name: RoutersInfo.listtimelines.name
+          name: RoutersInfo.listtimelines.name,
+          meta: {
+            keepAlive: true
+          }
         }
-      ],
+      ]
     },
 
     {
