@@ -4,6 +4,7 @@ import * as accounts from './accounts'
 import * as lists from './lists'
 import * as timelines from './timelines'
 import * as statuses from './statuses'
+import * as media from './media'
 
 export {
   apps,
@@ -11,5 +12,6 @@ export {
   accounts,
   lists,
   timelines,
-  statuses
+  statuses,
+  media
 }
