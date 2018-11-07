@@ -2,7 +2,7 @@
   <mu-dialog dialog-class="post-status-dialog-container"
              :open.sync="isDialogOpening" overlay-color="rgba(0,0,0,0.12)"
              :overlay-opacity="1" @close="onTryCloseDialog" :transition="transition"
-             :width="dialogWidth" :fullscreen="isFullScreen">
+             :width="dialogWidth" :fullscreen="isFullScreen" v-loading="isPostLoading">
 
     <mu-appbar v-if="isFullScreen" class="dialog-fullscreen-bar" color="primary">
       <mu-button slot="left" icon @click="onTryCloseDialog">
@@ -58,7 +58,7 @@
                v-for="(processInfo, index) in uploadProcessInfoList">
             <div v-if="!processInfo.uploadSuccess" class="media-placeholder" v-loading="true"/>
             <img v-if="processInfo.uploadSuccess" :src="processInfo.uploadResult.url"/>
-            <div class="remove-icon-wrapper">
+            <div class="remove-icon-wrapper" @click="onRemoveMediaFileByIndex(index)">
               <svg height="24px" width="24px" viewBox="0 0 48 48"><circle fill="#fefefe" cx="24" cy="24" r="24"></circle><path fill="#000" d="M24,4C12.9,4,4,12.9,4,24s8.9,20,20,20s20-9,20-20S35,4,24,4z M34,31.2L31.2,34L24,26.8L16.8,34L14,31.2l7.2-7.2L14,16.8l2.8-2.8l7.2,7.2l7.2-7.2l2.8,2.8L26.8,24L34,31.2z"></path></svg>
             </div>
           </div>
@@ -126,6 +126,8 @@
 
     shouldOpenVisibilitySelectPopOver = false
 
+    isPostLoading: boolean = false
+
     uploadProcessInfoList: Array<{
       file: File,
       uploadSuccess: boolean,
@@ -153,13 +155,9 @@
     set isDialogOpening (val) {}
 
     get shouldEnableSubmitButton () {
-      return this.textContentValue
-    }
+      const isInUploadProcess = !this.uploadProcessInfoList.every(i => i.uploadSuccess)
 
-    getMediaItemStyle (resultInfo: mastodonentities.Attachment) {
-      if (!resultInfo) return { width: 'auto' }
-
-      return
+      return this.uploadProcessInfoList.length ? !isInUploadProcess : this.textContentValue
     }
 
     @Watch('isDialogOpening')
@@ -206,15 +204,15 @@
     async onSubmitNewStatus () {
       const formData = {
         status: this.textContentValue,
-        visibility: this.visibility
+        visibility: this.visibility,
+        mediaIds: this.uploadProcessInfoList.map(info => info.uploadResult.id)
       }
 
-      // @ts-ignore
-      const loading = this.$loading({})
+      this.isPostLoading = true
 
       await this.postStatus({ formData })
 
-      loading.close()
+      this.isPostLoading = false
 
       // clear data and close dialog
       this.closeDialog()
@@ -251,6 +249,11 @@
 
         })
 
+      this.$refs.fileInput.value = ''
+    }
+
+    onRemoveMediaFileByIndex (index: number) {
+      this.uploadProcessInfoList.splice(index, 1)
     }
 
     setVisibilitySelectPopOverDisplay (open: boolean) {
@@ -259,6 +262,8 @@
 
     closeDialog () {
       this.textContentValue = ''
+      this.$refs.fileInput.value = ''
+      this.uploadProcessInfoList = []
       this.$emit('update:open', false)
     }
   }
@@ -356,10 +361,11 @@
 
       .media-preview-area {
         height: 212px;
-        display: flex;
-        overflow-x: scroll;
+        overflow-x: auto;
         overflow-y: hidden;
-        padding: 0 16px;
+        -webkit-overflow-scrolling: touch;
+        padding-left: 16px;
+        white-space: nowrap;
 
         &.single-upload-preview-area {
           .media-item {
@@ -373,7 +379,8 @@
         .media-item {
           margin-right: 8px;
           position: relative;
-          object-fit: contain;
+          display: inline-block;
+          height: 100%;
 
           .media-placeholder {
             width: 212px;

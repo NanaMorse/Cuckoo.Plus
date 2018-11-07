@@ -77,7 +77,7 @@
 
     snackBarMessage: string = ''
 
-    isPostStatusDialogOpening: boolean = true
+    isPostStatusDialogOpening: boolean = false
 
     get allTimeLineNameList (): Array<string> {
       const result = [
