@@ -6,9 +6,12 @@
         <mu-load-more :key="index" @load="loadStatuses(true)" v-show="isTimeLineNameEqualCurrentRoute(timeLineName)"
                       :loading="isLoading" loading-text="">
           <div class="status-cards-container">
-            <template v-for="status in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
-              <status-card class="status-card-container" :key="status.id" :status="status"/>
-            </template>
+
+            <div class="water-flow-wrapper" v-for="count in waterfallLineCount" :key="count">
+              <template v-for="(status, index) in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
+                <status-card class="status-card-container" :key="status.id" :status="status"/>
+              </template>
+            </div>
 
             <p class="no-more-status-notice secondary-read-text-color" v-if="currentTimeLineCannotLoadMore">
               {{$t($i18nTags.timeLines.no_load_more_status_notice)}}
@@ -116,6 +119,10 @@
       return this.noLoadMoreTimeLineList.indexOf(`${timeLineType}/${hashName}`) !== -1
     }
 
+    get waterfallLineCount () {
+      return 2
+    }
+
     @Watch('$route')
     async onRouteChanged () {
       if (!this.isCurrentTimeLineRoute) return
@@ -159,14 +166,6 @@
 
       this.$progress.done()
       this.isLoading = false
-    }
-
-    showSnackBar (message: string) {
-      this.snackBarMessage = message
-      this.isSnackBarOpening = true
-      setTimeout(() => {
-        this.isSnackBarOpening = false
-      }, 3000)
     }
 
     showNewPostDialogPanel () {
