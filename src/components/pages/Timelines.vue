@@ -13,11 +13,13 @@
                              class="status-card-container" :style="statusCardStyle"
                              :key="status.id" :status="status"/>
               </template>
+
+              <p class="no-more-status-notice secondary-read-text-color"
+                 v-if="currentTimeLineCannotLoadMore && (count === waterfallLineCount) ">
+                {{$t($i18nTags.timeLines.no_load_more_status_notice)}}
+              </p>
             </div>
 
-            <p class="no-more-status-notice secondary-read-text-color" v-if="currentTimeLineCannotLoadMore">
-              {{$t($i18nTags.timeLines.no_load_more_status_notice)}}
-            </p>
           </div>
         </mu-load-more>
       </transition>
