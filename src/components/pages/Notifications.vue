@@ -19,7 +19,7 @@
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
   import { State, Action } from 'vuex-class'
-  import { mastodonentities } from '@/interface'
+  import { mastodonentities } from '@/interface/index'
   import NotificationCard from '@/components/NotificationCard'
 
   @Component({
@@ -27,11 +27,9 @@
       'notification-card': NotificationCard
     }
   })
-  class NotificationsPanel extends Vue {
+  class Notifications extends Vue {
 
     $progress
-
-    @Action('fetchNotifications') fetchNotifications
 
     @Action('refreshNotifications') refreshNotifications
 
@@ -39,7 +37,7 @@
 
     async mounted() {
       this.$progress.start()
-      await this.fetchNotifications()
+      await this.refreshNotifications()
       this.$progress.done()
     }
 
@@ -50,5 +48,5 @@
     }
   }
 
-  export default NotificationsPanel
+  export default Notifications
 </script>

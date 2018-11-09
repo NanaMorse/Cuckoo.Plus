@@ -14,7 +14,7 @@
         :open.sync="appStatus.isNotificationsPanelOpened"
         :trigger="notificationBtnTrigger"
       >
-        <notification-panel/>
+        <notifications/>
       </mu-popover>
       <span class="route-info" v-if="shouldShowRouteInfo">{{pathToRouteInfo[$route.path].name}}</span>
     </mu-appbar>
@@ -26,7 +26,7 @@
   import { State, Mutation } from 'vuex-class'
   import { TimeLineTypes, RoutersInfo } from '@/constant'
   import { cuckoostore } from '@/interface'
-  import NotificationsPanel from './NotificationsPanel'
+  import Notifications from './pages/Notifications'
   import * as Api from '@/api'
 
   // todo 统一位置管理
@@ -41,7 +41,7 @@
 
   @Component({
     components: {
-      'notification-panel': NotificationsPanel
+      'notifications': Notifications
     }
   })
   class Header extends Vue {
