@@ -13,7 +13,7 @@ interface fetchNotificationsQueryParams {
   exclude_types?: Array<mastodonentities.NotificationType>
 }
 
-async function fetchNotifications (queryParams: fetchNotificationsQueryParams): Promise<{ data: mastodonentities.Notification }> {
+async function fetchNotifications(queryParams: fetchNotificationsQueryParams): Promise<{ data: Array<mastodonentities.Notification> }> {
   const config = {
     params: queryParams
   }
