@@ -69,21 +69,37 @@ export function formatHtml(html: string): string {
   const parentNode = document.createElement('template')
   parentNode.innerHTML = html
 
-  walkTextNodes(parentNode.content)
+  walkTextNodes(parentNode.content, (parentNode, textNode) => {
+    const spanNode = document.createElement('span')
+    spanNode.innerHTML = insertDels(textNode.textContent)
+    parentNode.replaceChild(spanNode, textNode)
+  })
 
   return parentNode.innerHTML
 }
 
-function walkTextNodes(node) {
+export function extractText(html: string): string {
+  let text = ""
+
+  // create a parent node to contain the input html
+  const parentNode = document.createElement('template')
+  parentNode.innerHTML = html
+
+  walkTextNodes(parentNode.content, (parentNode, textNode) => {
+    text += (textNode.textContent + " ")
+  })
+
+  return text
+}
+
+function walkTextNodes(node, textNodeHandler) {
   if (node) {
     for (let i = 0; i < node.childNodes.length; ++i) {
       const childNode = node.childNodes[i]
       if (childNode.nodeType === 3) {
-        const spanNode = document.createElement('span')
-        spanNode.innerHTML = insertDels(childNode.textContent)
-        node.replaceChild(spanNode, childNode)
+        textNodeHandler(node, childNode)
       } else if (childNode.nodeType === 1 || childNode.nodeType === 9 || childNode.nodeType === 11) {
-        walkTextNodes(childNode)
+        walkTextNodes(childNode, textNodeHandler)
       }
     }
   }
