@@ -3,6 +3,7 @@
     <mu-card>
       <mu-card-actions class="setting-card">
         <p class="card-label">常规</p>
+
         <div class="setting-row select-row">
           <span class="setting-label primary-read-text-color">选择主题：</span>
           <mu-select class="setting-select" v-model="themeName">
@@ -10,6 +11,12 @@
                        :label="themeInfo.label" :value="themeInfo.value" />
           </mu-select>
         </div>
+
+        <div class="setting-row">
+          <span class="setting-label primary-read-text-color">是否使用多行布局模式：</span>
+          <mu-switch class="setting-switch" v-model="multiLineMode" />
+        </div>
+
       </mu-card-actions>
     </mu-card>
   </div>
@@ -27,6 +34,8 @@
 
     @Mutation('updateTheme') updateTheme
 
+    @Mutation('updateMultiLineMode') updateMultiLineMode
+
     themeOptions = [
       { label: 'Google Plus', value: ThemeNames.GOOGLE_PLUS },
       { label: 'Dark', value: ThemeNames.DARK }
@@ -38,6 +47,14 @@
 
     set themeName (val) {
       this.updateTheme(val)
+    }
+
+    get multiLineMode () {
+      return this.appStatus.settings.multiLineMode
+    }
+
+    set multiLineMode (val) {
+      this.updateMultiLineMode(val)
     }
   }
 
@@ -67,9 +84,14 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        margin: 10px 0;
 
         .setting-label {
           font-size: 13px;
+        }
+
+        .setting-switch {
+          margin-right: 12px;
         }
       }
 

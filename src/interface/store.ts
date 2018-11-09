@@ -31,7 +31,7 @@ export namespace cuckoostore {
       documentWidth: number
       isDrawerOpened: boolean
       settings: {
-        multiWaterFallLayout: boolean,
+        multiLineMode: boolean,
         theme: string,
         tags: Array<string>
       }
