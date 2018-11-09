@@ -83,6 +83,11 @@ const appStatusMutations = {
   updateTags (state: cuckoostore.stateInfo, newTags: Array<string>) {
     Vue.set(state.appStatus.settings, 'tags', newTags)
     localStorage.setItem('tags', JSON.stringify(newTags))
+  },
+
+  updateMultiLineMode (state: cuckoostore.stateInfo, newMode: boolean) {
+    state.appStatus.settings.multiLineMode = newMode
+    localStorage.setItem('multiLineMode', JSON.stringify(newMode))
   }
 }
 

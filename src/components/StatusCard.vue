@@ -46,7 +46,7 @@
                     class="status-content main-status-content"
                     v-html="formatHtml(status.content)" />
 
-      <mu-divider v-if="!status.media_attachments.length && !status.pixiv_cards.length"/>
+      <mu-divider v-if="!status.media_attachments.length && !(status.pixiv_cards || []).length"/>
 
       <div v-if="!status.reblog" class="main-attachment-area">
         <media-panel :mediaList="status.media_attachments" :pixivCards="status.pixiv_cards" :sensitive="status.sensitive"/>
@@ -130,7 +130,7 @@
       </div>
 
       <div class="current-reply-to-info-area" v-if="currentReplyToStatus">
-        <mu-chip class="reply-to-account-info" color="primary" @delete="onHideFullReplyActionArea" delete>
+        <mu-chip class="reply-to-account-info" color="primary" @delete="hideFullReplyActionArea" delete>
           <mu-avatar :size="32">
             <img :src="currentReplyToStatus.account.avatar_static">
           </mu-avatar>
@@ -194,7 +194,7 @@
             </div>
             <div class="right-area">
               <mu-button flat class="operate-btn cancel"
-                         color="secondary" @click="onHideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_post)}}</mu-button>
+                         color="secondary" @click="hideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_post)}}</mu-button>
               <mu-button flat class="operate-btn submit secondary-theme-text-color" @click="onSubmitReplyContent()"
                          :disabled="!replyInputValue">{{$t($i18nTags.statusCard.submit_post)}}</mu-button>
             </div>
@@ -374,7 +374,7 @@
       })
     }
 
-    onHideFullReplyActionArea () {
+    hideFullReplyActionArea () {
       this.shouldShowFullReplyActionArea = false
       this.clearReplyToStatus()
     }
@@ -413,7 +413,7 @@
       })
       this.isCardLoading = false
 
-      this.clearReplyToStatus()
+      this.hideFullReplyActionArea()
     }
 
     getFromNowTime (createdAt: string) {

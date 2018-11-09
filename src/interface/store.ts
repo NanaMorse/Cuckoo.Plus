@@ -32,7 +32,7 @@ export namespace cuckoostore {
       isDrawerOpened: boolean
       isNotificationsPanelOpened: boolean
       settings: {
-        multiWaterFallLayout: boolean,
+        multiLineMode: boolean,
         theme: string,
         tags: Array<string>
       }

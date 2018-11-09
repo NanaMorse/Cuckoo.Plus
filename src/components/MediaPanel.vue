@@ -48,19 +48,31 @@
 
     @Prop() mediaList?: Array<mastodonentities.Attachment>
 
-    @Prop() pixivCards?: Array<{ url: string, image_url: string }>
+    @Prop({ default: () => [] }) pixivCards?: Array<{ url: string, image_url: string }>
 
     @Prop() sensitive?: boolean
 
     shouldShowSensitiveCover: boolean = true
 
+    isImageType (type: string) {
+      return type === AttachmentTypes.IMAGE || type === AttachmentTypes.UNKNOWN
+    }
+
     get combinedMediaList () {
       const mediaListPart = this.mediaList.map(item => {
-        return { url: item.url, originUrl: item.url, type: item.type }
+        const url = item.remote_url || item.url
+
+        let type: any = item.type
+
+        if (type === AttachmentTypes.UNKNOWN) {
+          type = url.endsWith('.mp4') ? AttachmentTypes.GIFV : AttachmentTypes.IMAGE
+        }
+
+        return { url, type }
       })
 
       const pixivCardsPart = this.pixivCards.map(item => {
-        return { url: item.image_url, originUrl: item.url, type: this.mediaTypes.IMAGE }
+        return { url: item.image_url, type: this.mediaTypes.IMAGE }
       })
 
       return [...mediaListPart, ...pixivCardsPart]

@@ -6,13 +6,20 @@
         <mu-load-more :key="index" @load="loadStatuses(true)" v-show="isTimeLineNameEqualCurrentRoute(timeLineName)"
                       :loading="isLoading" loading-text="">
           <div class="status-cards-container">
-            <template v-for="status in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
-              <status-card class="status-card-container" :key="status.id" :status="status"/>
-            </template>
 
-            <p class="no-more-status-notice secondary-read-text-color" v-if="currentTimeLineCannotLoadMore">
-              {{$t($i18nTags.timeLines.no_load_more_status_notice)}}
-            </p>
+            <div class="water-flow-wrapper" v-for="count in waterfallLineCount" :key="count">
+              <template v-for="(status, index) in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
+                <status-card v-if="(index % waterfallLineCount) === (count - 1)"
+                             class="status-card-container" :style="statusCardStyle"
+                             :key="status.id" :status="status"/>
+              </template>
+
+              <p class="no-more-status-notice secondary-read-text-color"
+                 v-if="currentTimeLineCannotLoadMore && (count === waterfallLineCount) ">
+                {{$t($i18nTags.timeLines.no_load_more_status_notice)}}
+              </p>
+            </div>
+
           </div>
         </mu-load-more>
       </transition>
@@ -43,6 +50,25 @@
   import StatusCard from '@/components/StatusCard.vue'
   import PostStatusDialog from '@/components/PostStatusDialog.vue'
 
+  const statusCardMaxWidth = 530
+  const statusCardMinWidth = 360
+
+  function getFitStatusWidth (containerWidth, lineCount): number {
+    return containerWidth / ( lineCount + (lineCount - 1) * 0.02 )
+  }
+
+  function calcFitWaterFallLineCount (containerWidth: number, testLineCount: number = 3) {
+    if (testLineCount <= 1) return 1
+
+    const testStatusCardWidth = getFitStatusWidth(containerWidth, testLineCount)
+
+    if (testStatusCardWidth > statusCardMinWidth) {
+      return testLineCount
+    } else {
+      return calcFitWaterFallLineCount(containerWidth, testLineCount - 1)
+    }
+  }
+
   @Component({
     components: {
       'status-card': StatusCard,
@@ -54,6 +80,8 @@
     $route;
 
     $progress;
+
+    @State('appStatus') appStatus
 
     @State('timelines') timelines
 
@@ -116,6 +144,28 @@
       return this.noLoadMoreTimeLineList.indexOf(`${timeLineType}/${hashName}`) !== -1
     }
 
+    get statusCardsContainerWidth (): number {
+      return this.appStatus.documentWidth - 210
+    }
+
+    get waterfallLineCount () {
+      if (!this.appStatus.settings.multiLineMode) return 1
+
+      return calcFitWaterFallLineCount(this.statusCardsContainerWidth * 0.9)
+    }
+
+    get statusCardStyle () {
+      if (this.waterfallLineCount === 1) return null
+
+      let fitWidth = getFitStatusWidth(this.statusCardsContainerWidth * 0.9, this.waterfallLineCount)
+
+      if (fitWidth > statusCardMaxWidth) fitWidth = statusCardMaxWidth
+
+      return {
+        width: `${fitWidth}px`
+      }
+    }
+
     @Watch('$route')
     async onRouteChanged () {
       if (!this.isCurrentTimeLineRoute) return
@@ -161,14 +211,6 @@
       this.isLoading = false
     }
 
-    showSnackBar (message: string) {
-      this.snackBarMessage = message
-      this.isSnackBarOpening = true
-      setTimeout(() => {
-        this.isSnackBarOpening = false
-      }, 3000)
-    }
-
     showNewPostDialogPanel () {
       // todo handle history.back() event
       // use vue router?
@@ -205,10 +247,23 @@
     }
 
     .status-cards-container {
+      display: flex;
+      justify-content: center;
+
+      @media (max-width: 530px) {
+        display: block;
+      }
+
+      .water-flow-wrapper {
+        margin-left: 2%;
+        &:first-child {
+          margin-left: 0;
+        }
+      }
 
       .status-card-container, .no-more-status-notice {
         max-width: 530px;
-        margin: 16px auto;
+        margin: 16px 0 16px 0;
       }
 
       .no-more-status-notice {
