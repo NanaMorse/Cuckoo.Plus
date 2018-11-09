@@ -58,6 +58,8 @@
   }
 
   function calcFitWaterFallLineCount (containerWidth: number, testLineCount: number = 3) {
+    if (testLineCount <= 1) return 1
+
     const testStatusCardWidth = getFitStatusWidth(containerWidth, testLineCount)
 
     if (testStatusCardWidth > statusCardMinWidth) {
@@ -153,6 +155,8 @@
     }
 
     get statusCardStyle () {
+      if (this.waterfallLineCount === 1) return null
+
       let fitWidth = getFitStatusWidth(this.statusCardsContainerWidth * 0.9, this.waterfallLineCount)
 
       if (fitWidth > statusCardMaxWidth) fitWidth = statusCardMaxWidth
@@ -245,6 +249,10 @@
     .status-cards-container {
       display: flex;
       justify-content: center;
+
+      @media (max-width: 530px) {
+        display: block;
+      }
 
       .water-flow-wrapper {
         margin-left: 2%;
