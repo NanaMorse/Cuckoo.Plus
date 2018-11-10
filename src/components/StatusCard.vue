@@ -292,9 +292,9 @@
     }
 
     get descendantStatusList (): Array<mastodonentities.Status> {
-      if (!this.contextMap[this.status.id]) return []
+      if (!this.contextMap[this.status.id] || !this.contextMap[this.status.id].descendants) return []
 
-      return this.contextMap[this.status.id].map(descendantStatusId => {
+      return this.contextMap[this.status.id].descendants.map(descendantStatusId => {
         return this.statusMap[descendantStatusId]
       })
     }

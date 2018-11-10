@@ -1,13 +1,13 @@
 <template>
   <div class="notification-panel-container base-theme-bg-color">
 
-    <mu-load-more loading-text="">
+    <mu-load-more loading-text="" @load="loadNotifications(true)" :loading="isLoadingNotifications">
       <mu-flex v-if="!hideHeader" class="panel-header" calign-items="center">
         <mu-flex justify-content="start" fill>
           <mu-sub-header>Notifications</mu-sub-header>
         </mu-flex>
         <mu-flex justify-content="end" fill>
-          <mu-button icon @click="onFetchMoreNotifications">
+          <mu-button icon @click="loadNotifications(false, true)">
             <mu-icon value="refresh" />
           </mu-button>
         </mu-flex>
@@ -15,6 +15,7 @@
 
       <div class="panel-content">
         <mu-card class="notification-card dialog-theme-bg-color" :style="notificationCardStyle"
+                 @click="onNotificationCardClick(notification)"
                  v-for="(notification, index) in notifications" :key="index">
           <mu-card-header :title="getAccountDisplayName(notification.account)"
                           :sub-title="getNotificationSubTitle(notification)">
@@ -30,7 +31,7 @@
 </template>
 
 <script lang="ts">
-  import { Vue, Component, Prop } from 'vue-property-decorator'
+  import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State, Action, Getter } from 'vuex-class'
   import { NotificationTypes, ThemeNames } from '@/constant'
   import { mastodonentities } from '@/interface'
@@ -50,6 +51,13 @@
     @State('notifications') notifications: Array<mastodonentities.Notification>
 
     @Getter('getAccountDisplayName') getAccountDisplayName
+
+    isLoadingNotifications: boolean = false
+
+    @Watch('isLoadingNotifications')
+    onLoadingNotificationStatusChanged (toValue) {
+      toValue ? this.$progress.start() : this.$progress.done()
+    }
 
     get notificationCardStyle () {
       const themeToStyle = {
@@ -72,12 +80,21 @@
       }
     }
 
-    async onFetchMoreNotifications() {
-      this.$progress.start()
+    async loadNotifications (isLoadMore, isFetchMore) {
+      this.isLoadingNotifications = true
       await this.updateNotifications({
-        isFetchMore: true
+        isLoadMore,
+        isFetchMore
       })
-      this.$progress.done()
+      this.isLoadingNotifications = false
+    }
+
+    onNotificationCardClick (notification: mastodonentities.Notification) {
+      if (!notification.status) {
+
+      } else {
+        console.log(notification.status)
+      }
     }
   }
 
@@ -86,7 +103,7 @@
 
 <style lang="less" scoped>
   .notification-panel-container {
-    width: 376px;
+    width: 100%;
     height: calc(100vh - 56px);
     padding: 8px;
     overflow: auto;

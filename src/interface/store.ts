@@ -20,7 +20,10 @@ export namespace cuckoostore {
     }
 
     contextMap: {
-      [statusId: string]: Array<string>
+      [statusId: string]: {
+        ancestors: Array<string>
+        descendants: Array<string>
+      }
     }
 
     statusMap: {
