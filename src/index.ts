@@ -29,7 +29,8 @@ Vue.use(VueI18n)
 Vue.use(Toast)
 Vue.use(Message)
 Vue.use(NProgress, {
-  color: 'primary'
+  color: 'primary',
+  zIndex: 9999999999,
 })
 Vue.use(Loading, {
   overlayColor: 'hsla(0,0%,100%,.9)',

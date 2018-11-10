@@ -27,6 +27,8 @@ export namespace cuckoostore {
       [statusId: string]: mastodonentities.Status
     }
 
+    notifications: Array<mastodonentities.Notification>
+
     appStatus: {
       documentWidth: number
       isDrawerOpened: boolean
@@ -37,8 +39,6 @@ export namespace cuckoostore {
         tags: Array<string>
       }
     }
-
-    notifications: Array<mastodonentities.Notification>
   }
 
   export interface OAuthInfo {

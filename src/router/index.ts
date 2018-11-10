@@ -116,6 +116,8 @@ const beforeEachHooks = {
   }
 }
 
+let hasInitFetchNotifications = false
+
 router.beforeEach(async (to, from, next) => {
 
   const shouldReRegisterApplication = checkShouldReRegisterApplication(to, from)
@@ -151,6 +153,12 @@ router.beforeEach(async (to, from, next) => {
           return next(RoutersInfo.oauth.path)
         }
       }
+    }
+
+    // should fetch notifications
+    if (!store.state.notifications.length && !hasInitFetchNotifications) {
+      store.dispatch('updateNotifications')
+      hasInitFetchNotifications = true
     }
   }
 

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { mastodonentities } from '@/interface'
 import { patchApiUri } from '@/util'
 
-interface fetchNotificationsQueryParams {
+interface getNotificationsQueryParams {
   // Get a list of notifications with ID less than this value
   max_id?: string
   // Get a list of notifications with ID greater than this value
@@ -13,7 +13,7 @@ interface fetchNotificationsQueryParams {
   exclude_types?: Array<mastodonentities.NotificationType>
 }
 
-async function fetchNotifications(queryParams: fetchNotificationsQueryParams): Promise<{ data: Array<mastodonentities.Notification> }> {
+async function getNotifications(queryParams: getNotificationsQueryParams): Promise<{ data: Array<mastodonentities.Notification> }> {
   const config = {
     params: queryParams
   }
@@ -22,5 +22,5 @@ async function fetchNotifications(queryParams: fetchNotificationsQueryParams): P
 }
 
 export {
-  fetchNotifications
+  getNotifications
 }

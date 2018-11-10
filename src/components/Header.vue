@@ -8,14 +8,28 @@
       <mu-button ref="notificationBtn" icon @click="onNotificationsBtnClick" slot="right">
         <mu-icon value="notifications"></mu-icon>
       </mu-button>
-      <mu-popover
-        cover lazy
-        placement="bottom-start"
-        :open.sync="appStatus.isNotificationsPanelOpened"
-        :trigger="notificationBtnTrigger"
-      >
-        <notifications/>
+
+      <mu-popover v-show="showNotificationAsPopOver"
+                  cover lazy placement="bottom-start"
+                  :open="appStatus.isNotificationsPanelOpened && showNotificationAsPopOver"
+                  @close="updateNotificationsPanelStatus(false)" :trigger="notificationBtnTrigger">
+        <notifications />
       </mu-popover>
+
+      <mu-dialog v-show="!showNotificationAsPopOver" :overlay="false"
+                 :open="appStatus.isNotificationsPanelOpened && !showNotificationAsPopOver"
+                 :fullscreen="true" transition="slide-bottom">
+        <mu-appbar color="primary" title="Notifications">
+          <mu-button slot="left" icon @click="updateNotificationsPanelStatus(false)">
+            <mu-icon value="close" />
+          </mu-button>
+          <mu-button slot="right" icon @click="onFetchMoreNotifications">
+            <mu-icon value="refresh" />
+          </mu-button>
+        </mu-appbar>
+        <notifications :hideHeader="true"/>
+      </mu-dialog>
+
       <span class="route-info" v-if="shouldShowRouteInfo">{{pathToRouteInfo[$route.path].name}}</span>
     </mu-appbar>
   </div>
@@ -23,11 +37,10 @@
 
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
-  import { State, Mutation } from 'vuex-class'
-  import { TimeLineTypes, RoutersInfo } from '@/constant'
+  import { State, Mutation, Action } from 'vuex-class'
+  import { TimeLineTypes, RoutersInfo, UiWidthCheckConstants } from '@/constant'
   import { cuckoostore } from '@/interface'
-  import Notifications from './pages/Notifications'
-  import * as Api from '@/api'
+  import Notifications from '@/components/Notifications'
 
   // todo 统一位置管理
   const pathToRouteInfo = {
@@ -52,11 +65,15 @@
 
     $route
 
+    $progress
+
     notificationBtnTrigger: HTMLButtonElement = null
 
     @State('appStatus') appStatus
 
     @State('mastodonServerUri') mastodonServerUri
+
+    @Action('updateNotifications') updateNotifications
 
     @Mutation('updateDrawerOpenStatus') updateDrawerOpenStatus
 
@@ -73,6 +90,10 @@
       return url.host.replace(url.host[0], (c) => c.toUpperCase())
     }
 
+    get showNotificationAsPopOver (): boolean {
+      return this.appStatus.documentWidth > UiWidthCheckConstants.NOTIFICATION_DIALOG_TOGGLE_WIDTH
+    }
+
     mounted () {
       this.notificationBtnTrigger = this.$refs.notificationBtn.$el
     }
@@ -83,6 +104,14 @@
 
     onNotificationsBtnClick () {
       this.updateNotificationsPanelStatus(!this.appStatus.isNotificationsPanelOpened)
+    }
+
+    async onFetchMoreNotifications() {
+      this.$progress.start()
+      await this.updateNotifications({
+        isFetchMore: true
+      })
+      this.$progress.done()
     }
   }
 

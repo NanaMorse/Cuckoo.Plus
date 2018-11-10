@@ -1,18 +1,34 @@
 import * as api from '@/api'
+import { mastodonentities } from "@/interface"
 
 const notifications = {
-  async refreshNotifications ({ commit, state }) {
+
+  async updateNotifications ({ commit, state }, { isLoadMore, isFetchMore } = {
+    isLoadMore: false,
+    isFetchMore: false
+  }) {
+
+    const notifications: Array<mastodonentities.Notification> = state.notifications
+
+    let maxId, sinceId
+    if (isLoadMore) {
+      maxId = notifications[notifications.length - 1].id
+    } else if (isFetchMore) {
+      sinceId = notifications[0].id
+    }
+
+    let mutationName = ''
+    if (!isLoadMore && !isFetchMore) mutationName = 'pushNotifications'
+    if (isLoadMore && !isFetchMore) mutationName = 'pushNotifications'
+    if (!isLoadMore && isFetchMore) mutationName = 'unShiftNotification'
+
     try {
-      let result
-      if (state.notifications.length === 0) {
-        result = await api.notifications.fetchNotifications({})
-      } else {
-        const sinceId = state.notifications[0].id
-        result = await api.notifications.fetchNotifications({ since_id: sinceId })
-      }
-      commit('prependNotification', result.data)
+      const result = await api.notifications.getNotifications({ max_id: maxId, since_id: sinceId })
+
+      commit(mutationName, result.data)
+
     } catch (e) {
-      throw new Error(e)
+
     }
   }
 }
