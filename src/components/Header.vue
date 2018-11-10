@@ -19,7 +19,7 @@
       <mu-dialog v-show="!showNotificationAsPopOver" :overlay="false"
                  :open="appStatus.isNotificationsPanelOpened && !showNotificationAsPopOver"
                  :fullscreen="true" transition="slide-bottom">
-        <mu-appbar color="primary" title="Notifications">
+        <mu-appbar color="secondary" title="Notifications" v-show="shouldShowNotificationDialogHeader">
           <mu-button slot="left" icon @click="updateNotificationsPanelStatus(false)">
             <mu-icon value="close" />
           </mu-button>
@@ -27,7 +27,7 @@
             <mu-icon value="refresh" />
           </mu-button>
         </mu-appbar>
-        <notifications :hideHeader="true"/>
+        <notifications :hideHeader="true" @shouldShowTargetStatusChanged="onDialogNotificationShowStatusChanged"/>
       </mu-dialog>
 
       <span class="route-info" v-if="shouldShowRouteInfo">{{pathToRouteInfo[$route.path].name}}</span>
@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-  import { Vue, Component } from 'vue-property-decorator'
+  import { Vue, Component, Watch } from 'vue-property-decorator'
   import { State, Mutation, Action } from 'vuex-class'
   import { TimeLineTypes, RoutersInfo, UiWidthCheckConstants } from '@/constant'
   import { cuckoostore } from '@/interface'
@@ -81,6 +81,13 @@
 
     pathToRouteInfo = pathToRouteInfo
 
+    shouldShowNotificationDialogHeader: boolean = true
+
+    @Watch('$route')
+    onRouteChanged () {
+      this.updateNotificationsPanelStatus(false)
+    }
+
     get shouldShowRouteInfo () {
       return (this.appStatus.documentWidth > 600) && this.pathToRouteInfo[this.$route.path]
     }
@@ -104,6 +111,10 @@
 
     onNotificationsBtnClick () {
       this.updateNotificationsPanelStatus(!this.appStatus.isNotificationsPanelOpened)
+    }
+
+    onDialogNotificationShowStatusChanged (val) {
+      this.shouldShowNotificationDialogHeader = !val
     }
 
     async onFetchMoreNotifications() {

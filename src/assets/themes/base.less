@@ -133,6 +133,18 @@ a {
   .mu-card-text {
     color: @textColor;
   }
+
+  .mu-card-header-title {
+
+    .mu-card-title {
+      color: @textColor;
+    }
+
+    .mu-card-sub-title {
+      color: @secondaryTextColor;
+    }
+
+  }
 }
 
 .mu-input {
@@ -198,5 +210,11 @@ a {
 
 .mu-loading-wrap {
   background-color: fade(@dialogBackgroundColor, 80%) !important;
+}
+
+.mu-linear-progress {
+  .mu-linear-progress-background, .mu-linear-progress-determinate {
+    background-color: @secondaryColor !important;
+  }
 }
 
