@@ -1,42 +1,47 @@
 <template>
-  <div class="notification-panel-container base-theme-bg-color">
+  <div class="notification-panel-container base-theme-bg-color" :style="isLoadingTargetStatus ? { overflow: 'hidden' } : null">
 
     <keep-alive>
-      <mu-load-more class="notification-list" v-show="!shouldShowTargetStatus" loading-text="" @load="loadNotifications(true)" :loading="isLoadingNotifications">
-        <mu-flex v-if="!hideHeader" class="panel-header" calign-items="center">
-          <mu-flex justify-content="start" fill>
-            <mu-sub-header class="secondary-read-text-color">Notifications</mu-sub-header>
+      <div class="notification-list" v-show="!shouldShowTargetStatus">
+        <mu-load-more loading-text="" @load="loadNotifications(true)" :loading="isLoadingNotifications" v-loading="isLoadingTargetStatus">
+          <mu-flex v-if="!hideHeader" class="panel-header" calign-items="center">
+            <mu-flex justify-content="start" fill>
+              <mu-sub-header class="secondary-read-text-color">Notifications</mu-sub-header>
+            </mu-flex>
+            <mu-flex justify-content="end" fill>
+              <mu-button icon @click="loadNotifications(false, true)">
+                <mu-icon class="primary-read-text-color" value="refresh" />
+              </mu-button>
+            </mu-flex>
           </mu-flex>
-          <mu-flex justify-content="end" fill>
-            <mu-button icon @click="loadNotifications(false, true)">
-              <mu-icon class="primary-read-text-color" value="refresh" />
-            </mu-button>
-          </mu-flex>
-        </mu-flex>
 
-        <div class="panel-content">
-          <mu-card class="notification-card dialog-theme-bg-color" :style="notificationCardStyle"
-                   @click="onNotificationCardClick(notification)"
-                   v-for="(notification, index) in notifications" :key="index">
-            <mu-card-header :title="getAccountDisplayName(notification.account)"
-                            :sub-title="getNotificationSubTitle(notification)">
-              <mu-avatar slot="avatar">
-                <img :src="notification.account.avatar_static">
-              </mu-avatar>
-            </mu-card-header>
-          </mu-card>
-        </div>
-      </mu-load-more>
+          <mu-list textline="three-line">
+            <mu-list-item :style="notificationCardStyle" class="notification-card dialog-theme-bg-color"
+                          v-for="(notification, index) in notifications" :key="index" @click="onNotificationCardClick(notification)" avatar button>
+              <mu-list-item-action>
+                <mu-avatar>
+                  <img :src="notification.account.avatar_static" />
+                </mu-avatar>
+              </mu-list-item-action>
+              <mu-list-item-content>
+                <mu-list-item-title class="primary-read-text-color">{{getAccountDisplayName(notification.account)}}</mu-list-item-title>
+                <mu-list-item-sub-title class="secondary-read-text-color">{{getNotificationSubTitle(notification)}}</mu-list-item-sub-title>
+              </mu-list-item-content>
+            </mu-list-item>
+          </mu-list>
+
+        </mu-load-more>
+      </div>
     </keep-alive>
 
     <div v-if="shouldShowTargetStatus" class="notification-status-check-area">
-      <mu-appbar color="primary">
+      <mu-appbar color="secondary">
         <mu-button slot="left" icon @click="shouldShowTargetStatus = false">
           <mu-icon value="arrow_back" />
         </mu-button>
       </mu-appbar>
       <div class="notification-status-card-container">
-        <status-card v-if="currentCheckStatus" :status="currentCheckStatus" :forceShowFullReply="true"/>
+        <status-card class="status-card-container" v-if="currentCheckStatus" :status="currentCheckStatus" :forceShowFullReply="true"/>
       </div>
     </div>
 
@@ -77,6 +82,8 @@
     @Getter('getAccountDisplayName') getAccountDisplayName
 
     isLoadingNotifications: boolean = false
+
+    isLoadingTargetStatus: boolean = false
 
     shouldShowTargetStatus: boolean = false
 
@@ -128,7 +135,7 @@
       if (!notification.status) {
 
       } else {
-        this.$progress.start()
+        this.isLoadingTargetStatus = true
 
         if (!this.contextMap[notification.status.id]) {
           await this.updateContextMap(notification.status.id)
@@ -146,7 +153,7 @@
 
         }
 
-        this.$progress.done()
+        this.isLoadingTargetStatus = false
 
         this.currentCheckStatus = targetStatus
 
@@ -163,27 +170,34 @@
 <style lang="less" scoped>
   .notification-panel-container {
     width: 100%;
-    height: calc(100vh - 56px);
+    height: 100%;
     overflow: auto;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
 
     .notification-list {
       padding: 8px;
+      height: calc(100vh - 56px);
 
-      .panel-content {
-
-        .notification-card {
-          margin: 2px 0;
-          box-shadow: 0 1px 2px rgba(0,0,0,.2);
-          border-radius: 3px;
-          cursor: pointer;
-        }
+      .notification-card {
+        margin: 2px 0;
+        box-shadow: 0 1px 2px rgba(0,0,0,.2);
+        border-radius: 3px;
+        cursor: pointer;
       }
     }
 
     .notification-status-check-area {
+      height: 100%;
+
       .notification-status-card-container {
+        height: calc(100% - 56px);
         padding-top: 8px;
+
+        .status-card-container {
+          height: 100%;
+        }
       }
     }
   }

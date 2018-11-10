@@ -1,3 +1,4 @@
+const Loading = require('muse-ui-loading').default
 import Vue from 'vue'
 import Router, { Route } from 'vue-router'
 import store from '../store'
@@ -145,8 +146,10 @@ router.beforeEach(async (to, from, next) => {
     // should get currentUserAccount
     if (!store.state.currentUserAccount) {
       try {
+        const loading = Loading()
         const result = await api.accounts.fetchCurrentUserAccountInfo()
         store.commit('updateCurrentUserAccount', result.data)
+        loading.close()
       } catch (e) {
         if (e.status === 401) {
           store.commit('clearAllOAuthInfo')

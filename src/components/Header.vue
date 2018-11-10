@@ -10,7 +10,7 @@
       </mu-button>
 
       <mu-popover v-show="showNotificationAsPopOver"
-                  lazy placement="bottom-end" style="width: 420px"
+                  cover lazy placement="bottom-end" style="width: 420px"
                   :open="appStatus.isNotificationsPanelOpened && showNotificationAsPopOver"
                   @close="updateNotificationsPanelStatus(false)" :trigger="notificationBtnTrigger">
         <notifications />
@@ -19,7 +19,7 @@
       <mu-dialog v-show="!showNotificationAsPopOver" :overlay="false"
                  :open="appStatus.isNotificationsPanelOpened && !showNotificationAsPopOver"
                  :fullscreen="true" transition="slide-bottom">
-        <mu-appbar color="secondary" title="Notifications" v-show="shouldShowNotificationDialogHeader">
+        <mu-appbar color="primary" title="Notifications" v-show="shouldShowNotificationDialogHeader">
           <mu-button slot="left" icon @click="updateNotificationsPanelStatus(false)">
             <mu-icon value="close" />
           </mu-button>
@@ -27,7 +27,7 @@
             <mu-icon value="refresh" />
           </mu-button>
         </mu-appbar>
-        <notifications :hideHeader="true" @shouldShowTargetStatusChanged="onDialogNotificationShowStatusChanged"/>
+        <notifications :style="notificationContainerStyle" :hideHeader="true" @shouldShowTargetStatusChanged="onDialogNotificationShowStatusChanged"/>
       </mu-dialog>
 
       <span class="route-info" v-if="shouldShowRouteInfo">{{pathToRouteInfo[$route.path].name}}</span>
@@ -99,6 +99,12 @@
 
     get showNotificationAsPopOver (): boolean {
       return this.appStatus.documentWidth > UiWidthCheckConstants.NOTIFICATION_DIALOG_TOGGLE_WIDTH
+    }
+
+    get notificationContainerStyle () {
+      return {
+        height: this.shouldShowNotificationDialogHeader ? 'auto' : '100%'
+      }
     }
 
     mounted () {

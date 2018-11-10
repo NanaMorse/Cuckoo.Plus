@@ -450,8 +450,14 @@
 </script>
 
 <style lang="less" scoped>
-  .status-card {
+  .status-card-container {
     width: 100%;
+
+    .status-card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   .at-name {

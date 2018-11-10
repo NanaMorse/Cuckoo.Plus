@@ -1,6 +1,6 @@
 <template>
   <div class="statuses-page-container" v-loading="!status">
-    <status-card v-if="status" :status="status" :forceShowFullReply="true"/>
+    <status-card class="status-card-container" v-if="status" :status="status" :forceShowFullReply="true"/>
   </div>
 </template>
 
@@ -46,6 +46,14 @@
 <style lang="less" scoped>
   .statuses-page-container {
     max-width: 530px;
-    margin: 16px auto;
+    padding-top: 8px;
+    margin: 0 auto;
+    height: calc(100vh - 56px);
+
+    .status-card-container {
+      @media (max-width: 530px) {
+        height: 100%;
+      }
+    }
   }
 </style>
