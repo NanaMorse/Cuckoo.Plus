@@ -1,3 +1,4 @@
+const Loading = require('muse-ui-loading').default
 import Vue from 'vue'
 import Router, { Route } from 'vue-router'
 import store from '../store'
@@ -116,6 +117,8 @@ const beforeEachHooks = {
   }
 }
 
+let hasInitFetchNotifications = false
+
 router.beforeEach(async (to, from, next) => {
 
   const shouldReRegisterApplication = checkShouldReRegisterApplication(to, from)
@@ -143,14 +146,22 @@ router.beforeEach(async (to, from, next) => {
     // should get currentUserAccount
     if (!store.state.currentUserAccount) {
       try {
+        const loading = Loading()
         const result = await api.accounts.fetchCurrentUserAccountInfo()
         store.commit('updateCurrentUserAccount', result.data)
+        loading.close()
       } catch (e) {
         if (e.status === 401) {
           store.commit('clearAllOAuthInfo')
           return next(RoutersInfo.oauth.path)
         }
       }
+    }
+
+    // should fetch notifications
+    if (!store.state.notifications.length && !hasInitFetchNotifications) {
+      store.dispatch('updateNotifications')
+      hasInitFetchNotifications = true
     }
   }
 

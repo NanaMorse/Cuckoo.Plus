@@ -37,6 +37,14 @@ a {
   color: @secondaryTextColor;
 }
 
+.base-theme-bg-color {
+  background-color: @backgroundColor;
+}
+
+.dialog-theme-bg-color {
+  background-color: @dialogBackgroundColor;
+}
+
 // class for certain component
 // 复杂的或者通用的会放在这里，其余尽量使用mixin
 .status-card {
@@ -104,6 +112,7 @@ a {
   background-color: @dialogBackgroundColor;
 
   .mu-dialog-body {
+    height: 100%;
     color: @textColor;
   }
 
@@ -124,6 +133,18 @@ a {
 
   .mu-card-text {
     color: @textColor;
+  }
+
+  .mu-card-header-title {
+
+    .mu-card-title {
+      color: @textColor;
+    }
+
+    .mu-card-sub-title {
+      color: @secondaryTextColor;
+    }
+
   }
 }
 
@@ -190,5 +211,11 @@ a {
 
 .mu-loading-wrap {
   background-color: fade(@dialogBackgroundColor, 80%) !important;
+}
+
+.mu-linear-progress {
+  .mu-linear-progress-background, .mu-linear-progress-determinate {
+    background-color: @secondaryColor !important;
+  }
 }
 

@@ -211,7 +211,7 @@
 
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-  import { State, Action, Getter } from 'vuex-class'
+  import { State, Action, Getter, Mutation } from 'vuex-class'
   import * as moment from 'moment'
   import { AttachmentTypes, VisibilityTypes } from '@/constant'
   import MediaPanel from '@/components/MediaPanel'
@@ -247,6 +247,8 @@
     @Action('updateContextMap') updateContextMap
     @Action('postStatus') postStatus
 
+    @Mutation('updateNotificationsPanelStatus') updateNotificationsPanelStatus
+
     @Getter('getAccountDisplayName') getAccountDisplayName
     @Getter('getAccountAtName') getAccountAtName
 
@@ -280,6 +282,8 @@
 
     @Prop() status: mastodonentities.Status
 
+    @Prop() forceShowFullReply: boolean
+
     @Watch('shouldShowFullReplyArea')
     async onShowCompleteReplyArea () {
       if (this.shouldShowFullReplyListArea) {
@@ -292,9 +296,9 @@
     }
 
     get descendantStatusList (): Array<mastodonentities.Status> {
-      if (!this.contextMap[this.status.id]) return []
+      if (!this.contextMap[this.status.id] || !this.contextMap[this.status.id].descendants) return []
 
-      return this.contextMap[this.status.id].map(descendantStatusId => {
+      return this.contextMap[this.status.id].descendants.map(descendantStatusId => {
         return this.statusMap[descendantStatusId]
       })
     }
@@ -310,12 +314,12 @@
     }
 
     get shouldShowSimpleReplyListArea () {
-      return this.descendantStatusList.length && this.descendantStatusList.length > 4 &&
+      return !this.forceShowFullReply && this.descendantStatusList.length && this.descendantStatusList.length > 4 &&
         !this.hasTryToExtendSimpleReplyArea
     }
 
     get shouldShowFullReplyListArea () {
-      return this.descendantStatusList.length && ( this.descendantStatusList.length <= 4 || this.hasTryToExtendSimpleReplyArea)
+      return this.forceShowFullReply || (this.descendantStatusList.length && ( this.descendantStatusList.length <= 4 || this.hasTryToExtendSimpleReplyArea))
     }
 
     mounted () {
@@ -339,6 +343,7 @@
           statusId: this.status.id
         }
       })
+      this.updateNotificationsPanelStatus(false)
     }
 
     onShowAllReplyButtonClick () {
@@ -445,8 +450,14 @@
 </script>
 
 <style lang="less" scoped>
-  .status-card {
+  .status-card-container {
     width: 100%;
+
+    .status-card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   .at-name {

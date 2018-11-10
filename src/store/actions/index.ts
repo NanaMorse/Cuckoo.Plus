@@ -1,9 +1,11 @@
 import statuses from './statuses'
 import timelines from './timelines'
+import notifications from './notifications'
 
 const actions = {
   ...timelines,
-  ...statuses
+  ...statuses,
+  ...notifications
 }
 
 export default actions

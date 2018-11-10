@@ -43,11 +43,19 @@ export default {
         const newStatusMap = {}
         results.forEach((contextResult, index) => {
           const descendantIdList = contextResult.data.descendants.map(status => status.id)
+
+          // only record descendant here
           if (descendantIdList.length) {
-            newContextMap[result.data[index].id] = descendantIdList
-            contextResult.data.descendants.forEach(status => newStatusMap[status.id] = status)
+            newContextMap[result.data[index].id] = {
+              ancestors: contextResult.data.ancestors.map(status => status.id),
+              descendants: descendantIdList
+            }
           }
+
+          contextResult.data.ancestors.forEach(status => newStatusMap[status.id] = status)
+          contextResult.data.descendants.forEach(status => newStatusMap[status.id] = status)
         })
+
         Object.keys(newContextMap).length && commit('updateContextMap', newContextMap)
         // also update status map
         Object.keys(newStatusMap).length && commit('updateStatusMap', newStatusMap)

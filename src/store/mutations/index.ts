@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import timelinesMutations from './timelines'
+import notificationsMutations from './notifications'
 import { isBaseTimeLine } from '@/util'
 import { TimeLineTypes, ThemeNames } from '@/constant'
 import { cuckoostore, mastodonentities } from '@/interface'
@@ -62,6 +63,10 @@ const appStatusMutations = {
     state.appStatus.isDrawerOpened = isDrawerOpened
   },
 
+  updateNotificationsPanelStatus (state: cuckoostore.stateInfo, isNotificationsPanelOpened: boolean) {
+    state.appStatus.isNotificationsPanelOpened = isNotificationsPanelOpened
+  },
+
   updateDocumentWidth (state: cuckoostore.stateInfo) {
     state.appStatus.documentWidth = document.body.clientWidth
   },
@@ -107,6 +112,7 @@ const mutations = {
   ...timelinesMutations,
   ...statusesMutations,
   ...appStatusMutations,
+  ...notificationsMutations
 }
 
 export default mutations

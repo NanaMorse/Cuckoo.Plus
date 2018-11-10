@@ -37,12 +37,15 @@ const state: cuckoostore.stateInfo = {
   appStatus: {
     documentWidth: document.body.clientWidth,
     isDrawerOpened: document.body.clientWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY,
+    isNotificationsPanelOpened: false,
     settings: {
       multiLineMode: Boolean(localStorage.getItem('multiLineMode')) || true,
       theme: localStorage.getItem('theme') || ThemeNames.GOOGLE_PLUS,
       tags: JSON.parse(localStorage.getItem('tags')) || ['kimermark']
     },
-  }
+  },
+
+  notifications: []
 }
 
 export default new Vuex.Store({

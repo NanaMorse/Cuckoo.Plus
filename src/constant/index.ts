@@ -24,8 +24,9 @@ const VisibilityTypes = {
 }
 
 const UiWidthCheckConstants = {
-  'DRAWER_DOCKING_BOUNDARY': 960,
-  'POST_STATUS_DIALOG_TOGGLE_WIDTH': 530
+  DRAWER_DOCKING_BOUNDARY: 960,
+  POST_STATUS_DIALOG_TOGGLE_WIDTH: 530,
+  NOTIFICATION_DIALOG_TOGGLE_WIDTH: 530
 }
 
 const ThemeNames = {
@@ -33,10 +34,18 @@ const ThemeNames = {
   DARK: 'dark'
 }
 
+const NotificationTypes = {
+  MENTION: 'mention',
+  REBLOG: 'reblog',
+  FAVOURITE: 'favourite',
+  FOLLOW: 'follow'
+}
+
 export {
   AttachmentTypes,
   TimeLineTypes,
   VisibilityTypes,
   UiWidthCheckConstants,
-  ThemeNames
+  ThemeNames,
+  NotificationTypes
 }

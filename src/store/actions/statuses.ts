@@ -53,15 +53,18 @@ const statuses = {
 
     try {
       const result = await api.statuses.getStatusContextById(statusId)
+      const ancestors = result.data.ancestors
       const descendants = result.data.descendants
 
-      if (descendants.length) {
-        commit('updateContextMap', { [statusId]: descendants.map(status => status.id) })
+      commit('updateContextMap', { [statusId]: {
+        ancestors: ancestors.map(status => status.id),
+        descendants: descendants.map(status => status.id) }
+      })
 
-        const newStatusMap = {}
-        descendants.forEach(status => newStatusMap[status.id] = status)
-        commit('updateStatusMap', newStatusMap)
-      }
+      const newStatusMap = {}
+      ancestors.forEach(status => newStatusMap[status.id] = status)
+      descendants.forEach(status => newStatusMap[status.id] = status)
+      commit('updateStatusMap', newStatusMap)
     } catch (e) {
 
     }

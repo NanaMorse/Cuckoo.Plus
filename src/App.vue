@@ -94,8 +94,4 @@
   .mu-loading-wrap {
     z-index: 20141222 !important;
   }
-
-  .mu-linear-progress {
-    z-index: 20141224 !important;
-  }
 </style>

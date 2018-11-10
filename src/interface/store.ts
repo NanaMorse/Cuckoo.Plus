@@ -20,16 +20,22 @@ export namespace cuckoostore {
     }
 
     contextMap: {
-      [statusId: string]: Array<string>
+      [statusId: string]: {
+        ancestors: Array<string>
+        descendants: Array<string>
+      }
     }
 
     statusMap: {
       [statusId: string]: mastodonentities.Status
     }
 
+    notifications: Array<mastodonentities.Notification>
+
     appStatus: {
       documentWidth: number
       isDrawerOpened: boolean
+      isNotificationsPanelOpened: boolean
       settings: {
         multiLineMode: boolean,
         theme: string,
