@@ -3,7 +3,7 @@ import Vue from 'vue'
 import Router, { Route } from 'vue-router'
 import store from '../store'
 import { RoutersInfo, TimeLineTypes } from '@/constant'
-import * as api from '@/api'
+import * as Api from '@/api'
 import { isBaseTimeLine } from '@/util'
 
 import TimeLinesPage from '@/components/pages/Timelines.vue'
@@ -101,7 +101,7 @@ function checkShouldReRegisterApplication (to, from): boolean {
     }
   }
 
-  return !(clientId && clientSecret && code)
+  return !(clientId && clientSecret && store.state.mastodonServerUri && code)
 }
 
 const beforeEachHooks = {
@@ -118,6 +118,7 @@ const beforeEachHooks = {
 }
 
 let hasInitFetchNotifications = false
+let hasInitStreamConnection = false
 
 router.beforeEach(async (to, from, next) => {
 
@@ -133,7 +134,7 @@ router.beforeEach(async (to, from, next) => {
     // should get accessToken
     if (!store.state.OAuthInfo.accessToken) {
       try {
-        const result = await api.oauth.fetchOAuthToken()
+        const result = await Api.oauth.fetchOAuthToken()
         store.commit('updateOAuthAccessToken', result.data.access_token)
       } catch (e) {
         store.commit('clearAllOAuthInfo')
@@ -147,7 +148,7 @@ router.beforeEach(async (to, from, next) => {
     if (!store.state.currentUserAccount) {
       try {
         const loading = Loading()
-        const result = await api.accounts.fetchCurrentUserAccountInfo()
+        const result = await Api.accounts.fetchCurrentUserAccountInfo()
         store.commit('updateCurrentUserAccount', result.data)
         loading.close()
       } catch (e) {
@@ -162,6 +163,11 @@ router.beforeEach(async (to, from, next) => {
     if (!store.state.notifications.length && !hasInitFetchNotifications) {
       store.dispatch('updateNotifications')
       hasInitFetchNotifications = true
+    }
+    
+    if (store.state.mastodonServerUri && !hasInitStreamConnection) {
+      Api.streaming.openUserConnection()
+      hasInitStreamConnection = true
     }
   }
 
