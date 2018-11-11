@@ -57,8 +57,10 @@ Vue.http.interceptors.push(httpInterceptor)
 // open web socket
 Api.streaming.openUserConnection()
 
-// check notification permission
-Notification.requestPermission()
+// @ts-ignore
+if (window.Notification) {
+  Notification.requestPermission()
+}
 
 ThemeManager.setTheme(store.state.appStatus.settings.theme)
 

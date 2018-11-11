@@ -129,7 +129,10 @@ class Streaming {
     store.commit('updateUnreadNotificationCount', store.state.appStatus.unreadNotificationCount + 1)
 
     // send browser notification
-    notificationHandler.emit(newNotification)
+    // @ts-ignore
+    if (window.Notification) {
+      notificationHandler.emit(newNotification)
+    }
   }
 
 }
