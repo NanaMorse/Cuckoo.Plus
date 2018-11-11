@@ -22,6 +22,10 @@ export default {
       targetTimeLines = state.timelines[timeLineType][hashName]
     }
 
+    newStatusIdList = newStatusIdList.filter(id => {
+      return targetTimeLines.indexOf(id) === -1
+    })
+
     targetTimeLines.push(...newStatusIdList)
   },
 
@@ -33,6 +37,10 @@ export default {
       if (!hashName) throw new Error('need a hash name!')
       targetTimeLines = state.timelines[timeLineType][hashName]
     }
+
+    newStatusIdList = newStatusIdList.filter(id => {
+      return targetTimeLines.indexOf(id) === -1
+    })
 
     targetTimeLines.unshift(...newStatusIdList)
   }

@@ -387,12 +387,14 @@
     onReplyToStatus (status: mastodonentities.Status) {
       this.currentReplyToStatus = status
 
-      const preSetMentions = [{
-        acct: status.account.acct,
-        id: status.account.id
-      }, ...status.mentions].filter(mention => {
+      const preSetMentions = status.mentions.filter(mention => {
         return mention.id !== this.currentUserAccount.id
       })
+
+      preSetMentions.push({
+        acct: status.account.acct,
+        id: status.account.id
+      } as mastodonentities.Mention)
 
       this.replyInputValue = preSetMentions.reduce((pre, cur) => pre + `@${cur.acct} `, '')
 

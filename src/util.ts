@@ -65,17 +65,17 @@ export function getVisibilityDescInfo (visibilityType: string) {
   return visibilityTypeToDescMap[visibilityType]
 }
 
-export async function prepareNotificationTargetStatus (notification: mastodonentities.Notification) {
+export async function prepareRootStatus (status: mastodonentities.Status) {
   const contextMap = store.state.contextMap
   const statusMap = store.state.statusMap
 
-  if (!contextMap[notification.status.id]) {
-    await store.dispatch('updateContextMap', notification.status.id)
+  if (!contextMap[status.id]) {
+    await store.dispatch('updateContextMap', status.id)
   }
 
-  let targetStatus = notification.status
+  let targetStatus = status
 
-  const targetStatusContext = contextMap[notification.status.id]
+  const targetStatusContext = contextMap[status.id]
   if (targetStatusContext.ancestors.length) {
     targetStatus = statusMap[targetStatusContext.ancestors[0]]
   }

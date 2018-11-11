@@ -54,7 +54,7 @@
   import { NotificationTypes, ThemeNames } from '@/constant'
   import StatusCard from '@/components/StatusCard.vue'
   import { mastodonentities } from '@/interface'
-  import { extractText, prepareNotificationTargetStatus } from "@/util"
+  import { extractText, prepareRootStatus } from "@/util"
 
   @Component({
     components: {
@@ -131,7 +131,7 @@
       } else {
         this.isLoadingTargetStatus = true
 
-        const targetStatus = await prepareNotificationTargetStatus(notification)
+        const targetStatus = await prepareRootStatus(notification.status)
 
         this.isLoadingTargetStatus = false
 

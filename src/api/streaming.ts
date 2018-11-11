@@ -2,7 +2,7 @@ import store from '@/store'
 import { StreamingEventTypes, TimeLineTypes, NotificationTypes, RoutersInfo } from '@/constant'
 import { mastodonentities } from "@/interface"
 import router from '@/router'
-import { extractText, prepareNotificationTargetStatus } from "@/util"
+import { extractText, prepareRootStatus } from "@/util"
 
 class NotificationHandler {
   public emit (newNotification: mastodonentities.Notification) {
@@ -45,7 +45,7 @@ class NotificationHandler {
   }
 
   private async routeToTargetStatus (newNotification: mastodonentities.Notification) {
-    const targetStatus = await prepareNotificationTargetStatus(newNotification)
+    const targetStatus = await prepareRootStatus(newNotification.status)
 
     router.push({
       name: RoutersInfo.statuses.name,
@@ -95,14 +95,20 @@ class Streaming {
   }
 
   private updateStatus (newStatus: mastodonentities.Status, timeLineType, hashName?) {
+
+    if (store.state.statusMap[newStatus.id]) return
+
     // update status map
     store.commit('updateStatusMap', { [newStatus.id]: newStatus })
+
+    prepareRootStatus(newStatus)
 
     // update target timeline list
     store.commit('unShiftTimeLineStatuses', {
       newStatusIdList: [newStatus.id],
       timeLineType, hashName
     })
+
   }
 
   private deleteStatus (newStatus: mastodonentities.Status, timeLineType, hashName?) {
