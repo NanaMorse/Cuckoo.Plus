@@ -52,7 +52,7 @@
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State, Action, Getter } from 'vuex-class'
   import { NotificationTypes, ThemeNames } from '@/constant'
-  import StatusCard from '@/components/StatusCard.vue'
+  import StatusCard from '@/components/StatusCard'
   import { mastodonentities } from '@/interface'
   import { extractText, prepareRootStatus } from "@/util"
 

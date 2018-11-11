@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { TimeLineTypes } from '@/constant'
 import { cuckoostore } from '@/interface'
 import { isBaseTimeLine } from '@/util'
 
@@ -43,5 +44,29 @@ export default {
     })
 
     targetTimeLines.unshift(...newStatusIdList)
+  },
+
+  deleteStatusFromTimeLine (state: cuckoostore.stateInfo, statusId: string) {
+    Object.keys(state.timelines).forEach(timeLineType => {
+      if (isBaseTimeLine(timeLineType)) {
+        const currentTimeLineList = state.timelines[timeLineType]
+
+        if (currentTimeLineList) {
+          currentTimeLineList.splice(currentTimeLineList.indexOf(statusId), 1)
+        }
+
+      } else {
+        const currentTimeLineMap = state.timelines[timeLineType]
+
+        Object.keys(currentTimeLineMap).forEach(hashName => {
+          const currentTimeLineList = currentTimeLineMap[hashName]
+
+          if (currentTimeLineList) {
+            currentTimeLineList.splice(currentTimeLineList.indexOf(statusId), 1)
+          }
+        })
+
+      }
+    })
   }
 }

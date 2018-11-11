@@ -84,7 +84,7 @@ class Streaming {
         }
 
         case StreamingEventTypes.DELETE : {
-          return this.deleteStatus(JSON.parse(parsedMessage.payload), timeLineType, hashName)
+          return this.deleteStatus(parsedMessage.payload)
         }
 
         case StreamingEventTypes.NOTIFICATION : {
@@ -111,8 +111,14 @@ class Streaming {
 
   }
 
-  private deleteStatus (newStatus: mastodonentities.Status, timeLineType, hashName?) {
+  private deleteStatus (statusId: string) {
+    if (!store.state.statusMap[statusId]) return
 
+    // remove from time line
+    store.commit('deleteStatusFromTimeLine', statusId)
+
+    // remove from status map
+    store.commit('removeStatusFromStatusMapById', statusId)
   }
 
   private emitNotification (newNotification: mastodonentities.Notification) {

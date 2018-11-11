@@ -45,6 +45,10 @@ const statusesMutations = {
     })
   },
 
+  removeStatusFromStatusMapById (state: cuckoostore.stateInfo, statusId: string) {
+    Vue.set(state.statusMap, statusId, undefined)
+  },
+
   updateFavouriteStatusById (state: cuckoostore.stateInfo, { favourited, targetStatusId }) {
     const targetStatus = state.statusMap[targetStatusId]
 
