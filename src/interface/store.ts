@@ -36,6 +36,7 @@ export namespace cuckoostore {
       documentWidth: number
       isDrawerOpened: boolean
       isNotificationsPanelOpened: boolean
+      unreadNotificationCount: number
       settings: {
         multiLineMode: boolean,
         theme: string,

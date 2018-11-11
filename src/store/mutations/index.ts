@@ -67,6 +67,10 @@ const appStatusMutations = {
     state.appStatus.isNotificationsPanelOpened = isNotificationsPanelOpened
   },
 
+  updateUnreadNotificationCount (state: cuckoostore.stateInfo, count: number) {
+    state.appStatus.unreadNotificationCount = count
+  },
+
   updateDocumentWidth (state: cuckoostore.stateInfo) {
     state.appStatus.documentWidth = document.body.clientWidth
   },

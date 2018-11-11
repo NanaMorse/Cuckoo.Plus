@@ -38,6 +38,7 @@ const state: cuckoostore.stateInfo = {
     documentWidth: document.body.clientWidth,
     isDrawerOpened: document.body.clientWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY,
     isNotificationsPanelOpened: false,
+    unreadNotificationCount: 0,
     settings: {
       multiLineMode: Boolean(localStorage.getItem('multiLineMode')) || true,
       theme: localStorage.getItem('theme') || ThemeNames.GOOGLE_PLUS,

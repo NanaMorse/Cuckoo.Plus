@@ -54,7 +54,7 @@
   import { NotificationTypes, ThemeNames } from '@/constant'
   import StatusCard from '@/components/StatusCard.vue'
   import { mastodonentities } from '@/interface'
-  import { extractText } from "@/util"
+  import { extractText, prepareNotificationTargetStatus } from "@/util"
 
   @Component({
     components: {
@@ -69,15 +69,9 @@
 
     @Action('updateNotifications') updateNotifications
 
-    @Action('updateContextMap') updateContextMap
-
     @State('appStatus') appStatus
 
-    @State('contextMap') contextMap
-
     @State('notifications') notifications: Array<mastodonentities.Notification>
-
-    @State('statusMap') statusMap
 
     @Getter('getAccountDisplayName') getAccountDisplayName
 
@@ -137,21 +131,7 @@
       } else {
         this.isLoadingTargetStatus = true
 
-        if (!this.contextMap[notification.status.id]) {
-          await this.updateContextMap(notification.status.id)
-        }
-
-        let targetStatus = notification.status
-
-        const targetStatusContext = this.contextMap[notification.status.id]
-        if (targetStatusContext.ancestors.length) {
-          targetStatus = this.statusMap[targetStatusContext.ancestors[0]]
-
-          if (!this.contextMap[targetStatus.id]) {
-            await this.updateContextMap(targetStatus.id)
-          }
-
-        }
+        const targetStatus = await prepareNotificationTargetStatus(notification)
 
         this.isLoadingTargetStatus = false
 

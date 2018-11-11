@@ -15,6 +15,7 @@ import * as moment from 'moment'
 import i18nMessages from './i18n'
 import { I18nTags, I18nLocales, RoutersInfo, ThemeNames } from '@/constant'
 import ThemeManager from '@/themes'
+import * as Api from '@/api'
 
 Vue.use({
   install (Vue) {
@@ -52,6 +53,12 @@ const httpInterceptor: any = (request) => {
 }
 
 Vue.http.interceptors.push(httpInterceptor)
+
+// open web socket
+Api.streaming.openUserConnection()
+
+// check notification permission
+Notification.requestPermission()
 
 ThemeManager.setTheme(store.state.appStatus.settings.theme)
 

@@ -2,6 +2,7 @@ import store from '@/store'
 import { TimeLineTypes, RoutersInfo, I18nTags, VisibilityTypes } from '@/constant'
 import { Route } from "vue-router"
 import { insertDels } from "./formatter"
+import { mastodonentities } from "@/interface"
 
 export function patchApiUri (uri: string): string {
   return `${store.state.mastodonServerUri}${uri}`
@@ -62,6 +63,26 @@ const visibilityTypeToDescMap = {
 }
 export function getVisibilityDescInfo (visibilityType: string) {
   return visibilityTypeToDescMap[visibilityType]
+}
+
+export async function prepareNotificationTargetStatus (notification: mastodonentities.Notification) {
+  const contextMap = store.state.contextMap
+  const statusMap = store.state.statusMap
+
+  if (!contextMap[notification.status.id]) {
+    await store.dispatch('updateContextMap', notification.status.id)
+  }
+
+  let targetStatus = notification.status
+
+  const targetStatusContext = contextMap[notification.status.id]
+  if (targetStatusContext.ancestors.length) {
+    targetStatus = statusMap[targetStatusContext.ancestors[0]]
+  }
+
+  store.dispatch('updateContextMap', targetStatus.id)
+
+  return targetStatus
 }
 
 export function formatHtml(html: string): string {
