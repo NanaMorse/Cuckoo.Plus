@@ -76,6 +76,14 @@ async function deleteStatusById (id: string) {
   return Vue.http.delete(patchApiUri(`/api/v1/statuses/${id}`)) as any
 }
 
+async function muteStatusById (id: string) {
+  return Vue.http.post(patchApiUri(`/api/v1/statuses/${id}/mute`)) as any
+}
+
+async function unMuteStatusById (id: string) {
+  return Vue.http.post(patchApiUri(`/api/v1/statuses/${id}/unmute`)) as any
+}
+
 export {
   getStatusById,
   postStatus,
@@ -86,5 +94,7 @@ export {
   unFavouriteStatusById,
   reblogStatusById,
   unReblogStatusById,
-  deleteStatusById
+  deleteStatusById,
+  muteStatusById,
+  unMuteStatusById
 }
