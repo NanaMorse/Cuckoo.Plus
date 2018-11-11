@@ -201,9 +201,9 @@
     .right-area {
       display: flex;
       flex-shrink: 0;
+      width: 38px;
 
       .reply-from-now {
-        width: 38px;
         font-size: 13px;
       }
     }
