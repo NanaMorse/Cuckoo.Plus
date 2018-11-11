@@ -41,11 +41,19 @@ const NotificationTypes = {
   FOLLOW: 'follow'
 }
 
+const StreamingEventTypes = {
+  UPDATE: 'update',
+  NOTIFICATION: 'notification',
+  DELETE: 'delete',
+  FILTERS_CHANGED: 'filters_changed'
+}
+
 export {
   AttachmentTypes,
   TimeLineTypes,
   VisibilityTypes,
   UiWidthCheckConstants,
   ThemeNames,
-  NotificationTypes
+  NotificationTypes,
+  StreamingEventTypes
 }

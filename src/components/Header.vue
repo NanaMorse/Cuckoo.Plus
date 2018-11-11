@@ -5,8 +5,9 @@
         <mu-icon value="menu"></mu-icon>
       </mu-button>
       <span>{{parsedMastodonServerUri}}</span>
-      <mu-button ref="notificationBtn" icon @click="onNotificationsBtnClick" slot="right">
-        <mu-icon value="notifications"></mu-icon>
+      <mu-button ref="notificationBtn" icon @click="onOpenNotificationPanel" slot="right">
+        <mu-icon v-if="appStatus.unreadNotificationCount === 0" value="notifications"></mu-icon>
+        <mu-badge class="notification-badge" v-if="appStatus.unreadNotificationCount > 0" :content="String(appStatus.unreadNotificationCount)" circle color="primary" />
       </mu-button>
 
       <mu-popover v-show="showNotificationAsPopOver"
@@ -79,6 +80,8 @@
 
     @Mutation('updateNotificationsPanelStatus') updateNotificationsPanelStatus
 
+    @Mutation('updateUnreadNotificationCount') updateUnreadNotificationCount
+
     pathToRouteInfo = pathToRouteInfo
 
     shouldShowNotificationDialogHeader: boolean = true
@@ -115,7 +118,9 @@
       this.updateDrawerOpenStatus(!this.appStatus.isDrawerOpened)
     }
 
-    onNotificationsBtnClick () {
+    onOpenNotificationPanel () {
+      this.onFetchMoreNotifications()
+      this.updateUnreadNotificationCount(0)
       this.updateNotificationsPanelStatus(!this.appStatus.isNotificationsPanelOpened)
     }
 
@@ -186,6 +191,12 @@
         .mu-input-line, .mu-input-focus-line {
           display: none;
         }
+      }
+    }
+
+    .notification-badge {
+      .mu-badge {
+        border: 2px solid;
       }
     }
   }

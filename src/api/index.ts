@@ -6,6 +6,7 @@ import * as timelines from './timelines'
 import * as statuses from './statuses'
 import * as notifications from './notifications'
 import * as media from './media'
+import streaming from './streaming'
 
 export {
   apps,
@@ -15,5 +16,6 @@ export {
   timelines,
   statuses,
   notifications,
-  media
+  media,
+  streaming
 }
