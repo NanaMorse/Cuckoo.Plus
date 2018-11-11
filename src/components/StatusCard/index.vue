@@ -24,11 +24,12 @@
         </div>
 
         <div class="right-area">
-          <span v-show="!shouldShowHeaderActionButtonGroup" class="status-from-now secondary-read-text-color">{{getFromNowTime(status.created_at)}}</span>
+          <span v-show="!shouldOpenMoreOperationPopOver && !shouldShowHeaderActionButtonGroup" class="status-from-now secondary-read-text-color">{{getFromNowTime(status.created_at)}}</span>
 
-          <div v-show="shouldShowHeaderActionButtonGroup" class="card-header-action">
+          <div v-show="shouldOpenMoreOperationPopOver || shouldShowHeaderActionButtonGroup" class="card-header-action">
             <mu-icon class="header-icon secondary-read-text-color" value="open_in_new" @click="onCheckStatusInSinglePage"/>
-            <mu-icon class="header-icon secondary-read-text-color" value="more_vert" />
+            <mu-icon class="header-icon secondary-read-text-color" value="more_vert"
+                     @click="onOpenMoreOperationPopOver($event, status)"/>
           </div>
         </div>
 
@@ -81,51 +82,8 @@
 
       <div class="reply-area-full" v-if="shouldShowFullReplyListArea">
         <div class="full-reply-list">
-          <div class="full-reply-list-item" v-for="replierStatus in descendantStatusList" :key="replierStatus.id">
-            <div class="left-area">
-              <mu-avatar class="status-replier-avatar" slot="avatar" size="34">
-                <img :src="replierStatus.account.avatar_static">
-              </mu-avatar>
-            </div>
-            <div class="center-area">
-
-              <div class="reply-user-display-name">
-                <p class="primary-read-text-color">
-                  {{getAccountDisplayName(replierStatus.account)}}
-                  <span class="at-name secondary-read-text-color">@{{getAccountAtName(replierStatus.account)}}</span>
-                </p>
-                <span v-if="replierStatus.favourites_count > 0"
-                      class="reply-favorites-count"
-                      :class="[ replierStatus.favourited ? 'primary-theme-text-color' : 'secondary-read-text-color' ]">
-                  +{{replierStatus.favourites_count}}
-                </span>
-              </div>
-
-
-              <mu-card-text class="status-content full-reply-status-content" v-html="formatHtml(replierStatus.content)"></mu-card-text>
-
-              <div class="full-reply-attachment-area">
-                <media-panel :mediaList="replierStatus.media_attachments" :pixivCards="replierStatus.pixiv_cards" :sensitive="replierStatus.sensitive"/>
-              </div>
-
-              <div class="reply-action-list">
-
-                <a class="reply-button secondary-theme-text-color"
-                   @click="onReplyToStatus(replierStatus)">{{$t($i18nTags.statusCard.reply_to_replier)}}</a>
-
-                <div class="plus-one-button secondary-theme-text-color"
-                     @click="onFavoriteButtonClick(replierStatus)"
-                     :class="{ 'primary-theme-bg-color': replierStatus.favourited }">
-                  <a>+1</a>
-                </div>
-
-              </div>
-
-            </div>
-            <div class="right-area">
-              <span class="reply-from-now secondary-read-text-color">{{getFromNowTime(replierStatus.created_at)}}</span>
-            </div>
-          </div>
+          <full-reply-list-item v-for="replierStatus in descendantStatusList"
+                                :key="replierStatus.id" :status="replierStatus" @reply="onReplyToStatus(replierStatus)"/>
         </div>
       </div>
 
@@ -206,6 +164,20 @@
     <visibility-select-pop-over :visibility.sync="replyVisibility"
                                 :open.sync="shouldOpenVisibilitySelectPopOver"
                                 :trigger="visibilityTriggerBtn"/>
+
+    <mu-popover cover placement="left-start"
+                :open.sync="shouldOpenMoreOperationPopOver"
+                :trigger="moreOperationTriggerBtn">
+      <mu-list>
+        <mu-list-item button>
+          <mu-list-item-title>Mute</mu-list-item-title>
+        </mu-list-item>
+        <mu-list-item button v-if="operateTargetStatus && (currentUserAccount.id === operateTargetStatus.account.id)"
+                      @click="onDeleteStatusByOperateList()">
+          <mu-list-item-title>Delete</mu-list-item-title>
+        </mu-list-item>
+      </mu-list>
+    </mu-popover>
   </div>
 </template>
 
@@ -214,7 +186,8 @@
   import { State, Action, Getter, Mutation } from 'vuex-class'
   import * as moment from 'moment'
   import { AttachmentTypes, VisibilityTypes } from '@/constant'
-  import MediaPanel from '@/components/MediaPanel'
+  import MediaPanel from './MediaPanel'
+  import FullReplyListItem from './FullReplyListItem'
   import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
   import { mastodonentities } from '@/interface'
   import ThemeManager from 'muse-ui/lib/theme'
@@ -224,6 +197,7 @@
   @Component({
     components: {
       'media-panel': MediaPanel,
+      'full-reply-list-item': FullReplyListItem,
       'visibility-select-pop-over': VisibilitySelectPopOver
     }
   })
@@ -232,6 +206,8 @@
     $router
 
     $routersInfo
+
+    $confirm
 
     $refs: {
       statusCardContainer: HTMLDivElement
@@ -246,6 +222,7 @@
     @Action('updateFavouriteStatusById') updateFavouriteStatusById
     @Action('updateContextMap') updateContextMap
     @Action('postStatus') postStatus
+    @Action('deleteStatus') deleteStatus
 
     @Mutation('updateNotificationsPanelStatus') updateNotificationsPanelStatus
 
@@ -271,6 +248,14 @@
     isCardLoading = false
 
     userNameAreaStyle = {}
+
+
+    moreOperationTriggerBtn: any = null
+
+    shouldOpenMoreOperationPopOver = false
+
+    operateTargetStatus: mastodonentities.Status = null
+
 
     visibilityTriggerBtn: any = null
 
@@ -300,7 +285,7 @@
 
       return this.contextMap[this.status.id].descendants.map(descendantStatusId => {
         return this.statusMap[descendantStatusId]
-      })
+      }).filter(s => s)
     }
 
     get lastedThreeReplyStatuses (): Array<mastodonentities.Status> {
@@ -326,6 +311,12 @@
       autosize(this.$refs.replayTextInput)
       this.setMainStatusUserNameAreaStyle()
       this.visibilityTriggerBtn = this.$refs.visibilityTriggerBtn.$el
+    }
+
+    onOpenMoreOperationPopOver (e: MouseEvent, targetStatus: mastodonentities.Status) {
+      this.moreOperationTriggerBtn = e.target as any
+      this.operateTargetStatus = targetStatus
+      this.shouldOpenMoreOperationPopOver = true
     }
 
     onCardMouseOver () {
@@ -359,7 +350,6 @@
     onFavoriteButtonClick (targetStatus: mastodonentities.Status) {
       this.updateFavouriteStatusById({
         favourited: !targetStatus.favourited,
-        mainStatusId: this.status.id,
         targetStatusId: targetStatus.id
       })
     }
@@ -421,6 +411,16 @@
       this.isCardLoading = false
 
       this.hideFullReplyActionArea()
+    }
+
+    async onDeleteStatusByOperateList () {
+      const targetStatusId = this.operateTargetStatus.id
+
+      const doDeleteStatus = (await this.$confirm('要删除这条嘟文吗?', '', {})).result
+      if (doDeleteStatus) {
+        this.isCardLoading = true
+        await this.deleteStatus({ statusId: targetStatusId })
+      }
     }
 
     getFromNowTime (createdAt: string) {
@@ -607,72 +607,6 @@
 
     .full-reply-status-content {
       padding: 0;
-    }
-
-    .full-reply-list-item {
-      display: flex;
-      padding: 12px 16px;
-
-      .center-area {
-        flex-grow: 1;
-        margin: 0 10px 0 16px;
-        display: flex;
-        flex-direction: column;
-
-        .reply-user-display-name {
-          display: flex;
-          align-items: center;
-
-          > p {
-            margin: 0;
-            font-size: 15px;
-            font-weight: 500;
-            text-overflow: ellipsis;
-            overflow: hidden;
-          }
-
-          .reply-favorites-count {
-            font-size: 13px;
-            font-weight: 500;
-            margin-left: 8px;
-          }
-        }
-
-        .reply-action-list {
-          display: flex;
-          align-items: center;
-          margin-top: 6px;
-
-          .common-style-mixin() {
-            cursor: pointer;
-            font-size: 13px;
-            margin: 0 8px;
-          }
-
-          .reply-button {
-            .common-style-mixin();
-            margin-left: 0;
-          }
-
-          .plus-one-button {
-            .common-style-mixin();
-            width: 24px;
-            height: 24px;
-            line-height: 24px;
-            text-align: center;
-            border-radius: 50%;
-          }
-        }
-      }
-
-      .right-area {
-        flex-shrink: 0;
-
-        .reply-from-now {
-          width: 32px;
-          font-size: 13px;
-        }
-      }
     }
   }
 

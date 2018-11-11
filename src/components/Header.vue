@@ -11,7 +11,7 @@
       </mu-button>
 
       <mu-popover v-show="showNotificationAsPopOver"
-                  cover lazy placement="bottom-end" style="width: 420px"
+                  cover lazy placement="left-start" style="width: 420px"
                   :open="appStatus.isNotificationsPanelOpened && showNotificationAsPopOver"
                   @close="updateNotificationsPanelStatus(false)" :trigger="notificationBtnTrigger">
         <notifications />

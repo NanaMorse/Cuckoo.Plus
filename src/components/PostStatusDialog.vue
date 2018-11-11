@@ -118,6 +118,8 @@
       visibilitySelectBtn: HTMLDivElement
     }
 
+    $confirm
+
     getVisibilityDescInfo = getVisibilityDescInfo
 
     visibility: string = VisibilityTypes.PUBLIC
@@ -191,7 +193,7 @@
 
     async onTryCloseDialog () {
       if (this.textContentValue || this.uploadProcessInfoList.length) {
-        // @ts-ignore todo i18n
+        // todo i18n
         const doCloseDialog = (await this.$confirm('要舍弃这条信息吗？', '', {})).result
         if (doCloseDialog) {
           this.closeDialog()

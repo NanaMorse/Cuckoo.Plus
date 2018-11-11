@@ -29,9 +29,8 @@ const statuses = {
     }
   },
 
-  async updateFavouriteStatusById ({ commit }, { favourited, mainStatusId, targetStatusId }: {
+  async updateFavouriteStatusById ({ commit }, { favourited, targetStatusId }: {
     favourited: boolean
-    mainStatusId: string
     targetStatusId: string
   }) {
     try {
@@ -42,7 +41,7 @@ const statuses = {
         api.statuses.unFavouriteStatusById(targetStatusId)
       }
 
-      commit('updateFavouriteStatusById', { favourited, mainStatusId, targetStatusId })
+      commit('updateFavouriteStatusById', { favourited, targetStatusId })
     } catch (e) {
       throw new Error(e)
     }
@@ -86,7 +85,7 @@ const statuses = {
         })
       } else {
         // update the reply status's context
-        dispatch('updateContextMap', mainStatusId)
+        await dispatch('updateContextMap', mainStatusId)
       }
 
       // update status map
@@ -94,6 +93,21 @@ const statuses = {
 
     } catch (e) {
       throw new Error(e)
+    }
+  },
+
+  async deleteStatus ({ commit }, { statusId }) {
+    // remove from time line
+    commit('deleteStatusFromTimeLine', statusId)
+
+    // remove from status map
+    commit('removeStatusFromStatusMapById', statusId)
+
+    try {
+      await api.statuses.deleteStatusById(statusId)
+
+    } catch (e) {
+
     }
   }
 }

@@ -47,7 +47,7 @@
   import { TimeLineTypes } from '@/constant'
   import { cuckoostore, mastodonentities } from '@/interface'
   import { getTimeLineTypeAndHashName, isBaseTimeLine } from '@/util'
-  import StatusCard from '@/components/StatusCard.vue'
+  import StatusCard from '@/components/StatusCard'
   import PostStatusDialog from '@/components/PostStatusDialog.vue'
 
   const statusCardMaxWidth = 530
