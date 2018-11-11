@@ -378,7 +378,7 @@
       this.currentReplyToStatus = status
 
       const preSetMentions = status.mentions.filter(mention => {
-        return mention.id !== this.currentUserAccount.id
+        return (mention.id !== this.currentUserAccount.id) && (mention.id !== status.account.id)
       })
 
       preSetMentions.push({
