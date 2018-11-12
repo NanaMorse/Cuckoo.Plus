@@ -16,6 +16,9 @@ class NotificationHandler {
       }
 
       case NotificationTypes.FAVOURITE : {
+        // update status info
+        store.dispatch('fetchStatusById', newNotification.status.id)
+
         return this.emitStatusOperateNotification(newNotification, '喜欢了你的嘟文')
       }
     }

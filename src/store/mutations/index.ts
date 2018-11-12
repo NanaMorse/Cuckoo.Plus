@@ -49,14 +49,15 @@ const statusesMutations = {
     Vue.set(state.statusMap, statusId, undefined)
   },
 
-  updateFavouriteStatusById (state: cuckoostore.stateInfo, { favourited, targetStatusId }) {
+  updateFavouriteStatusById (state: cuckoostore.stateInfo, { favourited, targetStatusId, notSelfOperate }) {
     const targetStatus = state.statusMap[targetStatusId]
 
-    if (!targetStatus) {
-      throw new Error('no such status!')
+    if (!targetStatus) return
+
+    if (!notSelfOperate) {
+      Vue.set(targetStatus, 'favourited', favourited)
     }
 
-    Vue.set(targetStatus, 'favourited', favourited)
     Vue.set(targetStatus, 'favourites_count', favourited ?
       targetStatus.favourites_count + 1 : targetStatus.favourites_count - 1)
   }
