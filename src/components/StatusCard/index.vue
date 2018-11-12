@@ -381,10 +381,12 @@
         return (mention.id !== this.currentUserAccount.id) && (mention.id !== status.account.id)
       })
 
-      preSetMentions.push({
-        acct: status.account.acct,
-        id: status.account.id
-      } as mastodonentities.Mention)
+      if (status.account.id !== this.currentUserAccount.id) {
+        preSetMentions.push({
+          acct: status.account.acct,
+          id: status.account.id
+        } as mastodonentities.Mention)
+      }
 
       this.replyInputValue = preSetMentions.reduce((pre, cur) => pre + `@${cur.acct} `, '')
 
