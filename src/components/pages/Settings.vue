@@ -17,6 +17,11 @@
           <mu-switch class="setting-switch" v-model="multiLineMode" />
         </div>
 
+        <div class="setting-row">
+          <span class="setting-label primary-read-text-color">总是显示标记为敏感的媒体文件：</span>
+          <mu-switch class="setting-switch" v-model="showSensitiveContentMode" />
+        </div>
+
       </mu-card-actions>
     </mu-card>
   </div>
@@ -35,6 +40,8 @@
     @Mutation('updateTheme') updateTheme
 
     @Mutation('updateMultiLineMode') updateMultiLineMode
+
+    @Mutation('updateShowSensitiveContentMode') updateShowSensitiveContentMode
 
     themeOptions = [
       { label: 'Google Plus', value: ThemeNames.GOOGLE_PLUS },
@@ -55,6 +62,14 @@
 
     set multiLineMode (val) {
       this.updateMultiLineMode(val)
+    }
+
+    get showSensitiveContentMode () {
+      return this.appStatus.settings.showSensitiveContentMode
+    }
+
+    set showSensitiveContentMode (val) {
+      this.updateShowSensitiveContentMode(val)
     }
   }
 

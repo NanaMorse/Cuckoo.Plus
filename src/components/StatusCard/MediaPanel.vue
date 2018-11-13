@@ -10,13 +10,13 @@
           <video autoplay loop :src="media.url" :key="index" />
         </div>
 
-        <mu-button class="hide-sensitive-btn" v-if="sensitive" @click.stop="shouldShowSensitiveCover = true">
+        <mu-button class="hide-sensitive-btn" @click.stop="shouldShowSensitiveCover = true">
           <mu-icon value="visibility_off"/>
         </mu-button>
       </div>
 
-      <div class="sensitive-alert-cover" v-if="sensitive" v-show="shouldShowSensitiveCover" @click="shouldShowSensitiveCover = false">
-        <p>敏感内容 <br/> 点击显示</p>
+      <div class="sensitive-alert-cover" v-show="shouldShowSensitiveCover" @click="shouldShowSensitiveCover = false">
+        <p>隐藏媒体内容 <br/> 点击显示</p>
       </div>
     </div>
 
@@ -40,6 +40,7 @@
 
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+  import { State } from 'vuex-class'
   import { AttachmentTypes } from '@/constant'
   import { mastodonentities } from '@/interface'
 
@@ -52,10 +53,26 @@
 
     @Prop() sensitive?: boolean
 
-    shouldShowSensitiveCover: boolean = true
+    @State('appStatus') appStatus
+
+    manuallyShowSensitiveCover: boolean = null
 
     isImageType (type: string) {
       return type === AttachmentTypes.IMAGE || type === AttachmentTypes.UNKNOWN
+    }
+
+    get shouldShowSensitiveCover () {
+      if (typeof this.manuallyShowSensitiveCover === 'boolean') {
+        return this.manuallyShowSensitiveCover
+      }
+
+      if (this.appStatus.settings.showSensitiveContentMode) return false
+
+      return this.sensitive
+    }
+
+    set shouldShowSensitiveCover (val) {
+      this.manuallyShowSensitiveCover = val
     }
 
     get combinedMediaList () {

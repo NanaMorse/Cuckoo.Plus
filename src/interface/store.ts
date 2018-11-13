@@ -39,6 +39,7 @@ export namespace cuckoostore {
       unreadNotificationCount: number
       settings: {
         multiLineMode: boolean,
+        showSensitiveContentMode: boolean,
         theme: string,
         tags: Array<string>
       }

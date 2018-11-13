@@ -41,6 +41,7 @@ const state: cuckoostore.stateInfo = {
     unreadNotificationCount: 0,
     settings: {
       multiLineMode: localStorage.getItem('multiLineMode') ? JSON.parse(localStorage.getItem('multiLineMode')) : true,
+      showSensitiveContentMode: localStorage.getItem('showSensitiveContentMode') ? JSON.parse(localStorage.getItem('showSensitiveContentMode')) : false,
       theme: localStorage.getItem('theme') || ThemeNames.GOOGLE_PLUS,
       tags: JSON.parse(localStorage.getItem('tags')) || ['kimermark']
     },
