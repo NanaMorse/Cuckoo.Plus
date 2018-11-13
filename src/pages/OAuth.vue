@@ -10,7 +10,7 @@
 
         <mu-form-item class="server-input-form-item" prop="mastodonServerUri" :rules="uriRules" :label="$t($i18nTags.oauth.server_input_label)">
           <mu-auto-complete prop="mastodonServerUri" class="server-input" :data="mastodonServerUriList" :full-width="true"
-                            :max-search-results="5" label-float :prefix="prefix"
+                            :max-search-results="5" label-float :prefix="prefix" @keydown.enter="onSubmitServerName"
                             v-model="validateForm.mastodonServerUri" avatar>
             <template slot-scope="scope">
               <mu-list-item-action>

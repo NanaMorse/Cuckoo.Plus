@@ -70,6 +70,8 @@ const mutations = {
 
   updateCurrentUserAccount (state: cuckoostore.stateInfo, currentUserAccount) {
     state.currentUserAccount = currentUserAccount
+
+    localStorage.setItem('currentUserAccount', JSON.stringify(currentUserAccount))
   },
 
   updateContextMap (state: cuckoostore.stateInfo, newContextMap) {

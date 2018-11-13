@@ -38,26 +38,32 @@ const router = new Router({
       path: RoutersInfo.timelines.path,
       name: RoutersInfo.timelines.name,
       component: TimeLinesPage,
+      meta: {
+        needOAuth: true
+      },
       children: [
         {
           path: RoutersInfo.defaulttimelines.path,
           name: RoutersInfo.defaulttimelines.name,
           meta: {
-            keepAlive: true
+            keepAlive: true,
+            needOAuth: true
           }
         },
         {
           path: RoutersInfo.tagtimelines.path,
           name: RoutersInfo.tagtimelines.name,
           meta: {
-            keepAlive: true
+            keepAlive: true,
+            needOAuth: true
           }
         },
         {
           path: RoutersInfo.listtimelines.path,
           name: RoutersInfo.listtimelines.name,
           meta: {
-            keepAlive: true
+            keepAlive: true,
+            needOAuth: true
           }
         }
       ]
@@ -68,7 +74,7 @@ const router = new Router({
       name: RoutersInfo.oauth.name,
       component: OAuthPage,
       beforeEnter (to, from, next) {
-        if (!checkShouldReRegisterApplication(to, from)) {
+        if (!checkShouldRegisterApplication(to, from)) {
           next(RoutersInfo.empty.path)
         }
 
@@ -82,12 +88,16 @@ const router = new Router({
     {
       path: RoutersInfo.settings.path,
       name: RoutersInfo.settings.name,
-      component: Settings
+      component: Settings,
+      meta: {
+        hideHeader: true,
+        needOAuth: true
+      }
     }
   ]
 } as any);
 
-function checkShouldReRegisterApplication (to, from): boolean {
+function checkShouldRegisterApplication (to, from): boolean {
   // should have clientId/clientSecret/code
   const { clientId, clientSecret } = store.state.OAuthInfo
 
@@ -104,6 +114,9 @@ function checkShouldReRegisterApplication (to, from): boolean {
   return !(clientId && clientSecret && store.state.mastodonServerUri && code)
 }
 
+let hasInitFetchNotifications = false
+let hasInitStreamConnection = false
+
 const beforeEachHooks = {
   // children routes can't use in-router guide...
   beforeDefaultTimeLines (to: Route, from, next) {
@@ -114,65 +127,65 @@ const beforeEachHooks = {
     }
 
     next()
-  }
-}
+  },
 
-let hasInitFetchNotifications = false
-let hasInitStreamConnection = false
+  async beforeNeedOAuthRoutes (to, from, next) {
+    if (to.meta.needOAuth) {
 
-router.beforeEach(async (to, from, next) => {
-
-  const shouldReRegisterApplication = checkShouldReRegisterApplication(to, from)
-
-  if (to.name !== RoutersInfo.oauth.name) {
-    // need register
-    if (shouldReRegisterApplication) {
-      store.commit('clearAllOAuthInfo')
-      return next(RoutersInfo.oauth.path)
-    }
-
-    // should get accessToken
-    if (!store.state.OAuthInfo.accessToken) {
-      try {
-        const result = await Api.oauth.fetchOAuthToken()
-        store.commit('updateOAuthAccessToken', result.data.access_token)
-      } catch (e) {
+      // check if need to register
+      if (checkShouldRegisterApplication(to, from)) {
         store.commit('clearAllOAuthInfo')
         return next(RoutersInfo.oauth.path)
       }
-    }
 
-    // todo access token expired
+      // check if need to get token
+      if (!store.state.OAuthInfo.accessToken) {
+        try {
+          const result = await Api.oauth.fetchOAuthToken()
+          store.commit('updateOAuthAccessToken', result.data.access_token)
+        } catch (e) {
+          store.commit('clearAllOAuthInfo')
+          return next(RoutersInfo.oauth.path)
+        }
+      }
 
-    // should get currentUserAccount
-    if (!store.state.currentUserAccount) {
+      // check if should to be blocked by user fetch
       try {
-        const loading = Loading()
-        const result = await Api.accounts.fetchCurrentUserAccountInfo()
-        store.commit('updateCurrentUserAccount', result.data)
-        loading.close()
+        if (!store.state.currentUserAccount) {
+          const loading = Loading()
+          await store.dispatch('updateCurrentUserAccount')
+          loading.close()
+        } else {
+          store.dispatch('updateCurrentUserAccount')
+        }
       } catch (e) {
         if (e.status === 401) {
           store.commit('clearAllOAuthInfo')
           return next(RoutersInfo.oauth.path)
         }
       }
+
+      // should fetch notifications
+      if (!store.state.notifications.length && !hasInitFetchNotifications) {
+        store.dispatch('updateNotifications')
+        hasInitFetchNotifications = true
+      }
     }
 
-    // should fetch notifications
-    if (!store.state.notifications.length && !hasInitFetchNotifications) {
-      store.dispatch('updateNotifications')
-      hasInitFetchNotifications = true
+    next()
+  },
+
+  beforeHomeTimeLine (to, from, next) {
+    if (to.path === homePath) {
+      if (!hasInitStreamConnection) {
+        Api.streaming.openUserConnection()
+        hasInitStreamConnection = true
+      }
     }
-    
-    if (store.state.mastodonServerUri && !hasInitStreamConnection) {
-      Api.streaming.openUserConnection()
-      hasInitStreamConnection = true
-    }
+
+    next()
   }
-
-  next()
-});
+}
 
 Object.keys(beforeEachHooks).forEach(key => {
   router.beforeEach(beforeEachHooks[key])

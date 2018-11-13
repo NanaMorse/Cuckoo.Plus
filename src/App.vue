@@ -28,6 +28,8 @@
   })
   class App extends Vue {
 
+    $route
+
     @State('appStatus') appStatus
 
     @Mutation('updateDocumentWidth') updateDocumentWidth

@@ -24,7 +24,7 @@ const state: cuckoostore.stateInfo = {
 
   mastodonServerUri: localStorage.getItem('mastodonServerUri') || '',
 
-  currentUserAccount: null,
+  currentUserAccount: getLocalSetting('currentUserAccount', null),
 
   timelines: {
     home: [],

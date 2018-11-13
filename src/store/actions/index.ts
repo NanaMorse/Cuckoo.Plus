@@ -1,3 +1,4 @@
+import * as Api from '@/api'
 import statuses from './statuses'
 import timelines from './timelines'
 import notifications from './notifications'
@@ -7,7 +8,12 @@ const actions = {
   ...timelines,
   ...statuses,
   ...notifications,
-  ...appstatus
+  ...appstatus,
+
+  async updateCurrentUserAccount ({ commit }) {
+    const result = await Api.accounts.fetchCurrentUserAccountInfo()
+    commit('updateCurrentUserAccount', result.data)
+  }
 }
 
 export default actions
