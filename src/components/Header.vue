@@ -1,11 +1,11 @@
 <template>
   <div class="cuckoo-header-container">
-    <mu-appbar class="header" color="primary">
-      <mu-button icon @click="onMenuBtnClick" slot="left">
+    <mu-appbar class="header" color="primary" ref="header">
+      <mu-button icon @click.stop="onMenuBtnClick" slot="left">
         <mu-icon value="menu"></mu-icon>
       </mu-button>
-      <span>{{parsedMastodonServerUri}}</span>
-      <mu-button ref="notificationBtn" icon @click="onOpenNotificationPanel" slot="right">
+      <span class="host-mastodon-url" @click="onHostMastodonUrlClick">{{parsedMastodonServerUri}}</span>
+      <mu-button ref="notificationBtn" icon @click.stop="onOpenNotificationPanel" slot="right">
         <mu-icon v-if="appStatus.unreadNotificationCount === 0" value="notifications"></mu-icon>
         <mu-badge class="notification-badge" v-if="appStatus.unreadNotificationCount > 0" :content="String(appStatus.unreadNotificationCount)" circle color="primary" />
       </mu-button>
@@ -61,8 +61,11 @@
   class Header extends Vue {
 
     $refs: {
-      notificationBtn: any
+      notificationBtn: any,
+      header: any
     }
+
+    $router
 
     $route
 
@@ -112,10 +115,24 @@
 
     mounted () {
       this.notificationBtnTrigger = this.$refs.notificationBtn.$el
+
+      this.$refs.header.$el.addEventListener('click', () => this.onHeaderBarClick())
     }
 
     onMenuBtnClick () {
       this.updateDrawerOpenStatus(!this.appStatus.isDrawerOpened)
+    }
+
+    onHostMastodonUrlClick () {
+      this.$router.push({ path: '/timelines/home' })
+    }
+
+    onHeaderBarClick () {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      })
     }
 
     onOpenNotificationPanel () {
@@ -149,6 +166,10 @@
     bottom: 0;
     right: 0;
     z-index: 20141223;
+
+    .host-mastodon-url {
+      cursor: pointer;
+    }
 
     .route-info {
       height: 32px;

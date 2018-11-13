@@ -605,6 +605,7 @@
     .full-reply-list {
       max-height: 400px;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .full-reply-status-content {
