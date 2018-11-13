@@ -43,6 +43,17 @@ export function getTimeLineTypeAndHashName (route: Route) {
   return { timeLineType, hashName }
 }
 
+export function getTargetStatusesList (listMap, timeLineType, hashName) {
+  let targetStatusesList
+  if (isBaseTimeLine(timeLineType)) {
+    targetStatusesList = listMap[timeLineType]
+  } else {
+    targetStatusesList = listMap[timeLineType][hashName]
+  }
+
+  return targetStatusesList
+}
+
 const visibilityTypeToDescMap = {
   [VisibilityTypes.PUBLIC]: {
     descTag: I18nTags.common.status_visibility_public_desc,
@@ -76,6 +87,9 @@ export async function prepareRootStatus (status: mastodonentities.Status) {
   let targetStatus = status
 
   const targetStatusContext = contextMap[status.id]
+
+  if (!targetStatusContext) return
+
   if (targetStatusContext.ancestors.length) {
     targetStatus = statusMap[targetStatusContext.ancestors[0]]
   }

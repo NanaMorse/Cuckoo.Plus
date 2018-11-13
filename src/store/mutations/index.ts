@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import timelinesMutations from './timelines'
 import notificationsMutations from './notifications'
-import { isBaseTimeLine } from '@/util'
-import { TimeLineTypes, ThemeNames } from '@/constant'
-import { cuckoostore, mastodonentities } from '@/interface'
-import ThemeManager from '@/themes'
+import appStatusMutations from './appstatus'
+import { cuckoostore } from '@/interface'
 
 const oAuthInfoMutations = {
 
@@ -60,48 +58,6 @@ const statusesMutations = {
 
     Vue.set(targetStatus, 'favourites_count', favourited ?
       targetStatus.favourites_count + 1 : targetStatus.favourites_count - 1)
-  }
-}
-
-const appStatusMutations = {
-  updateDrawerOpenStatus (state: cuckoostore.stateInfo, isDrawerOpened: boolean) {
-    state.appStatus.isDrawerOpened = isDrawerOpened
-  },
-
-  updateNotificationsPanelStatus (state: cuckoostore.stateInfo, isNotificationsPanelOpened: boolean) {
-    state.appStatus.isNotificationsPanelOpened = isNotificationsPanelOpened
-  },
-
-  updateUnreadNotificationCount (state: cuckoostore.stateInfo, count: number) {
-    state.appStatus.unreadNotificationCount = count
-  },
-
-  updateDocumentWidth (state: cuckoostore.stateInfo) {
-    state.appStatus.documentWidth = document.body.clientWidth
-  },
-
-  updateTheme (state: cuckoostore.stateInfo, newThemeName: string) {
-    if (!Object.keys(ThemeNames).some(key => ThemeNames[key] === newThemeName)) return
-    state.appStatus.settings.theme = newThemeName
-
-    ThemeManager.setTheme(newThemeName)
-
-    localStorage.setItem('theme', newThemeName)
-  },
-
-  updateTags (state: cuckoostore.stateInfo, newTags: Array<string>) {
-    Vue.set(state.appStatus.settings, 'tags', newTags)
-    localStorage.setItem('tags', JSON.stringify(newTags))
-  },
-
-  updateMultiLineMode (state: cuckoostore.stateInfo, newMode: boolean) {
-    state.appStatus.settings.multiLineMode = newMode
-    localStorage.setItem('multiLineMode', JSON.stringify(newMode))
-  },
-
-  updateShowSensitiveContentMode (state: cuckoostore.stateInfo, newMode: boolean) {
-    state.appStatus.settings.showSensitiveContentMode = newMode
-    localStorage.setItem('showSensitiveContentMode', JSON.stringify(newMode))
   }
 }
 

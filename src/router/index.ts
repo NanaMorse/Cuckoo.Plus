@@ -6,10 +6,10 @@ import { RoutersInfo, TimeLineTypes } from '@/constant'
 import * as Api from '@/api'
 import { isBaseTimeLine } from '@/util'
 
-import TimeLinesPage from '@/components/pages/Timelines.vue'
-import OAuthPage from '@/components/pages/OAuth.vue'
-import StatusesPage from '@/components/pages/Statuses.vue'
-import Settings from '@/components/pages/Settings.vue'
+import TimeLinesPage from '@/pages/Timelines'
+import OAuthPage from '@/pages/OAuth'
+import StatusesPage from '@/pages/Statuses'
+import Settings from '@/pages/Settings'
 
 Vue.use(Router)
 
