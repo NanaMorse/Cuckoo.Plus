@@ -97,6 +97,11 @@ const appStatusMutations = {
   updateMultiLineMode (state: cuckoostore.stateInfo, newMode: boolean) {
     state.appStatus.settings.multiLineMode = newMode
     localStorage.setItem('multiLineMode', JSON.stringify(newMode))
+  },
+
+  updateShowSensitiveContentMode (state: cuckoostore.stateInfo, newMode: boolean) {
+    state.appStatus.settings.showSensitiveContentMode = newMode
+    localStorage.setItem('showSensitiveContentMode', JSON.stringify(newMode))
   }
 }
 
