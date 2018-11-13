@@ -50,6 +50,7 @@
 
     <section>
       <textarea ref="textArea" class="auto-size-text-area" v-model="textContentValue"
+                @keydown.ctrl.enter="onSubmitNewStatus"
                 :placeholder="$t($i18nTags.statusCard.post_new_status_placeholder)"/>
 
       <div class="bottom-area">
@@ -204,6 +205,8 @@
     }
 
     async onSubmitNewStatus () {
+      if (!this.shouldEnableSubmitButton) return
+
       const formData = {
         status: this.textContentValue,
         visibility: this.visibility,
