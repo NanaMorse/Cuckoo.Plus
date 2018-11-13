@@ -45,6 +45,14 @@ declare module "vue/types/vue" {
       header: {
 
       },
+      drawer: {
+        home: string
+        public: string
+        tag: string
+        profile: string
+        settings: string
+        toHostInstance: string
+      },
       home: {
 
       },

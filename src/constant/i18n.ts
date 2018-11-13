@@ -29,6 +29,15 @@ export const I18nTags = {
     no_load_more_status_notice: 'no_load_more_status_notice'
   },
 
+  drawer: {
+    home: 'drawer_home',
+    public: 'drawer_public',
+    tag: 'drawer_tag',
+    profile: 'drawer_profile',
+    settings: 'drawer_settings',
+    toHostInstance: 'drawer_to_host_instance'
+  },
+
   header: {
 
   },

@@ -13,7 +13,7 @@
         <mu-list-item-action>
           <mu-icon :value="info.icon"/>
         </mu-list-item-action>
-        <mu-list-item-title>{{info.title}}</mu-list-item-title>
+        <mu-list-item-title>{{$t(info.title)}}</mu-list-item-title>
 
         <mu-list-item-action v-if="!!info.hashList">
           <mu-icon class="toggle-icon" size="24" value="keyboard_arrow_down" />
@@ -39,9 +39,18 @@
 
     <mu-list class="secondary-list">
       <mu-list-item button :to="$routersInfo.settings.path" @click="onSecondaryItemClick">
-        <mu-list-item-title>Settings</mu-list-item-title>
+        <mu-list-item-title class="secondary-read-text-color">{{$t($i18nTags.drawer.settings)}}</mu-list-item-title>
       </mu-list-item>
     </mu-list>
+
+    <div class="bottom-info-area secondary-read-text-color">
+      <div style="margin-bottom: 6px">
+        <a class="secondary-read-text-color">©2018 Cuckoo</a>
+        •
+        <a class="secondary-read-text-color" href="https://github.com/NanaMorse/Cuckoo.Plus" target="_blank">Github</a>
+      </div>
+      <a class="secondary-read-text-color" :href="mastodonServerUri" target="_blank">{{$t($i18nTags.drawer.toHostInstance)}}</a>
+    </div>
 
   </mu-drawer>
 </template>
@@ -50,31 +59,31 @@
   import { Vue, Component, Watch } from 'vue-property-decorator'
   import { State, Mutation, Action } from 'vuex-class'
   import { isBaseTimeLine } from '@/util'
-  import { TimeLineTypes, UiWidthCheckConstants, RoutersInfo } from '@/constant'
+  import { TimeLineTypes, UiWidthCheckConstants, RoutersInfo, I18nTags } from '@/constant'
 
   const baseRouterInfoList = [
     {
       value: TimeLineTypes.HOME,
-      title: 'Home',
+      title: I18nTags.drawer.home,
       icon: 'home',
       to: '/timelines/home'
     },
     {
       value: TimeLineTypes.PUBLIC,
-      title: 'Public',
+      title: I18nTags.drawer.public,
       icon: 'public',
       to: '/timelines/public'
     },
     {
       value: TimeLineTypes.TAG,
-      title: 'Tag',
+      title: I18nTags.drawer.tag,
       icon: 'loyalty',
       to: '/timelines/tag',
       hashList: ['kimermark']
     },
     {
       value: 'profile',
-      title: 'Profile',
+      title: I18nTags.drawer.profile,
       icon: 'person',
       to: ''
     }
@@ -93,12 +102,13 @@
 
     @State('appStatus') appStatus
 
+    @State('mastodonServerUri') mastodonServerUri
+
     @Mutation('updateDrawerOpenStatus') updateDrawerOpenStatus
 
     @Mutation('updateTags') updateTags
 
     @Action('updateTimeLineStatuses') updateTimeLineStatuses
-
 
     @Watch('shouldDrawerDocked')
     onShouldDrawerDockedChanged () {
@@ -201,26 +211,40 @@
 
       this.$progress.done()
     }
+
+    onOpenHostInstance () {
+      window.open(this.mastodonServerUri, '_blank');
+    }
   }
 
   export default Drawer
 </script>
 
 <style lang="less" scoped>
-  .hash-list-item {
-
-    .delete-hash-btn {
-      display: none;
-    }
-
-    &:hover {
+  .cuckoo-drawer {
+    .hash-list-item {
 
       .delete-hash-btn {
-        display: unset;
+        display: none;
       }
 
+      &:hover {
+
+        .delete-hash-btn {
+          display: unset;
+        }
+
+      }
+    }
+
+    .bottom-info-area {
+      position: absolute;
+      bottom: 0;
+      margin: 0 0 24px 24px;
+      font-size: 13px;
     }
   }
+
 </style>
 
 <style lang="less">

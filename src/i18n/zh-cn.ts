@@ -30,6 +30,15 @@ const statusCard = {
   [I18nTags.statusCard.hide_content]: '隐藏内容'
 }
 
+const drawer = {
+  [I18nTags.drawer.home]: '主页',
+  [I18nTags.drawer.public]: '跨站公共时间轴',
+  [I18nTags.drawer.tag]: '标签',
+  [I18nTags.drawer.profile]: '个人资料',
+  [I18nTags.drawer.settings]: '设置',
+  [I18nTags.drawer.toHostInstance]: '打开当前实例站点'
+}
+
 const timeLines = {
   [I18nTags.timeLines.no_load_more_status_notice]: '没有更多啦！'
 }
@@ -38,5 +47,6 @@ export default {
   ...oauth,
   ...common,
   ...statusCard,
-  ...timeLines
+  ...timeLines,
+  ...drawer
 }
