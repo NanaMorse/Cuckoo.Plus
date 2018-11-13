@@ -137,6 +137,7 @@
 
             <div class="input-container">
               <textarea ref="replayTextInput" class="auto-size-text-area" v-model="replyInputValue"
+                        @keydown.ctrl.enter="onSubmitReplyContent"
                         :placeholder="$t($i18nTags.statusCard.reply_to_main_status)"/>
             </div>
 
@@ -153,8 +154,8 @@
             <div class="right-area">
               <mu-button flat class="operate-btn cancel"
                          color="secondary" @click="hideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_post)}}</mu-button>
-              <mu-button flat class="operate-btn submit secondary-theme-text-color" @click="onSubmitReplyContent()"
-                         :disabled="!replyInputValue">{{$t($i18nTags.statusCard.submit_post)}}</mu-button>
+              <mu-button flat class="operate-btn submit secondary-theme-text-color" @click="onSubmitReplyContent"
+                         :disabled="!shouldEnableSubmitButton">{{$t($i18nTags.statusCard.submit_post)}}</mu-button>
             </div>
           </div>
         </div>
@@ -307,6 +308,10 @@
       return this.forceShowFullReply || (this.descendantStatusList.length && ( this.descendantStatusList.length <= 4 || this.hasTryToExtendSimpleReplyArea))
     }
 
+    get shouldEnableSubmitButton () {
+      return this.replyInputValue
+    }
+
     mounted () {
       autosize(this.$refs.replayTextInput)
       this.setMainStatusUserNameAreaStyle()
@@ -399,6 +404,8 @@
     }
 
     async onSubmitReplyContent () {
+      if (!this.shouldEnableSubmitButton) return
+
       const currentReplyToStatus = this.currentReplyToStatus
 
       this.isCardLoading = true
