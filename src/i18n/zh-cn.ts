@@ -39,6 +39,13 @@ const drawer = {
   [I18nTags.drawer.toHostInstance]: '打开当前实例站点'
 }
 
+const settings = {
+  [I18nTags.settings.choose_theme]: '选择主题：',
+  [I18nTags.settings.use_multi_line_mode]: '使用多行布局模式：',
+  [I18nTags.settings.show_sensitive_media_files]: '总是显示标记为敏感的媒体文件：',
+  [I18nTags.settings.auto_load_new_status]: '总是自动加载新的嘟文：'
+}
+
 const timeLines = {
   [I18nTags.timeLines.no_load_more_status_notice]: '没有更多啦！'
 }
@@ -48,5 +55,6 @@ export default {
   ...common,
   ...statusCard,
   ...timeLines,
-  ...drawer
+  ...drawer,
+  ...settings
 }

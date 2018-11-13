@@ -107,7 +107,9 @@ class Streaming {
     prepareRootStatus(newStatus)
 
     // update target timeline list
-    store.commit('unShiftTimeLineStatuses', {
+    const targetMutationName = store.state.appStatus.settings.realTimeLoadStatusMode ? 'unShiftTimeLineStatuses' : 'unShiftStreamStatusesPool'
+
+    store.commit(targetMutationName, {
       newStatusIdList: [newStatus.id],
       timeLineType, hashName
     })

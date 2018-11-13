@@ -8,6 +8,10 @@ import { UiWidthCheckConstants, ThemeNames } from '@/constant'
 
 Vue.use(Vuex)
 
+function getLocalSetting (tag, defaultValue) {
+  return localStorage.getItem(tag) ? JSON.parse(localStorage.getItem(tag)) : defaultValue
+}
+
 const state: cuckoostore.stateInfo = {
 
   OAuthInfo: {
@@ -36,15 +40,29 @@ const state: cuckoostore.stateInfo = {
 
   appStatus: {
     documentWidth: document.body.clientWidth,
+
     isDrawerOpened: document.body.clientWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY,
+
     isNotificationsPanelOpened: false,
+
     unreadNotificationCount: 0,
-    settings: {
-      multiLineMode: localStorage.getItem('multiLineMode') ? JSON.parse(localStorage.getItem('multiLineMode')) : true,
-      showSensitiveContentMode: localStorage.getItem('showSensitiveContentMode') ? JSON.parse(localStorage.getItem('showSensitiveContentMode')) : false,
-      theme: localStorage.getItem('theme') || ThemeNames.GOOGLE_PLUS,
-      tags: JSON.parse(localStorage.getItem('tags')) || ['kimermark']
+
+    streamStatusesPool: {
+      home: [],
+      public: [],
+      direct: [],
+      tag: {},
+      list: {}
     },
+
+    settings: {
+      multiLineMode: getLocalSetting('multiLineMode', true),
+      showSensitiveContentMode: getLocalSetting('showSensitiveContentMode', false),
+      realTimeLoadStatusMode: getLocalSetting('showSensitiveContentMode', false),
+      theme: getLocalSetting('theme', ThemeNames.GOOGLE_PLUS),
+      tags: getLocalSetting('tags', ['kimermark'])
+    },
+
   },
 
   notifications: []

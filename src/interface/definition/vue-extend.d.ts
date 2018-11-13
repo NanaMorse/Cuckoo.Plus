@@ -53,6 +53,12 @@ declare module "vue/types/vue" {
         settings: string
         toHostInstance: string
       },
+      settings: {
+        choose_theme: string
+        use_multi_line_mode: string
+        show_sensitive_media_files: string
+        auto_load_new_status: string
+      },
       home: {
 
       },

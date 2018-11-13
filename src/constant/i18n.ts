@@ -38,6 +38,13 @@ export const I18nTags = {
     toHostInstance: 'drawer_to_host_instance'
   },
 
+  settings: {
+    choose_theme: 'settings_choose_theme',
+    use_multi_line_mode: 'settings_use_multi_line_mode',
+    show_sensitive_media_files: 'settings_show_sensitive_media_files',
+    auto_load_new_status: 'settings_auto_load_new_status'
+  },
+
   header: {
 
   },

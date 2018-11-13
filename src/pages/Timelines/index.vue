@@ -38,6 +38,8 @@
     </mu-button>
 
     <post-status-dialog :open.sync="isPostStatusDialogOpening"/>
+
+    <new-status-notice-button />
   </div>
 </template>
 
@@ -49,6 +51,7 @@
   import { getTimeLineTypeAndHashName, isBaseTimeLine } from '@/util'
   import StatusCard from '@/components/StatusCard'
   import PostStatusDialog from '@/components/PostStatusDialog.vue'
+  import NewStatusNoticeButton from './NewStatusNoticeButton'
 
   const statusCardMaxWidth = 530
   const statusCardMinWidth = 360
@@ -72,7 +75,8 @@
   @Component({
     components: {
       'status-card': StatusCard,
-      'post-status-dialog': PostStatusDialog
+      'post-status-dialog': PostStatusDialog,
+      'new-status-notice-button': NewStatusNoticeButton
     }
   })
   class TimeLines extends Vue {
@@ -88,6 +92,8 @@
     @Getter('getRootStatuses') getRootStatuses
 
     @Action('updateTimeLineStatuses') updateTimeLineStatuses
+
+    @Action('loadStreamStatusesPool') loadStreamStatusesPool
 
     /**
      * @description 这种loading应该是全屏白色遮罩
@@ -131,8 +137,8 @@
     get currentRootStatuses (): Array<mastodonentities.Status> {
       if (!this.isCurrentTimeLineRoute) return
 
-      // @ts-ignore
       const { timeLineType, hashName } = getTimeLineTypeAndHashName(this.$route)
+
       return this.getRootStatuses(timeLineType, hashName)
     }
 
@@ -175,6 +181,7 @@
         await this.loadStatuses()
         this.isInitLoading = false
       } else {
+        this.loadStreamStatusesPool({...getTimeLineTypeAndHashName(this.$route)})
         this.loadStatuses(false, true)
       }
     }
@@ -270,6 +277,12 @@
         text-align: center;
       }
 
+    }
+
+    .new-status-notice-button {
+      position: fixed;
+      top: 70px;
+      left: 50%;
     }
 
   }

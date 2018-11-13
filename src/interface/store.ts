@@ -37,9 +37,21 @@ export namespace cuckoostore {
       isDrawerOpened: boolean
       isNotificationsPanelOpened: boolean
       unreadNotificationCount: number
+      streamStatusesPool: {
+        home: Array<string>
+        public: Array<string>
+        direct: Array<string>
+        tag: {
+          [index: string]: Array<string>
+        }
+        list: {
+          [index: string]: Array<string>
+        }
+      }
       settings: {
         multiLineMode: boolean,
         showSensitiveContentMode: boolean,
+        realTimeLoadStatusMode: boolean
         theme: string,
         tags: Array<string>
       }
