@@ -2,7 +2,7 @@ const Loading = require('muse-ui-loading').default
 import Vue from 'vue'
 import Router, { Route } from 'vue-router'
 import store from '../store'
-import { RoutersInfo, TimeLineTypes } from '@/constant'
+import { RoutersInfo } from '@/constant'
 import * as Api from '@/api'
 import { isBaseTimeLine } from '@/util'
 
