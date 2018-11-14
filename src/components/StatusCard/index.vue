@@ -1,39 +1,8 @@
 <template>
-  <div class="status-card-container" ref="statusCardContainer">
-    <mu-card class="status-card status-card-bg-color" v-loading="isCardLoading" @mouseover="onCardMouseOver" @mouseout="onCardMouseOut">
+  <div class="status-card-container">
+    <mu-card class="status-card status-card-bg-color" v-loading="isCardLoading">
 
-      <mu-card-header class="mu-card-header">
-        <div class="left-area">
-          <mu-avatar class="status-account-avatar" slot="avatar" size="34">
-            <img :src="status.account.avatar_static">
-          </mu-avatar>
-          <div class="user-and-status-info">
-            <a class="user-name primary-read-text-color" :style="userNameAreaStyle">
-              {{getAccountDisplayName(status.account)}}
-              <span class="at-name secondary-read-text-color">@{{getAccountAtName(status.account)}}</span>
-            </a>
-            <div class="visibility-row secondary-read-text-color">
-              <div class="arrow-container">
-                <svg viewBox="0 0 48 48" height="100%" width="100%">
-                  <path class="header-svg-fill" d="M20 14l10 10-10 10z" />
-                </svg>
-              </div>
-              <div class="visibility-info secondary-read-text-color">{{$t(status.visibility)}}</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="right-area">
-          <span v-show="!shouldOpenMoreOperationPopOver && !shouldShowHeaderActionButtonGroup" class="status-from-now secondary-read-text-color">{{getFromNowTime(status.created_at)}}</span>
-
-          <div v-show="shouldOpenMoreOperationPopOver || shouldShowHeaderActionButtonGroup" class="card-header-action">
-            <mu-icon class="header-icon secondary-read-text-color" value="open_in_new" @click="onCheckStatusInSinglePage"/>
-            <mu-icon class="header-icon secondary-read-text-color" value="more_vert"
-                     @click="onOpenMoreOperationPopOver($event, status)"/>
-          </div>
-        </div>
-
-      </mu-card-header>
+      <card-header :status="status" @deleteStatus="isCardLoading = true"/>
 
       <div class="spoiler-text-area secondary-read-text-color" v-if="status.spoiler_text">
         <span v-html="formatHtml(status.spoiler_text)"/>
@@ -67,20 +36,7 @@
         </div>
       </div>
 
-      <div class="reply-area-simple" v-if="shouldShowSimpleReplyListArea">
-        <template v-if="descendantStatusList.length > 3">
-          <mu-sub-header class="show-all-reply-btn secondary-theme-text-color" @click="onShowAllReplyButtonClick">显示所有评论（共 {{descendantStatusList.length}} 条）</mu-sub-header>
-        </template>
-
-        <div class="simple-reply-list" @click="onSimpleReplyListClick">
-          <div class="simple-reply-list-item" v-for="replierStatus in lastedThreeReplyStatuses" :key="replierStatus.id">
-            <span class="reply-account-display-name primary-read-text-color">{{getAccountDisplayName(replierStatus.account)}}:</span>
-            <mu-card-text class="status-content simple-reply-status-content" v-html="formatHtml(replierStatus.content)"></mu-card-text>
-          </div>
-        </div>
-      </div>
-
-      <div class="reply-area-full" v-if="shouldShowFullReplyListArea">
+      <div v-if="descendantStatusList.length" class="reply-area-full">
         <div class="full-reply-list">
           <full-reply-list-item v-for="replierStatus in descendantStatusList"
                                 :key="replierStatus.id" :status="replierStatus" @reply="onReplyToStatus(replierStatus)"/>
@@ -97,108 +53,40 @@
       </div>
 
       <mu-card-actions class="card-action-area">
+        <simple-action-bar v-show="!shouldShowFullReplyActionArea" :status="status"
+                           @reply="onReplyToStatus(status)"/>
 
-        <div class="simple-action-bar" v-show="!shouldShowFullReplyActionArea">
-
-          <div class="left-area">
-            <mu-avatar class="current-user-avatar" slot="avatar" size="24">
-              <img :src="currentUserAccount.avatar_static">
-            </mu-avatar>
-
-            <div class="active-reply-entry secondary-read-text-color" @click="onReplyToStatus(status)">
-              {{$t($i18nTags.statusCard.reply_to_main_status)}}
-            </div>
-          </div>
-
-          <div class="right-area">
-            <div class="plus-one operate-btn-group">
-              <mu-button class="status-card-circle-btn" icon @click="onFavoriteButtonClick(status)"
-                         :class="{ 'primary-theme-bg-color': status.favourited }">
-                +1
-              </mu-button>
-              <span v-if="status.favourites_count > 0" class="count">{{status.favourites_count}}</span>
-            </div>
-            <div class="share operate-btn-group">
-              <mu-button class="status-card-circle-btn unset-display" @click="onReBlogMainStatus()"
-                         :class="{ 'primary-theme-bg-color': status.reblogged }" icon>
-                <mu-icon class="share-icon" value="share" />
-              </mu-button>
-              <span v-if="status.reblogs_count > 0" class="count">{{status.reblogs_count}}</span>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="full-action-bar" v-show="shouldShowFullReplyActionArea">
-          <div class="reply-input-area">
-            <mu-avatar class="current-user-avatar" slot="avatar" size="24">
-              <img :src="currentUserAccount.avatar_static">
-            </mu-avatar>
-
-            <div class="input-container">
-              <textarea ref="replayTextInput" class="auto-size-text-area" v-model="replyInputValue"
-                        @keydown.ctrl.enter="onSubmitReplyContent"
-                        :placeholder="$t($i18nTags.statusCard.reply_to_main_status)"/>
-            </div>
-
-          </div>
-          <div class="reply-action-area">
-            <div class="left-area">
-              <mu-button class="operate-btn add-image secondary-read-text-color" icon>
-                <mu-icon class="reply-action-icon" value="local_see" />
-              </mu-button>
-              <mu-button ref="visibilityTriggerBtn" @click="shouldOpenVisibilitySelectPopOver = true" class="operate-btn change-visibility secondary-read-text-color" icon>
-                <mu-icon class="reply-action-icon" :value="getVisibilityDescInfo(replyVisibility).icon" />
-              </mu-button>
-            </div>
-            <div class="right-area">
-              <mu-button flat class="operate-btn cancel"
-                         color="secondary" @click="hideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_post)}}</mu-button>
-              <mu-button flat class="operate-btn submit secondary-theme-text-color" @click="onSubmitReplyContent"
-                         :disabled="!shouldEnableSubmitButton">{{$t($i18nTags.statusCard.submit_post)}}</mu-button>
-            </div>
-          </div>
-        </div>
+        <full-action-bar v-if="isOAuthUser" :show="shouldShowFullReplyActionArea"
+                         :currentReplyToStatus="currentReplyToStatus"
+                         :status="status" :value.sync="replyInputValue" @hide="hideFullReplyActionArea"
+                         @loadingStart="isCardLoading = true" @loadingEnd="isCardLoading = false"/>
       </mu-card-actions>
     </mu-card>
-
-    <visibility-select-pop-over :visibility.sync="replyVisibility"
-                                :open.sync="shouldOpenVisibilitySelectPopOver"
-                                :trigger="visibilityTriggerBtn"/>
-
-    <mu-popover cover placement="left-start"
-                :open.sync="shouldOpenMoreOperationPopOver"
-                :trigger="moreOperationTriggerBtn">
-      <mu-list>
-        <mu-list-item button>
-          <mu-list-item-title>Mute</mu-list-item-title>
-        </mu-list-item>
-        <mu-list-item button v-if="operateTargetStatus && (currentUserAccount.id === operateTargetStatus.account.id)"
-                      @click="onDeleteStatusByOperateList()">
-          <mu-list-item-title>Delete</mu-list-item-title>
-        </mu-list-item>
-      </mu-list>
-    </mu-popover>
   </div>
 </template>
 
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State, Action, Getter, Mutation } from 'vuex-class'
-  import * as moment from 'moment'
-  import { AttachmentTypes, VisibilityTypes } from '@/constant'
-  import MediaPanel from './MediaPanel'
-  import FullReplyListItem from './FullReplyListItem'
-  import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
   import { mastodonentities } from '@/interface'
   import ThemeManager from 'muse-ui/lib/theme'
-  import { formatHtml, getVisibilityDescInfo } from '@/util'
-  const autosize = require('autosize')
+  import { formatHtml } from '@/util'
+
+  import CardHeader from './CardHeader'
+  import MediaPanel from './MediaPanel'
+  import FullReplyListItem from './FullReplyListItem'
+  import SimpleActionBar from './SimpleActionBar'
+  import FullActionBar from './FullActionBar'
+
+  import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
 
   @Component({
     components: {
+      'card-header': CardHeader,
       'media-panel': MediaPanel,
       'full-reply-list-item': FullReplyListItem,
+      'simple-action-bar': SimpleActionBar,
+      'full-action-bar': FullActionBar,
       'visibility-select-pop-over': VisibilitySelectPopOver
     }
   })
@@ -210,76 +98,27 @@
 
     $confirm
 
-    $refs: {
-      statusCardContainer: HTMLDivElement
-      replayTextInput: HTMLTextAreaElement
-      visibilityTriggerBtn: any
-    }
-
     @State('contextMap') contextMap
     @State('statusMap') statusMap
     @State('currentUserAccount') currentUserAccount: mastodonentities.AuthenticatedAccount
 
-    @Action('updateFavouriteStatusById') updateFavouriteStatusById
-    @Action('updateContextMap') updateContextMap
-    @Action('postStatus') postStatus
-    @Action('deleteStatus') deleteStatus
-
-    @Mutation('updateNotificationsPanelStatus') updateNotificationsPanelStatus
-
     @Getter('getAccountDisplayName') getAccountDisplayName
     @Getter('getAccountAtName') getAccountAtName
+    @Getter('isOAuthUser') isOAuthUser
 
     currentReplyToStatus: mastodonentities.Status = null
 
-    currentMentions: Array<mastodonentities.Mention> = []
-
     shouldShowContentWhileSpoilerExists: boolean = false
-
-    shouldShowHeaderActionButtonGroup: boolean = false
 
     shouldShowFullReplyActionArea: boolean = false
 
-    hasTryToExtendSimpleReplyArea = false
-
     replyInputValue: string = ''
-
-    replyVisibility = VisibilityTypes.PUBLIC
 
     isCardLoading = false
 
-    userNameAreaStyle = {}
-
-
-    moreOperationTriggerBtn: any = null
-
-    shouldOpenMoreOperationPopOver = false
-
-    operateTargetStatus: mastodonentities.Status = null
-
-
-    visibilityTriggerBtn: any = null
-
-    shouldOpenVisibilitySelectPopOver = false
-
     formatHtml = formatHtml
 
-    getVisibilityDescInfo = getVisibilityDescInfo
-
     @Prop() status: mastodonentities.Status
-
-    @Prop() forceShowFullReply: boolean
-
-    @Watch('shouldShowFullReplyArea')
-    async onShowCompleteReplyArea () {
-      if (this.shouldShowFullReplyListArea) {
-        try {
-          this.updateContextMap(this.status.id)
-        } catch (e) {
-
-        }
-      }
-    }
 
     get descendantStatusList (): Array<mastodonentities.Status> {
       if (!this.contextMap[this.status.id] || !this.contextMap[this.status.id].descendants) return []
@@ -289,94 +128,10 @@
       }).filter(s => s)
     }
 
-    get lastedThreeReplyStatuses (): Array<mastodonentities.Status> {
-      const descendantListLength = this.descendantStatusList.length
-
-      if (!descendantListLength) return []
-
-      if (descendantListLength <= 3) return this.descendantStatusList
-
-      return [...this.descendantStatusList].splice(descendantListLength - 3, descendantListLength)
-    }
-
-    get shouldShowSimpleReplyListArea () {
-      return !this.forceShowFullReply && this.descendantStatusList.length && this.descendantStatusList.length > 4 &&
-        !this.hasTryToExtendSimpleReplyArea
-    }
-
-    get shouldShowFullReplyListArea () {
-      return this.forceShowFullReply || (this.descendantStatusList.length && ( this.descendantStatusList.length <= 4 || this.hasTryToExtendSimpleReplyArea))
-    }
-
-    get shouldEnableSubmitButton () {
-      return this.replyInputValue
-    }
-
-    mounted () {
-      autosize(this.$refs.replayTextInput)
-      this.setMainStatusUserNameAreaStyle()
-      this.visibilityTriggerBtn = this.$refs.visibilityTriggerBtn.$el
-    }
-
-    onOpenMoreOperationPopOver (e: MouseEvent, targetStatus: mastodonentities.Status) {
-      this.moreOperationTriggerBtn = e.target as any
-      this.operateTargetStatus = targetStatus
-      this.shouldOpenMoreOperationPopOver = true
-    }
-
-    onCardMouseOver () {
-      this.shouldShowHeaderActionButtonGroup = true
-    }
-
-    onCardMouseOut () {
-      this.shouldShowHeaderActionButtonGroup = false
-    }
-
-    onCheckStatusInSinglePage () {
-      this.$router.push({
-        name: this.$routersInfo.statuses.name,
-        params: {
-          statusId: this.status.id
-        }
-      })
-      this.updateNotificationsPanelStatus(false)
-    }
-
-    onShowAllReplyButtonClick () {
-      this.hasTryToExtendSimpleReplyArea = true
-    }
-
-    onSimpleReplyListClick () {
-      if (window.getSelection().toString().length === 0) {
-        this.hasTryToExtendSimpleReplyArea = true
-      }
-    }
-
-    onFavoriteButtonClick (targetStatus: mastodonentities.Status) {
-      this.updateFavouriteStatusById({
-        favourited: !targetStatus.favourited,
-        targetStatusId: targetStatus.id
-      })
-    }
-
-    // todo
-    async onReBlogMainStatus () {
-//      this.isCardLoading = true
-//
-//      this.isCardLoading = false
-    }
-
-    showFullReplyActionArea () {
-      this.shouldShowFullReplyActionArea = true
-      this.$nextTick(() => {
-        this.$refs.replayTextInput.focus()
-        this.$refs.replayTextInput.dispatchEvent(new Event('autosize:update'))
-      })
-    }
-
     hideFullReplyActionArea () {
       this.shouldShowFullReplyActionArea = false
-      this.clearReplyToStatus()
+      this.currentReplyToStatus = null
+      this.replyInputValue = ''
     }
 
     onReplyToStatus (status: mastodonentities.Status) {
@@ -386,7 +141,7 @@
         return (mention.id !== this.currentUserAccount.id) && (mention.id !== status.account.id)
       })
 
-      if (status.account.id !== this.currentUserAccount.id) {
+      if (status.account.id !== this.currentUserAccount.id || preSetMentions.length === 0) {
         preSetMentions.push({
           acct: status.account.acct,
           id: status.account.id
@@ -395,66 +150,9 @@
 
       this.replyInputValue = preSetMentions.reduce((pre, cur) => pre + `@${cur.acct} `, '')
 
-      this.showFullReplyActionArea()
+      this.shouldShowFullReplyActionArea = true
     }
 
-    clearReplyToStatus () {
-      this.currentReplyToStatus = null
-      this.replyInputValue = ''
-    }
-
-    async onSubmitReplyContent () {
-      if (!this.shouldEnableSubmitButton) return
-
-      const currentReplyToStatus = this.currentReplyToStatus
-
-      this.isCardLoading = true
-      await this.postStatus({
-        mainStatusId: this.status.id,
-        formData: {
-          status: this.replyInputValue,
-          inReplyToId: currentReplyToStatus.id,
-          visibility: this.replyVisibility
-        }
-      })
-      this.isCardLoading = false
-
-      this.hideFullReplyActionArea()
-    }
-
-    async onDeleteStatusByOperateList () {
-      const targetStatusId = this.operateTargetStatus.id
-
-      const doDeleteStatus = (await this.$confirm('要删除这条嘟文吗?', '', {})).result
-      if (doDeleteStatus) {
-        this.isCardLoading = true
-        await this.deleteStatus({ statusId: targetStatusId })
-      }
-    }
-
-    getFromNowTime (createdAt: string) {
-      return moment(createdAt).fromNow(true)
-    }
-
-    /**
-     * @desc set max-width
-     * */
-    setMainStatusUserNameAreaStyle () {
-      const cardWidth = this.$refs.statusCardContainer.clientWidth
-      const headerPadding = 16
-      const avatarWidth = 34
-      const avatarRightMargin = 8
-      const visibilityInfoWidth = 50
-      const rightAreaWidth = 50
-      const leftToRightMargin = 5
-
-      const maxWidth = cardWidth - headerPadding * 2 - avatarWidth - avatarRightMargin -
-        visibilityInfoWidth - rightAreaWidth - leftToRightMargin
-
-      this.userNameAreaStyle = {
-        maxWidth: `${maxWidth}px`
-      }
-    }
   }
 
   export default StatusCard
@@ -474,70 +172,6 @@
   .at-name {
     font-weight: 400;
     font-size: 13px;
-  }
-
-  .mu-card-header {
-    line-height: 1;
-    display: flex;
-    justify-content: space-between;
-
-    .left-area {
-      display: flex;
-      align-items: center;
-
-      .status-account-avatar {
-        margin-right: 8px;
-        cursor: pointer;
-      }
-
-      .user-and-status-info {
-        display: flex;
-        align-items: center;
-
-        .user-name {
-          cursor: pointer;
-          font-size: 15px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-weight: 700;
-        }
-
-        .visibility-row {
-          display: flex;
-          align-items: center;
-
-          .arrow-container {
-            width: 18px;
-            height: 18px;
-          }
-
-          .visibility-info {
-            cursor: pointer;
-          }
-        }
-
-      }
-
-    }
-
-    .right-area {
-      display: flex;
-      align-items: center;
-
-      .status-from-now {
-        font-size: 13px;
-        font-weight: 400;
-      }
-
-      .card-header-action {
-        .header-icon {
-          cursor: pointer;
-          font-size: 18px;
-          margin-left: 10px;
-        }
-      }
-    }
   }
 
   .spoiler-text-area {
@@ -577,36 +211,6 @@
     }
   }
 
-  .show-all-reply-btn {
-    width: auto;
-    margin: 14px 0 -2px 0;
-    cursor: pointer;
-    font-size: 13px;
-    line-height: 1;
-  }
-
-  .simple-reply-list {
-    margin-top: 16px;
-  }
-
-  .simple-reply-list-item {
-
-    &:first-child {
-      margin-top: 0;
-    }
-
-    line-height: 18px;
-    margin: 16px 16px 0;
-    overflow: hidden;
-    word-break: break-word;
-    font-size: 14px;
-
-    .simple-reply-status-content {
-      display: inline;
-      padding: 0;
-    }
-  }
-
   .reply-area-full {
 
     .full-reply-list {
@@ -632,135 +236,6 @@
 
   .card-action-area {
     padding: 0;
-
-    .simple-action-bar {
-      min-height: 60px;
-      display: flex;
-      justify-content: space-between;
-
-      .left-area {
-        padding: 12px 16px;
-        display: flex;
-        align-items: center;
-        flex-grow: 1;
-
-        .active-reply-entry {
-          margin-left: 16px;
-          height: 36px;
-          font-size: 14px;
-          line-height: 36px;
-          font-weight: 300;
-          flex-grow: 1;
-        }
-      }
-
-      .right-area {
-        margin: 12px 8px;
-        display: flex;
-        align-items: center;
-        flex-shrink: 0;
-
-        .operate-btn-group {
-          display: flex;
-
-          .status-card-circle-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            -webkit-transition: background .3s;
-            -moz-transition: background .3s;
-            -ms-transition: background .3s;
-            -o-transition: background .3s;
-            transition: background .3s;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-            margin: 0 8px;
-            font-size: 15px;
-
-            &.unset-display {
-              display: unset;
-            }
-
-            &.hover:before {
-              background-color: unset;
-            }
-          }
-
-          &.plus-one {
-            font-size: 12px;
-          }
-
-          .share-icon {
-            font-size: 18px;
-          }
-
-          .count {
-            line-height: 36px;
-            font-size: 13px;
-            margin-right: 6px;
-          }
-        }
-      }
-    }
-
-    .full-action-bar {
-      padding: 12px 16px 0 16px;
-
-      .reply-input-area {
-        display: flex;
-
-        .current-user-avatar {
-          margin-top: 6px;
-        }
-
-        .input-container {
-          display: flex;
-          align-items: center;
-          flex-grow: 1;
-          margin-left: 16px;
-          padding: 9px 12px 8px 0;
-
-          .auto-size-text-area {
-            height: 18px;
-          }
-        }
-      }
-
-      .reply-action-area {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 48px;
-        margin: 0 -12px;
-
-        .left-area {
-          display: flex;
-
-          .operate-btn {
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            .reply-action-icon {
-              font-size: 18px;
-            }
-          }
-        }
-
-        .right-area {
-          display: flex;
-        }
-      }
-    }
   }
 </style>
 

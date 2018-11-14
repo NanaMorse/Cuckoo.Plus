@@ -53,6 +53,14 @@ a {
       background-color: @backgroundColor;
       color: @textColor;
 
+      &.disabled {
+        cursor: not-allowed !important;
+
+        &:hover {
+          box-shadow: none;
+        }
+      }
+
       &:hover {
         box-shadow: 0 1px 3px 0 rgba(0,0,0,1.26);
       }

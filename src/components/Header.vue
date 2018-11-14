@@ -1,23 +1,23 @@
 <template>
   <div class="cuckoo-header-container">
     <mu-appbar class="header" color="primary" ref="header">
-      <mu-button icon @click.stop="onMenuBtnClick" slot="left">
+      <mu-button v-if="isOAuthUser" icon @click.stop="onMenuBtnClick" slot="left">
         <mu-icon value="menu"></mu-icon>
       </mu-button>
       <span class="host-mastodon-url" @click="onHostMastodonUrlClick">{{parsedMastodonServerUri}}</span>
-      <mu-button ref="notificationBtn" icon @click.stop="onOpenNotificationPanel" slot="right">
+      <mu-button v-if="isOAuthUser" ref="notificationBtn" icon @click.stop="onOpenNotificationPanel" slot="right">
         <mu-icon v-if="appStatus.unreadNotificationCount === 0" value="notifications"></mu-icon>
         <mu-badge class="notification-badge" v-if="appStatus.unreadNotificationCount > 0" :content="String(appStatus.unreadNotificationCount)" circle color="primary" />
       </mu-button>
 
-      <mu-popover v-show="showNotificationAsPopOver"
+      <mu-popover v-if="isOAuthUser" v-show="showNotificationAsPopOver"
                   cover lazy placement="left-start" style="width: 420px"
                   :open="appStatus.isNotificationsPanelOpened && showNotificationAsPopOver"
                   @close="updateNotificationsPanelStatus(false)" :trigger="notificationBtnTrigger">
         <notifications />
       </mu-popover>
 
-      <mu-dialog v-show="!showNotificationAsPopOver" :overlay="false"
+      <mu-dialog v-if="isOAuthUser" v-show="!showNotificationAsPopOver" :overlay="false"
                  :open="appStatus.isNotificationsPanelOpened && !showNotificationAsPopOver"
                  :fullscreen="true" transition="slide-bottom">
         <mu-appbar color="primary" title="Notifications" v-show="shouldShowNotificationDialogHeader">
@@ -38,7 +38,7 @@
 
 <script lang="ts">
   import { Vue, Component, Watch } from 'vue-property-decorator'
-  import { State, Mutation, Action } from 'vuex-class'
+  import { State, Mutation, Action, Getter } from 'vuex-class'
   import { TimeLineTypes, RoutersInfo, UiWidthCheckConstants } from '@/constant'
   import { cuckoostore } from '@/interface'
   import Notifications from '@/components/Notifications'
@@ -79,6 +79,8 @@
 
     @Action('updateNotifications') updateNotifications
 
+    @Getter('isOAuthUser') isOAuthUser
+
     @Mutation('updateDrawerOpenStatus') updateDrawerOpenStatus
 
     @Mutation('updateNotificationsPanelStatus') updateNotificationsPanelStatus
@@ -91,14 +93,20 @@
 
     @Watch('$route')
     onRouteChanged () {
+      if (!this.isOAuthUser) return
+
       this.updateNotificationsPanelStatus(false)
     }
 
     get shouldShowRouteInfo () {
-      return (this.appStatus.documentWidth > 600) && this.pathToRouteInfo[this.$route.path]
+      return this.isOAuthUser && (this.appStatus.documentWidth > 600) && this.pathToRouteInfo[this.$route.path]
     }
 
     get parsedMastodonServerUri () {
+      if (!this.isOAuthUser) {
+        return 'Cuckoo.Plus'
+      }
+
       const url = new URL(this.mastodonServerUri)
       return url.host.replace(url.host[0], (c) => c.toUpperCase())
     }
@@ -114,7 +122,9 @@
     }
 
     mounted () {
-      this.notificationBtnTrigger = this.$refs.notificationBtn.$el
+      if (this.isOAuthUser) {
+        this.notificationBtnTrigger = this.$refs.notificationBtn.$el
+      }
 
       this.$refs.header.$el.addEventListener('click', () => this.onHeaderBarClick())
     }

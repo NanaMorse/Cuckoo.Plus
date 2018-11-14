@@ -81,7 +81,8 @@ const router = new Router({
         next()
       },
       meta: {
-        hideHeader: true
+        hideHeader: true,
+        hideDrawer: true
       }
     },
 
@@ -90,7 +91,6 @@ const router = new Router({
       name: RoutersInfo.settings.name,
       component: Settings,
       meta: {
-        hideHeader: true,
         needOAuth: true
       }
     }
@@ -141,8 +141,10 @@ const beforeEachHooks = {
       // check if need to get token
       if (!store.state.OAuthInfo.accessToken) {
         try {
+          const loading = Loading()
           const result = await Api.oauth.fetchOAuthToken()
           store.commit('updateOAuthAccessToken', result.data.access_token)
+          loading.close()
         } catch (e) {
           store.commit('clearAllOAuthInfo')
           return next(RoutersInfo.oauth.path)

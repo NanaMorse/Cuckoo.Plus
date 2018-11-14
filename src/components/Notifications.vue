@@ -41,7 +41,7 @@
         </mu-button>
       </mu-appbar>
       <div class="notification-status-card-container">
-        <status-card class="status-card-container" v-if="currentCheckStatus" :status="currentCheckStatus" :forceShowFullReply="true"/>
+        <status-card class="status-card-container" v-if="currentCheckStatus" :status="currentCheckStatus"/>
       </div>
     </div>
 

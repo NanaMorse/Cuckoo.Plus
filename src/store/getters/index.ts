@@ -29,7 +29,11 @@ const timelines = {
 
 const getters = {
   ...accounts,
-  ...timelines
+  ...timelines,
+
+  isOAuthUser (state: cuckoostore.stateInfo) {
+    return state.OAuthInfo.accessToken
+  }
 }
 
 export default getters
