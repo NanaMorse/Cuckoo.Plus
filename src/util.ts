@@ -5,7 +5,8 @@ import { insertDels } from "./formatter"
 import { mastodonentities } from "@/interface"
 
 export function patchApiUri (uri: string): string {
-  return `${store.state.mastodonServerUri}${uri}`
+  const targetServerUri = store.state.mastodonServerUri || 'https://pawoo.net'
+  return `${targetServerUri}${uri}`
 }
 
 export function generateUniqueKey () {

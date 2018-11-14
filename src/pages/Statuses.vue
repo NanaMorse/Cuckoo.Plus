@@ -1,6 +1,6 @@
 <template>
   <div class="statuses-page-container" v-loading="!status">
-    <status-card class="status-card-container" v-if="status" :status="status" :forceShowFullReply="true"/>
+    <status-card class="status-card-container" v-if="status" :status="status" />
   </div>
 </template>
 

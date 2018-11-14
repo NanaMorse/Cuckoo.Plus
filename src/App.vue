@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <cuckoo-plus-header v-if="!isOAuthPage"/>
-    <cuckoo-plus-drawer v-if="!isOAuthPage"/>
+    <cuckoo-plus-header v-if="!$route.meta.hideHeader"/>
+    <cuckoo-plus-drawer v-if="!$route.meta.hideDrawer && isOAuthUser"/>
     <mu-container :fluid="true" class="app-content" :style="appContentStyle">
       <keep-alive>
         <router-view v-if="$route.meta.keepAlive" />
@@ -14,7 +14,7 @@
 
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
-  import { Mutation, State } from 'vuex-class'
+  import { Mutation, State, Getter } from 'vuex-class'
   import * as _ from 'underscore'
   import { UiWidthCheckConstants } from '@/constant'
   import Header from '@/components/Header.vue'
@@ -28,26 +28,25 @@
   })
   class App extends Vue {
 
+    $route
+
     @State('appStatus') appStatus
 
     @Mutation('updateDocumentWidth') updateDocumentWidth
+
+    @Getter('isOAuthUser') isOAuthUser
 
     mounted () {
       window.addEventListener('resize', _.debounce(() => this.updateDocumentWidth(), 200))
     }
 
     get appContentStyle () {
-      if (this.appStatus.isDrawerOpened && !this.isOAuthPage &&
+      if (this.appStatus.isDrawerOpened && !this.$route.meta.hideDrawer && this.isOAuthUser &&
         (this.appStatus.documentWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY)) {
         return {
           paddingLeft: '210px'
         }
       }
-    }
-
-    get isOAuthPage () {
-      // @ts-ignore
-      return this.$route.name === this.$routersInfo.oauth.name
     }
 
   }
