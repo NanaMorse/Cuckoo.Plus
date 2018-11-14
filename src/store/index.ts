@@ -58,7 +58,7 @@ const state: cuckoostore.stateInfo = {
     settings: {
       multiLineMode: getLocalSetting('multiLineMode', true),
       showSensitiveContentMode: getLocalSetting('showSensitiveContentMode', false),
-      realTimeLoadStatusMode: getLocalSetting('showSensitiveContentMode', false),
+      realTimeLoadStatusMode: getLocalSetting('realTimeLoadStatusMode', false),
       theme: localStorage.getItem('theme') || ThemeNames.GOOGLE_PLUS,
       tags: getLocalSetting('tags', ['kimermark'])
     },

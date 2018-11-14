@@ -25,16 +25,13 @@ export function isBaseTimeLine (timeLineType: string): boolean {
 
 export function getTimeLineTypeAndHashName (route: Route) {
   let timeLineType = '', hashName = ''
-  // @ts-ignore
   if (route.name === RoutersInfo.defaulttimelines.name) {
     timeLineType = route.params.timeLineType
   }
-  // @ts-ignore
   else if (route.name === RoutersInfo.tagtimelines.name) {
     timeLineType = TimeLineTypes.TAG
     hashName = route.params.tagName
   }
-  // @ts-ignore
   else if (route.name === RoutersInfo.listtimelines.name) {
     timeLineType = TimeLineTypes.LIST
     hashName = route.params.listName
