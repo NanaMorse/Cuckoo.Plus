@@ -147,6 +147,7 @@
       margin: 0 10px 0 16px;
       display: flex;
       flex-direction: column;
+      width: 0;
 
       .reply-user-display-name {
         display: flex;

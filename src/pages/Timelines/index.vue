@@ -196,6 +196,8 @@
 
       if (!this.isCurrentTimeLineRoute) return
 
+      if (this.isLoading) return
+
       this.isLoading = true
       this.$progress.start()
 
