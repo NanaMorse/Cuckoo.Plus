@@ -13,7 +13,7 @@ import router from './router'
 import App from './App.vue'
 import * as moment from 'moment'
 import i18nMessages from './i18n'
-import { I18nTags, I18nLocales, RoutersInfo, ThemeNames } from '@/constant'
+import { I18nTags, RoutersInfo } from '@/constant'
 import ThemeManager from '@/themes'
 
 Vue.use({
@@ -38,7 +38,7 @@ Vue.use(Loading, {
   color: 'primary',
 })
 
-const currentLocale = I18nLocales.EN
+const currentLocale = store.state.appStatus.settings.locale
 
 const i18n = new VueI18n({
   locale: currentLocale,

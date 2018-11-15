@@ -1,6 +1,8 @@
 export const I18nLocales = {
   EN: 'en',
-  ZH_CN: 'zh-cn'
+  ZH_CN: 'zh-cn',
+  ZH_HK: 'zh-hk',
+  ZH_TW: 'zh-tw'
 }
 
 export const I18nTags = {
@@ -47,11 +49,14 @@ export const I18nTags = {
   },
 
   settings: {
-    general: 'settings_general',
+    general_label: 'settings_general_label',
     choose_theme: 'settings_choose_theme',
+    choose_language: 'settings_choose_language',
     use_multi_line_mode: 'settings_use_multi_line_mode',
     show_sensitive_media_files: 'settings_show_sensitive_media_files',
-    auto_load_new_status: 'settings_auto_load_new_status'
+    auto_load_new_status: 'settings_auto_load_new_status',
+    stream_label: 'settings_stream_label',
+    media_label: 'settings_media_label'
   },
 
   header: {

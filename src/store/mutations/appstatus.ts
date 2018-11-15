@@ -49,6 +49,11 @@ export default {
     localStorage.setItem('realTimeLoadStatusMode', JSON.stringify(newMode))
   },
 
+  updateLocale (state: cuckoostore.stateInfo, newLocale: string) {
+    state.appStatus.settings.locale = newLocale
+    localStorage.setItem('locale', newLocale)
+  },
+
   unShiftStreamStatusesPool (state: cuckoostore.stateInfo, { newStatusIdList, timeLineType, hashName }) {
     const targetStatusesPool = getTargetStatusesList(state.appStatus.streamStatusesPool, timeLineType, hashName)
 

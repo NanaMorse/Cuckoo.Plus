@@ -40,7 +40,7 @@ const statusCard = {
 
 const drawer = {
   [I18nTags.drawer.home]: '主页',
-  [I18nTags.drawer.public]: '跨站公共时间轴',
+  [I18nTags.drawer.public]: '公共',
   [I18nTags.drawer.tag]: '标签',
   [I18nTags.drawer.profile]: '个人资料',
   [I18nTags.drawer.settings]: '设置',
@@ -48,11 +48,14 @@ const drawer = {
 }
 
 const settings = {
-  [I18nTags.settings.general]: '常规',
+  [I18nTags.settings.general_label]: '常规',
   [I18nTags.settings.choose_theme]: '选择主题：',
+  [I18nTags.settings.choose_language]: '选择语言：',
   [I18nTags.settings.use_multi_line_mode]: '使用多行布局模式：',
   [I18nTags.settings.show_sensitive_media_files]: '总是显示标记为敏感的媒体文件：',
-  [I18nTags.settings.auto_load_new_status]: '总是自动加载新的嘟文：'
+  [I18nTags.settings.auto_load_new_status]: '总是自动加载新的嘟文：',
+  [I18nTags.settings.stream_label]: '信息流',
+  [I18nTags.settings.media_label]: '媒体内容'
 }
 
 const timeLines = {

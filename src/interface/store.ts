@@ -54,6 +54,7 @@ export namespace cuckoostore {
         realTimeLoadStatusMode: boolean
         theme: string,
         tags: Array<string>
+        locale: string
       }
     }
   }

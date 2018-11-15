@@ -40,7 +40,7 @@ const statusCard = {
 
 const drawer = {
   [I18nTags.drawer.home]: 'Home',
-  [I18nTags.drawer.public]: 'Federated timeline',
+  [I18nTags.drawer.public]: 'Public',
   [I18nTags.drawer.tag]: 'Tag',
   [I18nTags.drawer.profile]: 'Profile',
   [I18nTags.drawer.settings]: 'Settings',
@@ -48,11 +48,14 @@ const drawer = {
 }
 
 const settings = {
-  [I18nTags.settings.general]: 'General',
+  [I18nTags.settings.general_label]: 'General',
   [I18nTags.settings.choose_theme]: 'Choose Theme:',
+  [I18nTags.settings.choose_language]: 'Choose Language:',
   [I18nTags.settings.use_multi_line_mode]: 'Use multi-column layout mode:',
   [I18nTags.settings.show_sensitive_media_files]: 'Always show media marked as sensitive:',
-  [I18nTags.settings.auto_load_new_status]: 'Always auto load new post'
+  [I18nTags.settings.auto_load_new_status]: 'Always auto load new post:',
+  [I18nTags.settings.stream_label]: 'Stream',
+  [I18nTags.settings.media_label]: 'Media'
 }
 
 const timeLines = {

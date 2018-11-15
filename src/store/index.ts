@@ -4,7 +4,7 @@ import mutations from './mutations'
 import actions from './actions'
 import getters from './getters'
 import { cuckoostore } from '@/interface'
-import { UiWidthCheckConstants, ThemeNames } from '@/constant'
+import { UiWidthCheckConstants, ThemeNames, I18nLocales } from '@/constant'
 
 Vue.use(Vuex)
 
@@ -60,7 +60,8 @@ const state: cuckoostore.stateInfo = {
       showSensitiveContentMode: getLocalSetting('showSensitiveContentMode', false),
       realTimeLoadStatusMode: getLocalSetting('realTimeLoadStatusMode', false),
       theme: localStorage.getItem('theme') || ThemeNames.GOOGLE_PLUS,
-      tags: getLocalSetting('tags', ['kimermark'])
+      tags: getLocalSetting('tags', ['kimermark']),
+      locale: localStorage.getItem('locale') || I18nLocales.EN
     },
 
   },
