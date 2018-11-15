@@ -14,7 +14,7 @@ const notifications = {
     if (isLoadMore) {
       maxId = notifications[notifications.length - 1].id
     } else if (isFetchMore) {
-      sinceId = notifications[0].id
+      sinceId = notifications[0] ? notifications[0].id : null
     }
 
     let mutationName = ''

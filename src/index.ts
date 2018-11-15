@@ -38,7 +38,7 @@ Vue.use(Loading, {
   color: 'primary',
 })
 
-const currentLocale = I18nLocales.ZH_CN
+const currentLocale = I18nLocales.EN
 
 const i18n = new VueI18n({
   locale: currentLocale,

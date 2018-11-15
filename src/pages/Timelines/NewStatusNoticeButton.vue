@@ -5,8 +5,7 @@
       <path fill="none" d="M0 0h48v48H0V0z"></path>
       <path d="M8 24l2.83 2.83L22 15.66V40h4V15.66l11.17 11.17L40 24 24 8 8 24z"></path>
     </svg>
-    {{currentTimeLineStreamPool.length}}
-    <span>条新信息</span>
+    {{$tc($i18nTags.timeLines.new_message_notice, currentTimeLineStreamPool.length, { count: currentTimeLineStreamPool.length })}}
   </mu-button>
 </template>
 

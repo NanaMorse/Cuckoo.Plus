@@ -6,7 +6,8 @@ const oauth = {
   [I18nTags.oauth.server_input_label]: 'Mastodon 链接',
   [I18nTags.oauth.please_input_server_url]: '请输入 Mastodon 链接',
   [I18nTags.oauth.please_input_correct_server_url]: '请输入正确的 Mastodon 链接',
-  [I18nTags.oauth.register_app_error_message]: '出错啦！检查一下目标链接是否正确吧'
+  [I18nTags.oauth.register_app_error_message]: '出错啦！检查一下目标链接是否正确吧',
+  [I18nTags.oauth.confirm_input]: '确认'
 }
 
 const common = {
@@ -27,7 +28,14 @@ const statusCard = {
   [I18nTags.statusCard.cancel_post]: '取消',
   [I18nTags.statusCard.submit_post]: '发布',
   [I18nTags.statusCard.show_content]: '显示内容',
-  [I18nTags.statusCard.hide_content]: '隐藏内容'
+  [I18nTags.statusCard.hide_content]: '隐藏内容',
+  [I18nTags.statusCard.mute_status]: '忽略',
+  [I18nTags.statusCard.delete_status]: '删除',
+  [I18nTags.statusCard.delete_status_confirm]: '要删除这条嘟文吗?',
+  [I18nTags.statusCard.do_delete_status_btn]: '删除',
+  [I18nTags.statusCard.cancel_delete_status_btn]: '取消',
+  [I18nTags.statusCard.originally_shared_by]: '此信息最初是由{displayName}<span class="at-name">@{atName}</span>分享的',
+  [I18nTags.statusCard.sensitive_media_alert]: '隐藏媒体内容 <br/> 点击显示'
 }
 
 const drawer = {
@@ -40,6 +48,7 @@ const drawer = {
 }
 
 const settings = {
+  [I18nTags.settings.general]: '常规',
   [I18nTags.settings.choose_theme]: '选择主题：',
   [I18nTags.settings.use_multi_line_mode]: '使用多行布局模式：',
   [I18nTags.settings.show_sensitive_media_files]: '总是显示标记为敏感的媒体文件：',
@@ -47,7 +56,14 @@ const settings = {
 }
 
 const timeLines = {
-  [I18nTags.timeLines.no_load_more_status_notice]: '没有更多啦！'
+  [I18nTags.timeLines.no_load_more_status_notice]: '没有更多啦！',
+  [I18nTags.timeLines.new_message_notice]: '{count}条新信息'
+}
+
+const postStatusDialog = {
+  [I18nTags.postStatusDialog.do_discard_message_confirm]: '要舍弃这条信息吗？',
+  [I18nTags.postStatusDialog.do_keep_message]: '保留',
+  [I18nTags.postStatusDialog.do_discard_message]: '舍弃'
 }
 
 export default {
@@ -56,5 +72,6 @@ export default {
   ...statusCard,
   ...timeLines,
   ...drawer,
-  ...settings
+  ...settings,
+  ...postStatusDialog
 }

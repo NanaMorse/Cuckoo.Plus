@@ -2,7 +2,7 @@
   <div class="setting-page-container">
     <mu-card>
       <mu-card-actions class="setting-card">
-        <p class="card-label">常规</p>
+        <p class="card-label">{{$t($i18nTags.settings.general)}}</p>
 
         <div class="setting-row select-row">
           <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_theme)}}</span>

@@ -28,6 +28,13 @@ declare module "vue/types/vue" {
         submit_post: string
         show_content: string
         hide_content: string
+        mute_status: string
+        delete_status: string
+        delete_status_confirm: string
+        do_delete_status_btn: string
+        cancel_delete_status_btn: string
+        originally_shared_by: string
+        sensitive_media_alert: string
       },
       common: {
         status_visibility_public: string
@@ -41,6 +48,7 @@ declare module "vue/types/vue" {
       },
       timeLines: {
         no_load_more_status_notice: string
+        new_message_notice: string
       },
       header: {
 
@@ -54,6 +62,7 @@ declare module "vue/types/vue" {
         toHostInstance: string
       },
       settings: {
+        general: string
         choose_theme: string
         use_multi_line_mode: string
         show_sensitive_media_files: string
@@ -69,6 +78,12 @@ declare module "vue/types/vue" {
         please_input_server_url: string
         please_input_correct_server_url: string
         register_app_error_message: string
+        confirm_input: string
+      },
+      postStatusDialog: {
+        do_discard_message_confirm: string
+        do_keep_message: string
+        do_discard_message: string
       }
     }
 

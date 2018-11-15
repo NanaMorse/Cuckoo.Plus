@@ -74,7 +74,7 @@
     "type": "git",
     "url": "git+https://github.com/NanaMorse/Cuckoo.Plus.git"
   },
-  "author": "Nana.Morse",
+  "author": "Nana.Morse, KT",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/NanaMorse/Cuckoo.Plus/issues"

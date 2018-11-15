@@ -121,6 +121,10 @@
 
     $confirm
 
+    $t
+
+    $i18nTags
+
     getVisibilityDescInfo = getVisibilityDescInfo
 
     visibility: string = VisibilityTypes.PUBLIC
@@ -194,8 +198,10 @@
 
     async onTryCloseDialog () {
       if (this.textContentValue || this.uploadProcessInfoList.length) {
-        // todo i18n
-        const doCloseDialog = (await this.$confirm('要舍弃这条信息吗？', '', {})).result
+        const doCloseDialog = (await this.$confirm(this.$t(this.$i18nTags.postStatusDialog.do_discard_message_confirm), {
+          okLabel: this.$t(this.$i18nTags.postStatusDialog.do_discard_message),
+          cancelLabel: this.$t(this.$i18nTags.postStatusDialog.do_keep_message),
+        })).result
         if (doCloseDialog) {
           this.closeDialog()
         }
