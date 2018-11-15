@@ -1,6 +1,6 @@
 {
   "name": "cuckoo.plus",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A third-party client for mastodon",
   "scripts": {
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
@@ -74,7 +74,7 @@
     "type": "git",
     "url": "git+https://github.com/NanaMorse/Cuckoo.Plus.git"
   },
-  "author": "Nana.Morse, KT",
+  "author": "Nana.Morse, KTachibanaM",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/NanaMorse/Cuckoo.Plus/issues"
