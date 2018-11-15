@@ -197,17 +197,10 @@
      * */
     async fetchTimeLineStatuses (timeLineType: string, hashName: string = '') {
       this.$progress.start()
-      const result = await this.updateTimeLineStatuses({
+      await this.updateTimeLineStatuses({
         isFetchMore: true,
         timeLineType, hashName
       })
-
-      if (!result.data.length) {
-        this.$toast.info({
-          message: '没有更多了',
-          position: 'top'
-        });
-      }
 
       this.$progress.done()
     }
