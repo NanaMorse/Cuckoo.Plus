@@ -76,6 +76,10 @@
 
     $confirm
 
+    $t
+
+    $i18nTags
+
     @Prop() status: mastodonentities.Status
 
     @State('currentUserAccount') currentUserAccount: mastodonentities.AuthenticatedAccount
@@ -116,7 +120,7 @@
     }
 
     async onDeleteStatus () {
-      const doDeleteStatus = (await this.$confirm('要删除这条嘟文吗?', '', {})).result
+      const doDeleteStatus = (await this.$confirm(this.$t(this.$i18nTags.statusCard.delete_status_confirm), '', {})).result
       if (doDeleteStatus) {
         this.isListItemLoading = true
         await this.deleteStatus({ statusId: this.status.id })

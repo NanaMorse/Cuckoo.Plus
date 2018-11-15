@@ -16,7 +16,7 @@
       </div>
 
       <div class="sensitive-alert-cover" v-show="shouldShowSensitiveCover" @click="shouldShowSensitiveCover = false">
-        <p>隐藏媒体内容 <br/> 点击显示</p>
+        <p v-html="$t($i18nTags.statusCard.sensitive_media_alert)"></p>
       </div>
     </div>
 

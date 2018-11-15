@@ -24,10 +24,10 @@
 
       <div v-if="status.reblog" class="reblog-area">
         <div class="reblog-plain-info-area">
-          <a class="reblog-source-link">
-            此信息最初是由{{getAccountDisplayName(status.reblog.account)}}
-            <span class="at-name">@{{getAccountAtName(status.reblog.account)}}</span>
-            分享的
+          <a class="reblog-source-link" v-html="$t($i18nTags.statusCard.originally_shared_by, {
+              displayName: getAccountDisplayName(status.reblog.account),
+              atName: getAccountAtName(status.reblog.account)
+            })">
           </a>
           <mu-card-text v-if="status.reblog.content" class="status-content reblog-status-content" v-html="formatHtml(status.reblog.content)" />
         </div>

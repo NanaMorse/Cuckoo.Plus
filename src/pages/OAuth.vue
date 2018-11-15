@@ -25,7 +25,7 @@
         </mu-form-item>
 
         <mu-button class="submit-server-name-btn" color="primary"
-                   @click="onSubmitServerName">确认</mu-button>
+                   @click="onSubmitServerName">{{$t($i18nTags.oauth.confirm_input)}}</mu-button>
 
       </mu-form>
 

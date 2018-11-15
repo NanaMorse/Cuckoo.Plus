@@ -5,11 +5,10 @@
 </template>
 
 <script lang="ts">
-  import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+  import { Vue, Component } from 'vue-property-decorator'
   import { State, Action } from 'vuex-class'
   import { mastodonentities } from '@/interface'
   import StatusCard from '@/components/StatusCard'
-  import * as api from '@/api'
 
   @Component({
     components: {

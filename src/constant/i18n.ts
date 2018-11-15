@@ -1,6 +1,8 @@
 export const I18nLocales = {
   EN: 'en',
-  ZH_CN: 'zh-cn'
+  ZH_CN: 'zh-cn',
+  ZH_HK: 'zh-hk',
+  ZH_TW: 'zh-tw'
 }
 
 export const I18nTags = {
@@ -22,11 +24,19 @@ export const I18nTags = {
     cancel_post: 'status_card_cancel_post',
     submit_post: 'status_card_submit_post',
     show_content: 'status_card_show_content',
-    hide_content: 'status_card_hide_content'
+    hide_content: 'status_card_hide_content',
+    mute_status: 'status_card_mute_status',
+    delete_status: 'status_card_delete_status',
+    delete_status_confirm: 'status_card_delete_status_confirm',
+    do_delete_status_btn: 'status_card_do_delete_status_btn',
+    cancel_delete_status_btn: 'status_card_cancel_delete_status_btn',
+    originally_shared_by: 'status_card_originally_shared_by',
+    sensitive_media_alert: 'status_card_sensitive_media_alert'
   },
 
   timeLines: {
-    no_load_more_status_notice: 'no_load_more_status_notice'
+    no_load_more_status_notice: 'no_load_more_status_notice',
+    new_message_notice: 'timelines_new_message_notice'
   },
 
   drawer: {
@@ -39,24 +49,37 @@ export const I18nTags = {
   },
 
   settings: {
+    general_label: 'settings_general_label',
     choose_theme: 'settings_choose_theme',
+    choose_language: 'settings_choose_language',
     use_multi_line_mode: 'settings_use_multi_line_mode',
     show_sensitive_media_files: 'settings_show_sensitive_media_files',
-    auto_load_new_status: 'settings_auto_load_new_status'
+    auto_load_new_status: 'settings_auto_load_new_status',
+    stream_label: 'settings_stream_label',
+    media_label: 'settings_media_label'
   },
 
   header: {
 
   },
+
   home: {
 
   },
+
   oauth: {
     form_brand: 'oauth_form_brand',
     login_hint: 'oauth_login_hint',
     server_input_label: 'oauth_server_input_label',
     please_input_server_url: 'oauth_please_input_server_url',
     please_input_correct_server_url: 'oauth_please_input_correct_server_url',
-    register_app_error_message: 'oauth_register_app_error_message'
+    register_app_error_message: 'oauth_register_app_error_message',
+    confirm_input: 'oauth_confirm_input'
+  },
+
+  postStatusDialog: {
+    do_discard_message_confirm: 'post_status_dialog_do_discard_message_confirm',
+    do_keep_message: 'post_status_dialog_do_keep_message',
+    do_discard_message: 'post_status_dialog_do_discard_message'
   }
 }

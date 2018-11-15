@@ -2,7 +2,7 @@
   <div class="setting-page-container">
     <mu-card>
       <mu-card-actions class="setting-card">
-        <p class="card-label">常规</p>
+        <p class="card-label">{{$t($i18nTags.settings.general_label)}}</p>
 
         <div class="setting-row select-row">
           <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_theme)}}</span>
@@ -12,19 +12,31 @@
           </mu-select>
         </div>
 
+        <div class="setting-row select-row">
+          <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_language)}}</span>
+          <mu-select class="setting-select" v-model="locale">
+            <mu-option v-for="(localeInfo, index) in localesOptions" :key="index"
+                       :label="localeInfo.label" :value="localeInfo.value" />
+          </mu-select>
+        </div>
+
+        <p class="card-label">{{$t($i18nTags.settings.stream_label)}}</p>
+
+        <div class="setting-row">
+          <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.auto_load_new_status)}}</span>
+          <mu-switch class="setting-switch" v-model="realTimeLoadStatusMode" />
+        </div>
+
         <div class="setting-row">
           <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.use_multi_line_mode)}}</span>
           <mu-switch class="setting-switch" v-model="multiLineMode" />
         </div>
 
+        <p class="card-label">{{$t($i18nTags.settings.media_label)}}</p>
+
         <div class="setting-row">
           <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.show_sensitive_media_files)}}</span>
           <mu-switch class="setting-switch" v-model="showSensitiveContentMode" />
-        </div>
-
-        <div class="setting-row">
-          <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.auto_load_new_status)}}</span>
-          <mu-switch class="setting-switch" v-model="realTimeLoadStatusMode" />
         </div>
 
       </mu-card-actions>
@@ -35,10 +47,12 @@
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
   import { State, Mutation } from 'vuex-class'
-  import { ThemeNames } from '@/constant'
+  import { ThemeNames, I18nLocales } from '@/constant'
 
   @Component({})
   class Setting extends Vue {
+
+    $i18n
 
     @State('appStatus') appStatus
 
@@ -50,9 +64,18 @@
 
     @Mutation('updateRealTimeLoadStatusMode') updateRealTimeLoadStatusMode
 
+    @Mutation('updateLocale') updateLocale
+
     themeOptions = [
       { label: 'Google Plus', value: ThemeNames.GOOGLE_PLUS },
       { label: 'Dark', value: ThemeNames.DARK }
+    ]
+
+    localesOptions = [
+      { label: 'English', value: I18nLocales.EN },
+      { label: '简体中文', value: I18nLocales.ZH_CN },
+      { label: '繁體中文（香港）', value: I18nLocales.ZH_HK },
+      { label: '繁體中文（台灣）', value: I18nLocales.ZH_TW }
     ]
 
     get themeName (): string {
@@ -61,6 +84,15 @@
 
     set themeName (val) {
       this.updateTheme(val)
+    }
+
+    get locale () {
+      return this.appStatus.settings.locale
+    }
+
+    set locale (val) {
+      this.$i18n.locale = val
+      this.updateLocale(val)
     }
 
     get multiLineMode () {

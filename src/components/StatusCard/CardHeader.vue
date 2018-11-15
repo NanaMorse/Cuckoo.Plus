@@ -37,11 +37,11 @@
                 :trigger="moreOperationTriggerBtn">
       <mu-list>
         <mu-list-item button>
-          <mu-list-item-title>Mute</mu-list-item-title>
+          <mu-list-item-title>{{$t($i18nTags.statusCard.mute_status)}}</mu-list-item-title>
         </mu-list-item>
         <mu-list-item button v-if="currentUserAccount.id === status.account.id"
                       @click="onDeleteStatusByOperateList()">
-          <mu-list-item-title>Delete</mu-list-item-title>
+          <mu-list-item-title>{{$t($i18nTags.statusCard.delete_status)}}</mu-list-item-title>
         </mu-list-item>
       </mu-list>
     </mu-popover>
@@ -65,6 +65,10 @@
     $routersInfo
 
     $confirm
+
+    $t
+
+    $i18nTags
 
     $refs: {
       cardHeader: any
@@ -110,7 +114,10 @@
     async onDeleteStatusByOperateList () {
       const targetStatusId = this.status.id
 
-      const doDeleteStatus = (await this.$confirm('要删除这条嘟文吗?', '', {})).result
+      const doDeleteStatus = (await this.$confirm(this.$t(this.$i18nTags.statusCard.delete_status_confirm), {
+        okLabel: this.$t(this.$i18nTags.statusCard.do_delete_status_btn),
+        cancelLabel: this.$t(this.$i18nTags.statusCard.cancel_delete_status_btn),
+      })).result
       if (doDeleteStatus) {
         this.$emit('deleteStatus')
         await this.deleteStatus({ statusId: targetStatusId })
