@@ -3,6 +3,7 @@ import timelinesMutations from './timelines'
 import notificationsMutations from './notifications'
 import appStatusMutations from './appstatus'
 import { cuckoostore } from '@/interface'
+import { mastodonentities } from "@/interface"
 
 const oAuthInfoMutations = {
 
@@ -72,6 +73,12 @@ const mutations = {
     state.currentUserAccount = currentUserAccount
 
     localStorage.setItem('currentUserAccount', JSON.stringify(currentUserAccount))
+  },
+
+  updateCustomEmojis (state: cuckoostore.stateInfo, customEmojis: Array<mastodonentities.Emoji>) {
+    state.customEmojis = customEmojis
+
+    localStorage.setItem('customEmojis', JSON.stringify(customEmojis))
   },
 
   updateContextMap (state: cuckoostore.stateInfo, newContextMap) {

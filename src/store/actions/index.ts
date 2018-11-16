@@ -13,6 +13,11 @@ const actions = {
   async updateCurrentUserAccount ({ commit }) {
     const result = await Api.accounts.fetchCurrentUserAccountInfo()
     commit('updateCurrentUserAccount', result.data)
+  },
+
+  async updateCustomEmojis ({ commit }) {
+    const result = await Api.instances.getCustomEmojis()
+    commit('updateCustomEmojis', result.data)
   }
 }
 

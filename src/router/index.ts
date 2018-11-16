@@ -1,3 +1,5 @@
+import { ThemeNames } from "../constant";
+
 const Loading = require('muse-ui-loading').default
 import Vue from 'vue'
 import Router, { Route } from 'vue-router'
@@ -114,10 +116,80 @@ function checkShouldRegisterApplication (to, from): boolean {
   return !(clientId && clientSecret && store.state.mastodonServerUri && code)
 }
 
-let hasInitFetchNotifications = false
-let hasInitStreamConnection = false
+const statusInitManager = new class {
+
+  private hasInitFetchNotifications: boolean = false
+
+  private hasInitStreamConnection: boolean = false
+
+  private hasUpdateCurrentUserAccount: boolean = false
+
+  private hasUpdateCustomEmojis: boolean = false
+
+  public initFetchNotifications () {
+    if (!store.state.notifications.length && !this.hasInitFetchNotifications) {
+      store.dispatch('updateNotifications')
+      this.hasInitFetchNotifications = true
+    }
+  }
+
+  public initStreamConnection () {
+    if (!this.hasInitStreamConnection) {
+      Api.streaming.openUserConnection()
+      this.hasInitStreamConnection = true
+    }
+  }
+
+  public async updateCurrentUserAccount () {
+    if (!this.hasUpdateCurrentUserAccount) {
+
+      if (!store.state.currentUserAccount) {
+        const loading = Loading()
+        await store.dispatch('updateCurrentUserAccount')
+        loading.close()
+      } else {
+        store.dispatch('updateCurrentUserAccount')
+      }
+
+      this.hasUpdateCurrentUserAccount = true
+    }
+  }
+
+  public async updateOAuthAccessToken () {
+    if (!store.state.OAuthInfo.accessToken) {
+      const loading = Loading()
+      const result = await Api.oauth.fetchOAuthToken()
+      store.commit('updateOAuthAccessToken', result.data.access_token)
+      loading.close()
+    }
+  }
+
+  public async updateCustomEmojis () {
+    if (!this.hasUpdateCustomEmojis) {
+
+      if (!store.state.customEmojis.length) {
+        const loading = Loading()
+        await store.dispatch('updateCustomEmojis')
+        loading.close()
+      } else {
+        store.dispatch('updateCustomEmojis')
+      }
+
+      this.hasUpdateCustomEmojis = true
+    }
+  }
+}
+
+let hasUpdateCurrentUserAccount = false
 
 const beforeEachHooks = {
+  async beforeEachRoute (to, from, next) {
+
+    await statusInitManager.updateCustomEmojis()
+
+    next()
+  },
+
   // children routes can't use in-router guide...
   beforeDefaultTimeLines (to: Route, from, next) {
     if (to.name === RoutersInfo.defaulttimelines.name) {
@@ -139,39 +211,18 @@ const beforeEachHooks = {
       }
 
       // check if need to get token
-      if (!store.state.OAuthInfo.accessToken) {
-        try {
-          const loading = Loading()
-          const result = await Api.oauth.fetchOAuthToken()
-          store.commit('updateOAuthAccessToken', result.data.access_token)
-          loading.close()
-        } catch (e) {
-          store.commit('clearAllOAuthInfo')
-          return next(RoutersInfo.oauth.path)
-        }
-      }
 
       // check if should to be blocked by user fetch
       try {
-        if (!store.state.currentUserAccount) {
-          const loading = Loading()
-          await store.dispatch('updateCurrentUserAccount')
-          loading.close()
-        } else {
-          store.dispatch('updateCurrentUserAccount')
-        }
+        await statusInitManager.updateOAuthAccessToken()
+        await statusInitManager.updateCurrentUserAccount()
       } catch (e) {
-        if (e.status === 401) {
-          store.commit('clearAllOAuthInfo')
-          return next(RoutersInfo.oauth.path)
-        }
+        store.commit('clearAllOAuthInfo')
+        return next(RoutersInfo.oauth.path)
       }
 
       // should fetch notifications
-      if (!store.state.notifications.length && !hasInitFetchNotifications) {
-        store.dispatch('updateNotifications')
-        hasInitFetchNotifications = true
-      }
+      statusInitManager.initFetchNotifications()
     }
 
     next()
@@ -179,10 +230,7 @@ const beforeEachHooks = {
 
   beforeHomeTimeLine (to, from, next) {
     if (to.path === homePath) {
-      if (!hasInitStreamConnection) {
-        Api.streaming.openUserConnection()
-        hasInitStreamConnection = true
-      }
+      statusInitManager.initStreamConnection()
     }
 
     next()

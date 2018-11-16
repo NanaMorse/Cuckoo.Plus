@@ -37,6 +37,10 @@ export function insertDels(text: string): string {
   return stringReplacer.finalize()
 }
 
+export function insertCustomEmojis (text: string): string {
+  return text
+}
+
 export class StringReplacer {
   buffer: string
   offset: number

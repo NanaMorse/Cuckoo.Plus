@@ -204,10 +204,21 @@ export namespace mastodonentities {
   }
 
   export type NotificationType = "mention" | "reblog" | "favourite" | "follow"
-  
+
   export interface SearchResults {
     accounts: Array<Account>
     statuses: Array<Status>
     hashtags: Array<string>
+  }
+
+  export interface Emoji {
+    // The shortcode of the emoji
+    shortcode: string
+    // URL to the emoji static image
+    static_url: string
+    // URL to the emoji image
+    url: string
+    // that indicates if the emoji is visible in picker
+    visible_in_picker: boolean
   }
 }

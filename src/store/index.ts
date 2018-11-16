@@ -38,6 +38,10 @@ const state: cuckoostore.stateInfo = {
 
   statusMap: {},
 
+  customEmojis: getLocalSetting('customEmojis', []),
+
+  notifications: [],
+
   appStatus: {
     documentWidth: document.body.clientWidth,
 
@@ -64,9 +68,7 @@ const state: cuckoostore.stateInfo = {
       locale: localStorage.getItem('locale') || I18nLocales.EN
     },
 
-  },
-
-  notifications: []
+  }
 }
 
 export default new Vuex.Store({
