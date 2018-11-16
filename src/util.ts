@@ -1,7 +1,7 @@
 import store from '@/store'
 import { TimeLineTypes, RoutersInfo, I18nTags, VisibilityTypes } from '@/constant'
 import { Route } from "vue-router"
-import { insertDels, insertCustomEmojis } from "./formatter"
+import { formatter } from "./formatter"
 import { mastodonentities } from "@/interface"
 
 export function patchApiUri (uri: string): string {
@@ -104,7 +104,7 @@ export function formatHtml(html: string): string {
 
   walkTextNodes(parentNode.content, (parentNode, textNode) => {
     const spanNode = document.createElement('span')
-    spanNode.innerHTML = insertCustomEmojis(insertDels(textNode.textContent))
+    spanNode.innerHTML = formatter.format(textNode.textContent)
     parentNode.replaceChild(spanNode, textNode)
   })
 

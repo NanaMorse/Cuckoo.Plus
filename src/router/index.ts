@@ -1,5 +1,3 @@
-import { ThemeNames } from "../constant";
-
 const Loading = require('muse-ui-loading').default
 import Vue from 'vue'
 import Router, { Route } from 'vue-router'
@@ -122,9 +120,26 @@ const statusInitManager = new class {
 
   private hasInitStreamConnection: boolean = false
 
+  private hasUpdateOAuthAccessToken: boolean = false
+
   private hasUpdateCurrentUserAccount: boolean = false
 
   private hasUpdateCustomEmojis: boolean = false
+
+  private loadingInstance = null
+
+  private loadingProcessList = []
+
+  private startLoading (process: string) {
+    this.loadingProcessList.push(process)
+    this.loadingInstance = Loading() || this.loadingInstance
+  }
+
+  private endLoading () {
+    if (this.loadingProcessList.every(process => this[process])) {
+      this.loadingInstance && this.loadingInstance.close()
+    }
+  }
 
   public initFetchNotifications () {
     if (!store.state.notifications.length && !this.hasInitFetchNotifications) {
@@ -144,23 +159,24 @@ const statusInitManager = new class {
     if (!this.hasUpdateCurrentUserAccount) {
 
       if (!store.state.currentUserAccount) {
-        const loading = Loading()
+        this.startLoading('hasUpdateCurrentUserAccount')
         await store.dispatch('updateCurrentUserAccount')
-        loading.close()
       } else {
         store.dispatch('updateCurrentUserAccount')
       }
 
       this.hasUpdateCurrentUserAccount = true
+      this.endLoading()
     }
   }
 
   public async updateOAuthAccessToken () {
-    if (!store.state.OAuthInfo.accessToken) {
-      const loading = Loading()
+    if (!store.state.OAuthInfo.accessToken && !this.hasUpdateOAuthAccessToken) {
+      this.startLoading('updateOAuthAccessToken')
       const result = await Api.oauth.fetchOAuthToken()
       store.commit('updateOAuthAccessToken', result.data.access_token)
-      loading.close()
+      this.hasUpdateOAuthAccessToken = true
+      this.endLoading()
     }
   }
 
@@ -168,16 +184,18 @@ const statusInitManager = new class {
     if (!this.hasUpdateCustomEmojis) {
 
       if (!store.state.customEmojis.length) {
-        const loading = Loading()
+        this.startLoading('hasUpdateCustomEmojis')
         await store.dispatch('updateCustomEmojis')
-        loading.close()
       } else {
         store.dispatch('updateCustomEmojis')
       }
 
       this.hasUpdateCustomEmojis = true
+      this.endLoading()
     }
   }
+
+
 }
 
 let hasUpdateCurrentUserAccount = false
