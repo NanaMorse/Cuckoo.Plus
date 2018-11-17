@@ -103,9 +103,9 @@ function checkShouldRegisterApplication (to, from): boolean {
 
   let code = store.state.OAuthInfo.code
   if (from.path === '/' && !code) {
-    if (location.href.indexOf("?code=") !== -1) {
-      code = location.href.replace(location.origin + location.pathname + "?code=", "")
-      code = code.replace('#/', '')
+    if (location.search.substring(0,6) == "?code=") {
+      code = (new RegExp("[\\?&]code=([^&#]*)")).exec(location.search)
+      code = code == null ? "": decodeURIComponent(code[1]);
       // todo maybe shouldn't put this here?
       store.commit('updateOAuthCode', code)
     }
