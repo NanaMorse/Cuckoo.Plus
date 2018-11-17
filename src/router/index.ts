@@ -137,7 +137,11 @@ const statusInitManager = new class {
 
   private endLoading () {
     if (this.loadingProcessList.every(process => this[process])) {
-      this.loadingInstance && this.loadingInstance.close()
+      try {
+        this.loadingInstance && this.loadingInstance.close()
+      } catch (e) {
+
+      }
     }
   }
 

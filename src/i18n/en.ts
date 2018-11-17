@@ -34,7 +34,7 @@ const statusCard = {
   [I18nTags.statusCard.delete_status_confirm]: 'Are you sure you want to delete the post?',
   [I18nTags.statusCard.do_delete_status_btn]: 'CANCEL',
   [I18nTags.statusCard.cancel_delete_status_btn]: 'DELETE',
-  [I18nTags.statusCard.originally_shared_by]: 'Originally shared by{displayName}<span class="at-name">@{atName}</span>',
+  [I18nTags.statusCard.originally_shared_by]: 'Originally shared by {displayName}<span class="at-name">@{atName}</span>',
   [I18nTags.statusCard.sensitive_media_alert]: 'Hide content <br/> Click to view'
 }
 
