@@ -103,7 +103,8 @@
     }
 
     goToMastodonServerForOAuth () {
-      window.location.href = `${this.prefix + this.validateForm.mastodonServerUri}/oauth/authorize?client_id=${this.OAuthInfo.clientId}` +
+      window.location.href = `${this.prefix + this.validateForm.mastodonServerUri}/oauth/authorize` +
+        `?client_id=` + encodeURIComponent(this.OAuthInfo.clientId) +
         `&redirect_uri=${location.origin}` +
         `&response_type=code&scope=read write follow`
     }
