@@ -6,6 +6,7 @@ import * as timelines from './timelines'
 import * as statuses from './statuses'
 import * as notifications from './notifications'
 import * as media from './media'
+import * as instances from './instances'
 import streaming from './streaming'
 
 export {
@@ -17,5 +18,6 @@ export {
   statuses,
   notifications,
   media,
-  streaming
+  streaming,
+  instances
 }

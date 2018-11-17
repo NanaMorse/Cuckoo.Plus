@@ -32,6 +32,8 @@ export namespace cuckoostore {
 
     notifications: Array<mastodonentities.Notification>
 
+    customEmojis: Array<mastodonentities.Emoji>
+
     appStatus: {
       documentWidth: number
       isDrawerOpened: boolean

@@ -1,7 +1,7 @@
 import store from '@/store'
 import { TimeLineTypes, RoutersInfo, I18nTags, VisibilityTypes } from '@/constant'
 import { Route } from "vue-router"
-import { insertDels } from "./formatter"
+import Formatter from "./formatter"
 import { mastodonentities } from "@/interface"
 
 export function patchApiUri (uri: string): string {
@@ -97,14 +97,20 @@ export async function prepareRootStatus (status: mastodonentities.Status) {
   return targetStatus
 }
 
+
+let formatter
 export function formatHtml(html: string): string {
+  if (!formatter) {
+    formatter = new Formatter(store.state.customEmojis)
+  }
+
   // create a parent node to contain the input html
   const parentNode = document.createElement('template')
   parentNode.innerHTML = html
 
   walkTextNodes(parentNode.content, (parentNode, textNode) => {
     const spanNode = document.createElement('span')
-    spanNode.innerHTML = insertDels(textNode.textContent)
+    spanNode.innerHTML = formatter.format(textNode.textContent)
     parentNode.replaceChild(spanNode, textNode)
   })
 

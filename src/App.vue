@@ -93,4 +93,10 @@
   .mu-loading-wrap {
     z-index: 20141222 !important;
   }
+
+  .custom-emoji {
+    width: 20px;
+    height: 20px;
+    vertical-align: text-bottom;
+  }
 </style>
