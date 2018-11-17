@@ -36,8 +36,8 @@
         </div>
       </div>
 
-      <div v-if="descendantStatusList.length" class="reply-area-full">
-        <div class="full-reply-list">
+      <div class="reply-area-full">
+        <div class="full-reply-list" ref="replyListContainer">
           <full-reply-list-item v-for="replierStatus in descendantStatusList"
                                 :key="replierStatus.id" :status="replierStatus" @reply="onReplyToStatus(replierStatus)"/>
         </div>
@@ -59,7 +59,7 @@
         <full-action-bar v-if="isOAuthUser" :show="shouldShowFullReplyActionArea"
                          :currentReplyToStatus="currentReplyToStatus"
                          :status="status" :value.sync="replyInputValue" @hide="hideFullReplyActionArea"
-                         @loadingStart="isCardLoading = true" @loadingEnd="isCardLoading = false"/>
+                         @loadingStart="isCardLoading = true" @loadingEnd="isCardLoading = false" @replySuccess="onReplySuccess"/>
       </mu-card-actions>
     </mu-card>
   </div>
@@ -98,6 +98,10 @@
     $routersInfo
 
     $confirm
+
+    $refs: {
+      replyListContainer: HTMLDivElement
+    }
 
     @State('contextMap') contextMap
     @State('statusMap') statusMap
@@ -154,6 +158,12 @@
       this.replyInputValue = preSetMentions.reduce((pre, cur) => pre + `@${cur.acct} `, '')
 
       this.shouldShowFullReplyActionArea = true
+    }
+
+    onReplySuccess () {
+      this.$nextTick(() => {
+        this.$refs.replyListContainer.scrollTo({ top: this.$refs.replyListContainer.scrollHeight, left: 0, behavior: 'smooth' })
+      })
     }
 
   }

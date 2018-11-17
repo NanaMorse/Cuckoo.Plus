@@ -121,6 +121,8 @@
 
       this.$emit('loadingEnd')
 
+      this.$emit('replySuccess')
+
       this.hideFullReplyActionArea()
     }
 
