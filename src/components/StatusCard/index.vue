@@ -71,6 +71,7 @@
   import { mastodonentities } from '@/interface'
   import ThemeManager from 'muse-ui/lib/theme'
   import { formatHtml } from '@/util'
+  import * as moment from 'moment'
 
   import CardHeader from './CardHeader'
   import MediaPanel from './MediaPanel'
@@ -125,7 +126,9 @@
 
       return this.contextMap[this.status.id].descendants.map(descendantStatusId => {
         return this.statusMap[descendantStatusId]
-      }).filter(s => s)
+      }).filter(s => s).sort((a, b) => {
+        return new Date(a.created_at) >= new Date(b.created_at) ? 1 : -1
+      })
     }
 
     hideFullReplyActionArea () {
