@@ -40,7 +40,7 @@
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State, Action } from 'vuex-class'
   import { VisibilityTypes } from '@/constant'
-  import { formatHtml, getVisibilityDescInfo } from '@/util'
+  import { getVisibilityDescInfo } from '@/util'
   const autosize = require('autosize')
   import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
 

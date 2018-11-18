@@ -24,7 +24,7 @@
                 </mu-avatar>
               </mu-list-item-action>
               <mu-list-item-content>
-                <mu-list-item-title class="primary-read-text-color">{{getAccountDisplayName(notification.account)}}</mu-list-item-title>
+                <mu-list-item-title class="primary-read-text-color" v-html="formatAccountDisplayName(notification.account)"></mu-list-item-title>
                 <mu-list-item-sub-title class="secondary-read-text-color">{{getNotificationSubTitle(notification)}}</mu-list-item-sub-title>
               </mu-list-item-content>
             </mu-list-item>
@@ -54,7 +54,7 @@
   import { NotificationTypes, ThemeNames } from '@/constant'
   import StatusCard from '@/components/StatusCard'
   import { mastodonentities } from '@/interface'
-  import { extractText, prepareRootStatus } from "@/util"
+  import { extractText, prepareRootStatus, formatAccountDisplayName } from "@/util"
 
   @Component({
     components: {
@@ -73,8 +73,6 @@
 
     @State('notifications') notifications: Array<mastodonentities.Notification>
 
-    @Getter('getAccountDisplayName') getAccountDisplayName
-
     isLoadingNotifications: boolean = false
 
     isLoadingTargetStatus: boolean = false
@@ -82,6 +80,8 @@
     shouldShowTargetStatus: boolean = false
 
     currentCheckStatus: mastodonentities.Status = null
+
+    formatAccountDisplayName = formatAccountDisplayName
 
     @Watch('isLoadingNotifications')
     onLoadingNotificationStatusChanged (toValue) {

@@ -78,7 +78,7 @@ class Formatter {
     return stringReplacer.finalize()
   }
 
-  public insertCustomEmojis (text: string): string {
+  private insertCustomEmojis (text: string): string {
     return text.replace(this.customEmojiRegex, (matchString: string) => {
       const emojiShortCode = matchString.trim().slice(1, -1)
 
@@ -90,7 +90,13 @@ class Formatter {
     })
   }
 
-  public format (text: string): string {
+  public updateCustomEmojiMap (customEmojis: Array<mastodonentities.Emoji> = []) {
+    customEmojis.forEach(emoji => {
+      this.customEmojiMap[emoji.shortcode] = emoji
+    })
+  }
+
+  public format (text: string, customEmojis: Array<mastodonentities.Emoji> = []): string {
     return [this.insertDels, this.insertCustomEmojis].reduce((preValue, process) => {
       return process.bind(this)(preValue)
     }, text)

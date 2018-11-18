@@ -2,8 +2,8 @@ import Vue from 'vue'
 import timelinesMutations from './timelines'
 import notificationsMutations from './notifications'
 import appStatusMutations from './appstatus'
-import { cuckoostore } from '@/interface'
-import { mastodonentities } from "@/interface"
+import { cuckoostore, mastodonentities } from '@/interface'
+import formatter from '@/Formatter'
 
 const oAuthInfoMutations = {
 
@@ -40,6 +40,8 @@ const oAuthInfoMutations = {
 const statusesMutations = {
   updateStatusMap (state: cuckoostore.stateInfo, newStatusMap) {
     Object.keys(newStatusMap).forEach(statusId => {
+      // formatter content
+
       Vue.set(state.statusMap, statusId, newStatusMap[statusId])
     })
   },

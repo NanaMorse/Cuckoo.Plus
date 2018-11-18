@@ -99,10 +99,12 @@ export async function prepareRootStatus (status: mastodonentities.Status) {
 
 
 let formatter
-export function formatHtml(html: string): string {
+export function formatHtml(html: string, options: { externalEmojis } = { externalEmojis: [] }): string {
   if (!formatter) {
     formatter = new Formatter(store.state.customEmojis)
   }
+
+  formatter.updateCustomEmojiMap(options.externalEmojis)
 
   // create a parent node to contain the input html
   const parentNode = document.createElement('template')
@@ -115,6 +117,14 @@ export function formatHtml(html: string): string {
   })
 
   return parentNode.innerHTML
+}
+
+export function formatStatusContent (status: mastodonentities.Status) {
+  return formatHtml(status.content, { externalEmojis: status.emojis })
+}
+
+export function formatAccountDisplayName (account: mastodonentities.Account) {
+  return formatHtml(store.getters['getAccountDisplayName'](account), { externalEmojis: account.emojis })
 }
 
 export function extractText(html: string): string {

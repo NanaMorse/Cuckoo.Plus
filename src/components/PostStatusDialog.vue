@@ -20,9 +20,7 @@
           <img :src="currentUserAccount.avatar_static">
         </mu-avatar>
         <div class="user-and-status-info">
-          <a class="user-name primary-read-text-color">
-            {{getAccountDisplayName(currentUserAccount)}}
-          </a>
+          <a class="user-name primary-read-text-color" v-html="formatAccountDisplayName(currentUserAccount)"></a>
           <div class="visibility-row">
             <div class="arrow-container">
               <svg viewBox="0 0 48 48" height="100%" width="100%">
@@ -96,7 +94,7 @@
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State, Getter, Action } from 'vuex-class'
   import { UiWidthCheckConstants, VisibilityTypes } from '@/constant'
-  import { getVisibilityDescInfo } from '@/util'
+  import { getVisibilityDescInfo, formatAccountDisplayName } from '@/util'
   import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
   import * as Api from '@/api'
   import { mastodonentities } from "../interface";
@@ -127,6 +125,8 @@
 
     getVisibilityDescInfo = getVisibilityDescInfo
 
+    formatAccountDisplayName = formatAccountDisplayName
+
     visibility: string = VisibilityTypes.PUBLIC
 
     visibilityTriggerBtn: HTMLDivElement = null
@@ -152,8 +152,6 @@
     @State('currentUserAccount') currentUserAccount
 
     @Action('postStatus') postStatus
-
-    @Getter('getAccountDisplayName') getAccountDisplayName
 
     get isDialogOpening () {
       return this.open
