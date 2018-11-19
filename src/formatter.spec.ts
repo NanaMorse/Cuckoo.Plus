@@ -1,8 +1,10 @@
 import 'mocha'
 import { expect } from 'chai'
-import formatter from './formatter'
+import Formatter from './formatter'
 
-const StringReplacer = formatter.StringReplacer
+const StringReplacer = Formatter.StringReplacer
+
+const formatter = new Formatter()
 
 describe('StringReplacer', () => {
     it('replaces char at middle with a string', () => {

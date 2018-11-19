@@ -3,7 +3,6 @@ import timelinesMutations from './timelines'
 import notificationsMutations from './notifications'
 import appStatusMutations from './appstatus'
 import { cuckoostore, mastodonentities } from '@/interface'
-import formatter from '@/Formatter'
 
 const oAuthInfoMutations = {
 
