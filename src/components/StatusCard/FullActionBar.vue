@@ -6,17 +6,21 @@
       </mu-avatar>
 
       <div class="input-container">
-              <textarea ref="replayTextInput" class="auto-size-text-area" v-model="inputValue"
-                        @keydown.ctrl.enter="onSubmitReplyContent"
-                        :placeholder="$t($i18nTags.statusCard.reply_to_main_status)"/>
+        <cuckoo-input ref="cuckooInput" @submit="onSubmitReplyContent"
+                      :text.sync="inputValue" :uploadProcesses.sync="uploadProcesses"
+                      :placeholder="$t($i18nTags.statusCard.reply_to_main_status)"/>
       </div>
 
     </div>
 
     <div class="reply-action-area">
       <div class="left-area">
-        <mu-button class="operate-btn add-image secondary-read-text-color" icon>
-          <mu-icon class="reply-action-icon" value="local_see" />
+        <mu-button @click="onSelectMediaFiles" :disabled="uploadProcesses.length === 4"
+                   class="operate-btn add-image secondary-read-text-color" icon>
+          <mu-icon class="reply-action-icon" value="camera_alt" />
+          <input ref="fileInput" type="file" @change="onUploadMediaFiles"
+                 accept=".jpg,.jpeg,.png,.gif,.webm,.mp4,.m4v,.mov,image/jpeg,image/png,image/gif,video/webm,video/mp4,video/quicktime"
+                 style="display: none" multiple/>
         </mu-button>
         <mu-button ref="visibilityTriggerBtn" @click="shouldOpenVisibilitySelectPopOver = true" class="operate-btn change-visibility secondary-read-text-color" icon>
           <mu-icon class="reply-action-icon" :value="getVisibilityDescInfo(replyVisibility).icon" />
@@ -41,18 +45,22 @@
   import { State, Action } from 'vuex-class'
   import { VisibilityTypes } from '@/constant'
   import { getVisibilityDescInfo } from '@/util'
-  const autosize = require('autosize')
   import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
+  import Input from '@/components/Input'
+  import { mastodonentities } from '@/interface'
 
   @Component({
     components: {
+      'cuckoo-input': Input,
       'visibility-select-pop-over': VisibilitySelectPopOver
     }
   })
   class FullActionBar extends Vue {
 
     $refs: {
+      cuckooInput: Input
       replayTextInput: HTMLTextAreaElement
+      fileInput: HTMLInputElement
       visibilityTriggerBtn: any
     }
 
@@ -72,12 +80,20 @@
 
     shouldOpenVisibilitySelectPopOver = false
 
+    uploadProcesses: Array<{
+      file: File,
+      hasStartedUpload: boolean,
+      uploadResult: mastodonentities.Attachment
+    }> = []
+
     visibilityTriggerBtn: any = null
 
     getVisibilityDescInfo = getVisibilityDescInfo
 
     get shouldEnableSubmitButton () {
-      return this.value
+      const isInUploadProcess = this.uploadProcesses.every(i => !i.uploadResult)
+
+      return this.uploadProcesses.length ? !isInUploadProcess : this.inputValue
     }
 
     get inputValue () {
@@ -90,15 +106,14 @@
 
     mounted () {
       this.visibilityTriggerBtn = this.$refs.visibilityTriggerBtn.$el
-      autosize(this.$refs.replayTextInput)
     }
 
     @Watch('show')
     onShowFullActionBar (val) {
       if (val) {
         this.$nextTick(() => {
-          this.$refs.replayTextInput.focus()
-          this.$refs.replayTextInput.dispatchEvent(new Event('autosize:update'))
+          this.$refs.cuckooInput.focus()
+          this.$refs.cuckooInput.updateSize()
         })
       }
     }
@@ -115,7 +130,8 @@
         formData: {
           status: this.value,
           inReplyToId: currentReplyToStatus.id,
-          visibility: this.replyVisibility
+          visibility: this.replyVisibility,
+          mediaIds: this.uploadProcesses.map(info => info.uploadResult.id)
         }
       })
 
@@ -126,7 +142,26 @@
       this.hideFullReplyActionArea()
     }
 
+    onSelectMediaFiles () {
+      this.$refs.fileInput.click()
+    }
+
+    onUploadMediaFiles () {
+      const maxUploadLength = 4
+
+      Array.from(this.$refs.fileInput.files)
+        .splice(0, maxUploadLength - this.uploadProcesses.length)
+        .forEach(async (file) => {
+          this.uploadProcesses.push({
+            file, hasStartedUpload: false, uploadResult: null
+          })
+        })
+
+      this.$refs.fileInput.value = ''
+    }
+
     hideFullReplyActionArea () {
+      this.uploadProcesses = []
       this.$emit('hide')
     }
   }
@@ -146,15 +181,12 @@
       }
 
       .input-container {
+        width: 100%;
         display: flex;
         align-items: center;
         flex-grow: 1;
         margin-left: 16px;
         padding: 9px 12px 8px 0;
-
-        .auto-size-text-area {
-          height: 18px;
-        }
       }
     }
 
@@ -184,6 +216,14 @@
       .right-area {
         display: flex;
       }
+    }
+  }
+</style>
+
+<style lang="less">
+  .full-action-bar {
+    .auto-size-text-area {
+      height: 18px;
     }
   }
 </style>

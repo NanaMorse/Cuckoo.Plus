@@ -48,13 +48,14 @@
 
     <section>
 
-      <cuckoo-input :text.sync="textContentValue" ref="cuckooInput" :uploadProcessInfo.sync="uploadProcessInfoList"
+      <cuckoo-input ref="cuckooInput" @submit="onSubmitNewStatus"
+                    :text.sync="textContentValue" :uploadProcesses.sync="uploadProcesses"
                     :placeholder="$t($i18nTags.statusCard.post_new_status_placeholder)"/>
 
       <div class="bottom-area">
 
         <div class="attachment-select-btn-group">
-          <mu-button icon @click="onSelectMediaFiles" :disabled="uploadProcessInfoList.length === 4">
+          <mu-button icon @click="onSelectMediaFiles" :disabled="uploadProcesses.length === 4">
             <mu-icon class="secondary-read-text-color" value="camera_alt" />
             <input ref="fileInput" type="file" @change="onUploadMediaFiles"
                    accept=".jpg,.jpeg,.png,.gif,.webm,.mp4,.m4v,.mov,image/jpeg,image/png,image/gif,video/webm,video/mp4,video/quicktime"
@@ -87,7 +88,6 @@
   import { getVisibilityDescInfo, formatAccountDisplayName } from '@/util'
   import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
   import Input from '@/components/Input'
-  import * as Api from '@/api'
   import { mastodonentities } from "../interface";
 
   const preViewAreaHeight = 212
@@ -125,9 +125,9 @@
 
     isPostLoading: boolean = false
 
-    uploadProcessInfoList: Array<{
+    uploadProcesses: Array<{
       file: File,
-      uploadSuccess: boolean,
+      hasStartedUpload: boolean,
       uploadResult: mastodonentities.Attachment
     }> = []
 
@@ -150,9 +150,9 @@
     set isDialogOpening (val) {}
 
     get shouldEnableSubmitButton () {
-      const isInUploadProcess = !this.uploadProcessInfoList.every(i => i.uploadSuccess)
+      const isInUploadProcess = this.uploadProcesses.every(i => !i.uploadResult)
 
-      return this.uploadProcessInfoList.length ? !isInUploadProcess : this.textContentValue
+      return this.uploadProcesses.length ? !isInUploadProcess : this.textContentValue
     }
 
     @Watch('isDialogOpening')
@@ -181,7 +181,7 @@
     }
 
     async onTryCloseDialog () {
-      if (this.textContentValue || this.uploadProcessInfoList.length) {
+      if (this.textContentValue || this.uploadProcesses.length) {
         const doCloseDialog = (await this.$confirm(this.$t(this.$i18nTags.postStatusDialog.do_discard_message_confirm), {
           okLabel: this.$t(this.$i18nTags.postStatusDialog.do_discard_message),
           cancelLabel: this.$t(this.$i18nTags.postStatusDialog.do_keep_message),
@@ -200,7 +200,7 @@
       const formData = {
         status: this.textContentValue,
         visibility: this.visibility,
-        mediaIds: this.uploadProcessInfoList.map(info => info.uploadResult.id)
+        mediaIds: this.uploadProcesses.map(info => info.uploadResult.id)
       }
 
       this.isPostLoading = true
@@ -221,34 +221,14 @@
       const maxUploadLength = 4
 
       Array.from(this.$refs.fileInput.files)
-        .splice(0, maxUploadLength - this.uploadProcessInfoList.length)
+        .splice(0, maxUploadLength - this.uploadProcesses.length)
         .forEach(async (file) => {
-          this.uploadProcessInfoList.push({
-            file, uploadSuccess: false, uploadResult: null
+          this.uploadProcesses.push({
+            file, hasStartedUpload: false, uploadResult: null
           })
-
-          const indexInProcessList = this.uploadProcessInfoList.length - 1
-
-          const formData = new FormData()
-          formData.append('file', file)
-
-          try {
-            const result = await Api.media.postMediaFile(formData)
-
-            this.uploadProcessInfoList[indexInProcessList].uploadSuccess = true
-            this.uploadProcessInfoList[indexInProcessList].uploadResult = result.data
-
-          } catch (e) {
-
-          }
-
         })
 
       this.$refs.fileInput.value = ''
-    }
-
-    onRemoveMediaFileByIndex (index: number) {
-      this.uploadProcessInfoList.splice(index, 1)
     }
 
     setVisibilitySelectPopOverDisplay (open: boolean) {
@@ -258,7 +238,7 @@
     closeDialog () {
       this.textContentValue = ''
       this.$refs.fileInput.value = ''
-      this.uploadProcessInfoList = []
+      this.uploadProcesses = []
       this.$emit('update:open', false)
     }
   }
