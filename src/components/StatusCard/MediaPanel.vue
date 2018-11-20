@@ -95,7 +95,7 @@
       const mediaListPart = this.mediaList.map(item => {
         const url = item.remote_url || item.url
 
-        let type: any = item.type
+        let type: string = item.type
 
         if (type === AttachmentTypes.UNKNOWN) {
           type = url.endsWith('.mp4') ? AttachmentTypes.GIFV : AttachmentTypes.IMAGE

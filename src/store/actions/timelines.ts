@@ -36,7 +36,8 @@ export default {
       const result = await api.timelines.getTimeLineStatuses({ timeLineType, hashName, maxId, sinceId })
 
       const resultToFetchContext = result.data.filter((status: mastodonentities.Status) => {
-        return !status.in_reply_to_id && (status.replies_count !== 0)
+        // remove for some instance's replies_count has bug
+        return !status.in_reply_to_id
       })
 
       // update context map
