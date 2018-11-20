@@ -1,5 +1,5 @@
 <template>
-  <div class="timelines-container" v-loading="isInitLoading">
+  <div class="timelines-container" ref="timelinesContainer" v-loading="isInitLoading">
 
     <template v-for="(timeLineName, index) in allTimeLineNameList">
       <transition name="slide-fade">
@@ -81,6 +81,10 @@
   })
   class TimeLines extends Vue {
 
+    $refs: {
+      timelinesContainer: HTMLDivElement
+    }
+
     $route;
 
     $progress;
@@ -139,7 +143,7 @@
 
       const { timeLineType, hashName } = getTimeLineTypeAndHashName(this.$route)
 
-      return this.getRootStatuses(timeLineType, hashName)
+      return this.getRootStatuses(timeLineType, hashName).filter(status => status.id)
     }
 
     get currentTimeLineCannotLoadMore () {
@@ -184,6 +188,22 @@
         this.loadStreamStatusesPool({...getTimeLineTypeAndHashName(this.$route)})
         this.loadStatuses(false, true)
       }
+
+    }
+
+    @Watch('currentRootStatuses')
+    onCurrentRootStatusesChanged () {
+      if (this.isInitLoading) return
+
+      this.$nextTick(async () => {
+        // load more to show scroll
+        // todo maybe we could find a better way to serve this?
+        if (this.$refs.timelinesContainer.clientHeight < window.screen.availHeight) {
+          this.isInitLoading = true
+          await this.loadStatuses(true)
+          this.isInitLoading = false
+        }
+      })
     }
 
     async mounted () {
