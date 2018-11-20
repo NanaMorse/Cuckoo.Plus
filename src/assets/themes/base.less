@@ -115,6 +115,42 @@ a {
   color: @textColor !important;
 }
 
+.media-area {
+  height: 212px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+
+  &.single-media-area {
+    .media-item {
+      margin: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  .media-item {
+    margin-right: 8px;
+    position: relative;
+    display: inline-block;
+    height: 100%;
+
+    img {
+      width: auto;
+      height: 100%;
+      display: block;
+    }
+  }
+}
+
+.media-area {
+  .media-item {
+
+  }
+}
+
 // for overwrite muse-ui style
 .mu-dialog {
   background-color: @dialogBackgroundColor;

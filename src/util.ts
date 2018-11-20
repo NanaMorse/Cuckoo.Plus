@@ -49,7 +49,7 @@ export function getTargetStatusesList (listMap, timeLineType, hashName) {
     targetStatusesList = listMap[timeLineType][hashName]
   }
 
-  return targetStatusesList
+  return targetStatusesList || []
 }
 
 const visibilityTypeToDescMap = {
