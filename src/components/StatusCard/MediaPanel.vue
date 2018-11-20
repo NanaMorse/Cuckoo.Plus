@@ -1,7 +1,8 @@
 <template>
   <div class="media-panel-container" v-if="combinedMediaList.length > 0">
-    <div class="media-area" :class="mediaAreaClass">
-      <div class="media-gallery-item" v-for="(media, index) in combinedMediaList"
+    <div class="media-area" ref="mediaArea" :style="mediaAreaScrollStyle"
+         :class="{ 'single-media-area': combinedMediaList.length === 1 }">
+      <div class="media-item" v-for="(media, index) in combinedMediaList"
            @click="onMediaItemClick(index)">
         <img v-if="media.type === mediaTypes.IMAGE"
              :src="media.url" :key="index"/>
@@ -47,6 +48,10 @@
   @Component({})
   class MediaPanel extends Vue {
 
+    $refs: {
+      mediaArea: HTMLDivElement
+    }
+
     @Prop() mediaList?: Array<mastodonentities.Attachment>
 
     @Prop({ default: () => [] }) pixivCards?: Array<{ url: string, image_url: string }>
@@ -61,6 +66,16 @@
       return type === AttachmentTypes.IMAGE || type === AttachmentTypes.UNKNOWN
     }
 
+    get mediaAreaScrollStyle () {
+      if (this.shouldShowSensitiveCover) {
+        return {
+          overflow: 'hidden'
+        }
+      } else {
+        return null
+      }
+    }
+
     get shouldShowSensitiveCover () {
       if (typeof this.manuallyShowSensitiveCover === 'boolean') {
         return this.manuallyShowSensitiveCover
@@ -73,6 +88,7 @@
 
     set shouldShowSensitiveCover (val) {
       this.manuallyShowSensitiveCover = val
+      this.$refs.mediaArea.scrollTo(0, 0)
     }
 
     get combinedMediaList () {
@@ -146,17 +162,23 @@
       cursor: zoom-in;
     }
 
-    img {
-      height: 100%;
-      width: 100%;
-      object-fit: cover;
-      object-position: 50% 20%;
-    }
-
     .media-area {
-      display: flex;
       position: relative;
-      justify-content: space-around;
+
+      &.single-media-area {
+        width: 100%;
+        height: auto;
+        padding-left: 0;
+
+        .media-item {
+          width: 100%;
+
+          img {
+            width: 100%;
+          }
+        }
+
+      }
 
       .sensitive-alert-cover {
         position: absolute;
@@ -171,64 +193,6 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-      }
-    }
-
-    .media-gallery-item {
-      height: 100%;
-      max-height: 1000px;
-      overflow: hidden;
-      border-radius: 4px;
-      position: relative;
-
-      .gifv-container {
-        width: 100%;
-        height: 100%;
-
-        > video {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-      }
-
-    }
-
-    .two-medias {
-
-      .media-gallery-item {
-        height: calc(50vh - 70px);
-        max-height: 350px;
-        min-height: 260px;
-        width: calc(50% - 2px);
-      }
-
-    }
-
-    .three-medias {
-      flex-wrap: wrap;
-
-      .media-gallery-item {
-        height: calc(((100vw - 300px) / 2) - 100px);
-        max-height: 270px;
-        min-height: 140px;
-        width: calc(50% - 2px);;
-
-        &:first-child {
-          width: 100%;
-          margin-bottom: 2px;
-        }
-      }
-    }
-
-    .four-medias {
-      .three-medias();
-
-      .media-gallery-item {
-
-        &:first-child {
-          width: calc(50% - 2px);
-        }
       }
     }
 

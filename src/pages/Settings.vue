@@ -48,6 +48,7 @@
   import { Vue, Component } from 'vue-property-decorator'
   import { State, Mutation } from 'vuex-class'
   import { ThemeNames, I18nLocales } from '@/constant'
+  import * as moment from 'moment'
 
   @Component({})
   class Setting extends Vue {
@@ -92,6 +93,7 @@
 
     set locale (val) {
       this.$i18n.locale = val
+      moment.locale(val)
       this.updateLocale(val)
     }
 

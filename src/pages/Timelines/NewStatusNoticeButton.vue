@@ -12,7 +12,7 @@
 <script lang="ts">
   import { Vue, Component, Watch } from 'vue-property-decorator'
   import { State, Mutation, Action } from 'vuex-class'
-  import { getTimeLineTypeAndHashName, isBaseTimeLine } from '@/util'
+  import { getTimeLineTypeAndHashName, isBaseTimeLine, getTargetStatusesList } from '@/util'
 
   @Component({})
   class NewStatusNoticeButton extends Vue {
@@ -34,12 +34,7 @@
 
       if (timeLineType === '') return []
 
-      let targetStreamPool: Array<string>
-      if (isBaseTimeLine(timeLineType)) {
-        targetStreamPool = this.appStatus.streamStatusesPool[timeLineType]
-      } else {
-        targetStreamPool = this.appStatus.streamStatusesPool[timeLineType][hashName]
-      }
+      const targetStreamPool = getTargetStatusesList(this.appStatus.streamStatusesPool, timeLineType, hashName)
 
       // filter root status
       return targetStreamPool.filter(id => this.statusMap[id] && !this.statusMap[id].in_reply_to_id)

@@ -120,7 +120,10 @@
     }
 
     async onDeleteStatus () {
-      const doDeleteStatus = (await this.$confirm(this.$t(this.$i18nTags.statusCard.delete_status_confirm), '', {})).result
+      const doDeleteStatus = (await this.$confirm(this.$t(this.$i18nTags.statusCard.delete_status_confirm), {
+        okLabel: this.$t(this.$i18nTags.statusCard.do_delete_status_btn),
+        cancelLabel: this.$t(this.$i18nTags.statusCard.cancel_delete_status_btn),
+      })).result
       if (doDeleteStatus) {
         this.isListItemLoading = true
         await this.deleteStatus({ statusId: this.status.id })

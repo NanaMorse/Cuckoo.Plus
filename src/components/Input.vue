@@ -4,7 +4,7 @@
               @keydown.ctrl.enter="onQuickSubmit"
               :placeholder="placeholder"/>
 
-    <div v-if="uploadProcesses.length" class="media-preview-area" :class="{ 'single-upload-preview-area': uploadProcesses.length === 1 }">
+    <div v-if="uploadProcesses.length" class="media-area" :class="{ 'single-media-area': uploadProcesses.length === 1 }">
       <div class="media-item" :key="index"
            v-for="(processInfo, index) in uploadProcesses">
         <!--<div v-if="!processInfo.uploadSuccess" class="media-placeholder" v-loading="true"/>-->
@@ -133,53 +133,20 @@
   .cuckoo-input-container {
     width: 100%;
 
-    .media-preview-area {
-      height: 212px;
-      overflow-x: auto;
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
+    .media-area {
       padding-left: 16px;
-      white-space: nowrap;
 
-      &.single-upload-preview-area {
-        .media-item {
-          margin: 0;
-          width: 100%;
-          display: flex;
-          justify-content: center;
-        }
+      .media-loading-wrapper {
+        height: 100%;
+        position: relative;
       }
 
-      .media-item {
-        margin-right: 8px;
-        position: relative;
-        display: inline-block;
-        height: 100%;
-
-        .media-loading-wrapper {
-          height: 100%;
-          position: relative;
-        }
-
-        .media-placeholder {
-          width: 212px;
-          position: relative;
-          height: 100%;
-        }
-
-        img {
-          width: auto;
-          height: 100%;
-          display: block;
-        }
-
-        .remove-icon-wrapper {
-          cursor: pointer;
-          position: absolute;
-          right: 12px;
-          top: 12px;
-          z-index: 20141223;
-        }
+      .remove-icon-wrapper {
+        cursor: pointer;
+        position: absolute;
+        right: 12px;
+        top: 12px;
+        z-index: 20141223;
       }
     }
   }
