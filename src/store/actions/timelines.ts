@@ -35,8 +35,12 @@ export default {
     try {
       const result = await api.timelines.getTimeLineStatuses({ timeLineType, hashName, maxId, sinceId })
 
+      const resultToFetchContext = result.data.filter((status: mastodonentities.Status) => {
+        return !status.in_reply_to_id && (status.replies_count !== 0)
+      })
+
       // update context map
-      Promise.all(result.data.map((status: mastodonentities.Status) => {
+      Promise.all(resultToFetchContext.map((status: mastodonentities.Status) => {
         return api.statuses.getStatusContextById(status.id)
       })).then(results => {
         const newContextMap = {}
@@ -46,7 +50,7 @@ export default {
 
           // only record descendant here
           if (descendantIdList.length) {
-            newContextMap[result.data[index].id] = {
+            newContextMap[resultToFetchContext[index].id] = {
               ancestors: contextResult.data.ancestors.map(status => status.id),
               descendants: descendantIdList
             }

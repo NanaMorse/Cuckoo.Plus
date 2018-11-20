@@ -39,7 +39,7 @@
   @Component({})
   class SimpleActionBar extends Vue {
 
-    @Prop() status
+    @Prop() status: mastodonentities.Status
 
     @State('currentUserAccount') currentUserAccount: mastodonentities.AuthenticatedAccount
 

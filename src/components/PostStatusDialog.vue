@@ -47,24 +47,15 @@
     </div>
 
     <section>
-      <textarea ref="textArea" class="auto-size-text-area" v-model="textContentValue"
-                @keydown.ctrl.enter="onSubmitNewStatus"
-                :placeholder="$t($i18nTags.statusCard.post_new_status_placeholder)"/>
+
+      <cuckoo-input ref="cuckooInput" @submit="onSubmitNewStatus"
+                    :text.sync="textContentValue" :uploadProcesses.sync="uploadProcesses"
+                    :placeholder="$t($i18nTags.statusCard.post_new_status_placeholder)"/>
 
       <div class="bottom-area">
-        <div v-if="uploadProcessInfoList.length" class="media-preview-area" :class="{ 'single-upload-preview-area': uploadProcessInfoList.length === 1 }">
-          <div class="media-item" :key="index"
-               v-for="(processInfo, index) in uploadProcessInfoList">
-            <div v-if="!processInfo.uploadSuccess" class="media-placeholder" v-loading="true"/>
-            <img v-if="processInfo.uploadSuccess" :src="processInfo.uploadResult.url"/>
-            <div class="remove-icon-wrapper" @click="onRemoveMediaFileByIndex(index)">
-              <svg height="24px" width="24px" viewBox="0 0 48 48"><circle fill="#fefefe" cx="24" cy="24" r="24"></circle><path fill="#000" d="M24,4C12.9,4,4,12.9,4,24s8.9,20,20,20s20-9,20-20S35,4,24,4z M34,31.2L31.2,34L24,26.8L16.8,34L14,31.2l7.2-7.2L14,16.8l2.8-2.8l7.2,7.2l7.2-7.2l2.8,2.8L26.8,24L34,31.2z"></path></svg>
-            </div>
-          </div>
-        </div>
 
         <div class="attachment-select-btn-group">
-          <mu-button icon @click="onSelectMediaFiles" :disabled="uploadProcessInfoList.length === 4">
+          <mu-button icon @click="onSelectMediaFiles" :disabled="uploadProcesses.length === 4">
             <mu-icon class="secondary-read-text-color" value="camera_alt" />
             <input ref="fileInput" type="file" @change="onUploadMediaFiles"
                    accept=".jpg,.jpeg,.png,.gif,.webm,.mp4,.m4v,.mov,image/jpeg,image/png,image/gif,video/webm,video/mp4,video/quicktime"
@@ -96,22 +87,21 @@
   import { UiWidthCheckConstants, VisibilityTypes } from '@/constant'
   import { getVisibilityDescInfo, formatAccountDisplayName } from '@/util'
   import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
-  import * as Api from '@/api'
+  import Input from '@/components/Input'
   import { mastodonentities } from "../interface";
-  const autosize = require('autosize')
-
-  let isFirstTimeOpenDialog = true
 
   const preViewAreaHeight = 212
 
   @Component({
     components: {
+      'cuckoo-input': Input,
       'visibility-select-pop-over': VisibilitySelectPopOver
     }
   })
   class PostStatusDialog extends Vue {
 
     $refs: {
+      cuckooInput: Input
       textArea: HTMLTextAreaElement
       fileInput: HTMLInputElement
       visibilitySelectBtn: HTMLDivElement
@@ -135,9 +125,9 @@
 
     isPostLoading: boolean = false
 
-    uploadProcessInfoList: Array<{
+    uploadProcesses: Array<{
       file: File,
-      uploadSuccess: boolean,
+      hasStartedUpload: boolean,
       uploadResult: mastodonentities.Attachment
     }> = []
 
@@ -160,21 +150,17 @@
     set isDialogOpening (val) {}
 
     get shouldEnableSubmitButton () {
-      const isInUploadProcess = !this.uploadProcessInfoList.every(i => i.uploadSuccess)
+      const isInUploadProcess = this.uploadProcesses.every(i => !i.uploadResult)
 
-      return this.uploadProcessInfoList.length ? !isInUploadProcess : this.textContentValue
+      return this.uploadProcesses.length ? !isInUploadProcess : this.textContentValue
     }
 
     @Watch('isDialogOpening')
     onDialogOpenChanged (isOpening) {
       if (isOpening) {
         this.$nextTick(() => {
-          if (isFirstTimeOpenDialog) {
-            autosize(this.$refs.textArea)
-            isFirstTimeOpenDialog = false
-          }
           this.visibilityTriggerBtn = this.$refs.visibilitySelectBtn
-          this.$refs.textArea.focus()
+          this.$refs.cuckooInput.focus()
         })
       } else {
         this.setVisibilitySelectPopOverDisplay(false)
@@ -195,7 +181,7 @@
     }
 
     async onTryCloseDialog () {
-      if (this.textContentValue || this.uploadProcessInfoList.length) {
+      if (this.textContentValue || this.uploadProcesses.length) {
         const doCloseDialog = (await this.$confirm(this.$t(this.$i18nTags.postStatusDialog.do_discard_message_confirm), {
           okLabel: this.$t(this.$i18nTags.postStatusDialog.do_discard_message),
           cancelLabel: this.$t(this.$i18nTags.postStatusDialog.do_keep_message),
@@ -214,7 +200,7 @@
       const formData = {
         status: this.textContentValue,
         visibility: this.visibility,
-        mediaIds: this.uploadProcessInfoList.map(info => info.uploadResult.id)
+        mediaIds: this.uploadProcesses.map(info => info.uploadResult.id)
       }
 
       this.isPostLoading = true
@@ -235,34 +221,14 @@
       const maxUploadLength = 4
 
       Array.from(this.$refs.fileInput.files)
-        .splice(0, maxUploadLength - this.uploadProcessInfoList.length)
+        .splice(0, maxUploadLength - this.uploadProcesses.length)
         .forEach(async (file) => {
-          this.uploadProcessInfoList.push({
-            file, uploadSuccess: false, uploadResult: null
+          this.uploadProcesses.push({
+            file, hasStartedUpload: false, uploadResult: null
           })
-
-          const indexInProcessList = this.uploadProcessInfoList.length - 1
-
-          const formData = new FormData()
-          formData.append('file', file)
-
-          try {
-            const result = await Api.media.postMediaFile(formData)
-
-            this.uploadProcessInfoList[indexInProcessList].uploadSuccess = true
-            this.uploadProcessInfoList[indexInProcessList].uploadResult = result.data
-
-          } catch (e) {
-
-          }
-
         })
 
       this.$refs.fileInput.value = ''
-    }
-
-    onRemoveMediaFileByIndex (index: number) {
-      this.uploadProcessInfoList.splice(index, 1)
     }
 
     setVisibilitySelectPopOverDisplay (open: boolean) {
@@ -272,7 +238,7 @@
     closeDialog () {
       this.textContentValue = ''
       this.$refs.fileInput.value = ''
-      this.uploadProcessInfoList = []
+      this.uploadProcesses = []
       this.$emit('update:open', false)
     }
   }
@@ -368,49 +334,6 @@
         max-height: 373px;
       }
 
-      .media-preview-area {
-        height: 212px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        padding-left: 16px;
-        white-space: nowrap;
-
-        &.single-upload-preview-area {
-          .media-item {
-            margin: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-          }
-        }
-
-        .media-item {
-          margin-right: 8px;
-          position: relative;
-          display: inline-block;
-          height: 100%;
-
-          .media-placeholder {
-            width: 212px;
-            position: relative;
-            height: 100%;
-          }
-
-          img {
-            width: auto;
-            height: 100%;
-            display: block;
-          }
-
-          .remove-icon-wrapper {
-            cursor: pointer;
-            position: absolute;
-            right: 12px;
-            top: 12px;
-          }
-        }
-      }
     }
 
     footer {
@@ -432,6 +355,21 @@
 
     .mu-dialog-body {
       padding: 0;
+    }
+
+    section {
+      @media (max-width: 530px) {
+        .auto-size-text-area {
+          max-height: unset !important;
+          flex-grow: 1;
+        }
+      }
+
+      .auto-size-text-area {
+        height: 187px;
+        padding: 0 16px;
+        max-height: 373px;
+      }
     }
   }
 
