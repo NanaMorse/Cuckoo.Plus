@@ -7,6 +7,7 @@ import * as statuses from './statuses'
 import * as notifications from './notifications'
 import * as media from './media'
 import * as instances from './instances'
+import * as search from './search'
 import streaming from './streaming'
 
 export {
@@ -19,5 +20,6 @@ export {
   notifications,
   media,
   streaming,
-  instances
+  instances,
+  search
 }

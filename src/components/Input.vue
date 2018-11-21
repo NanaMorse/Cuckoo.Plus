@@ -1,7 +1,7 @@
 <template>
   <div class="cuckoo-input-container">
     <textarea ref="textArea" class="auto-size-text-area" v-model="textValue"
-              @keydown.ctrl.enter="onQuickSubmit"
+              @keydown.ctrl.enter="onQuickSubmit" @input="onInput"
               :placeholder="placeholder"/>
 
     <div v-if="uploadProcesses.length" class="media-area" :class="{ 'single-media-area': uploadProcesses.length === 1 }">
@@ -30,6 +30,8 @@
   import * as Api from '@/api'
   const autosize = require('autosize')
 
+  const atCheckRegex = /\s@\S\S+|^@\S\S+/
+
   @Component({})
   class Input extends Vue {
 
@@ -48,6 +50,8 @@
     @Prop() placeholder: string
 
     uploadFileDataUrlList: Array<string> = []
+
+    atAccountSearchResultList: Array<mastodonentities.Account> = []
 
     get textValue () {
       return this.text
@@ -124,6 +128,30 @@
       this.uploadFileDataUrlList.splice(index, 1)
     }
 
+    onInput () {
+      this.searchAtUsers()
+    }
+
+    async searchAtUsers () {
+      this.$nextTick(() => {
+        let selectionEnd = this.$refs.textArea.selectionEnd
+
+        if (this.textValue[selectionEnd - 1] === ' ') return
+
+        const len = this.textValue.length
+        for (; selectionEnd < len; selectionEnd ++) {
+          if (this.textValue[selectionEnd] === ' ') {
+            break
+          }
+        }
+
+        const textBeforeSelection = this.textValue.slice(0, selectionEnd).split(' ').pop()
+
+        if (textBeforeSelection.match(atCheckRegex)) {
+          // Api.search.getSearchResults(textBeforeSelection.slice(1))
+        }
+      })
+    }
   }
 
   export default Input
