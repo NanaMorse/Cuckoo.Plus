@@ -20,17 +20,37 @@
         </div>
       </div>
     </div>
+
+    <mu-list v-if="shouldShowAccountSearchResultList" tabindex="0"
+         class="at-account-search-result-list dialog-theme-bg-color"
+         :style="accountSearchResultListStyle">
+      <mu-list-item avatar button :ripple="false" :key="index"
+                    @hover="currentSelectedResultIndex = index"
+                    :class="{ 'active': currentSelectedResultIndex === index }"
+                    v-for="(account, index) in atAccountSearchResultList">
+        <mu-list-item-action>
+          <mu-avatar>
+            <img :src="account.avatar_static">
+          </mu-avatar>
+        </mu-list-item-action>
+        <mu-list-item-title v-html="formatAccountDisplayName(account)" />
+      </mu-list-item>
+    </mu-list>
   </div>
 </template>
 
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-  import {} from 'vuex-class'
   import { mastodonentities } from '@/interface'
   import * as Api from '@/api'
+  import { formatAccountDisplayName } from '@/util'
   const autosize = require('autosize')
+  const getCaretCoordinates = require('textarea-caret');
 
-  const atCheckRegex = /\s@\S\S+|^@\S\S+/
+  const searchResultListMaxHeight = 216
+  const listItemHeight = 56
+  const listVerticalPadding = 8
+  const atCheckRegex = /\s@\S*|^@\S*/
 
   @Component({})
   class Input extends Vue {
@@ -49,9 +69,15 @@
 
     @Prop() placeholder: string
 
+    @Prop({ default: () => [] }) presetAtAccounts: Array<mastodonentities.Account>
+
     uploadFileDataUrlList: Array<string> = []
 
     atAccountSearchResultList: Array<mastodonentities.Account> = []
+
+    formatAccountDisplayName = formatAccountDisplayName
+
+    currentSelectedResultIndex: number = 0
 
     get textValue () {
       return this.text
@@ -60,6 +86,12 @@
     set textValue (val) {
       this.$emit('update:text', val)
     }
+
+    get shouldShowAccountSearchResultList () {
+      return this.atAccountSearchResultList.length !== 0
+    }
+
+    accountSearchResultListStyle = null
 
     @Watch('uploadProcesses')
     startUploadProcess () {
@@ -132,24 +164,66 @@
       this.searchAtUsers()
     }
 
+    getAccountListTopPosition () {
+      const { top, height } = getCaretCoordinates(this.$refs.textArea, this.$refs.textArea.selectionEnd)
+
+      const { height: offsetHeight, top: offsetTop } = this.$refs.textArea.getBoundingClientRect()
+
+      let topPosition = top + height
+
+      if (innerHeight - offsetTop - offsetHeight - top < searchResultListMaxHeight) {
+        const listHeight = Math.min(listItemHeight * this.atAccountSearchResultList.length + listVerticalPadding * 2, searchResultListMaxHeight)
+        topPosition = -listHeight
+      }
+
+      return `${topPosition}px`
+    }
+
+    getSearchAtUsersKeyWords (): string {
+      let selectionEnd = this.$refs.textArea.selectionEnd
+
+      if (this.textValue[selectionEnd - 1] === ' ') return
+
+      const len = this.textValue.length
+      for (; selectionEnd < len; selectionEnd ++) {
+        if (this.textValue[selectionEnd] === ' ') {
+          break
+        }
+      }
+
+      const textBeforeSelection = this.textValue.slice(0, selectionEnd).split(' ').pop()
+
+      if (textBeforeSelection.match(atCheckRegex)) {
+        // Api.search.getSearchResults(textBeforeSelection.slice(1))
+        return textBeforeSelection.slice(1)
+      }
+    }
+
     async searchAtUsers () {
       this.$nextTick(() => {
-        let selectionEnd = this.$refs.textArea.selectionEnd
+        const searchUsersKeyWords = this.getSearchAtUsersKeyWords()
 
-        if (this.textValue[selectionEnd - 1] === ' ') return
-
-        const len = this.textValue.length
-        for (; selectionEnd < len; selectionEnd ++) {
-          if (this.textValue[selectionEnd] === ' ') {
-            break
-          }
+        if (searchUsersKeyWords === undefined) {
+          return this.atAccountSearchResultList = []
         }
 
-        const textBeforeSelection = this.textValue.slice(0, selectionEnd).split(' ').pop()
+        if (searchUsersKeyWords === '') {
+          this.atAccountSearchResultList = [...this.presetAtAccounts]
+        } else {
 
-        if (textBeforeSelection.match(atCheckRegex)) {
-          // Api.search.getSearchResults(textBeforeSelection.slice(1))
         }
+
+        if (this.atAccountSearchResultList.length) {
+          this.accountSearchResultListStyle = { top: this.getAccountListTopPosition() }
+        }
+
+
+        console.log(searchUsersKeyWords)
+        // if (searchUsersKeyWords === ) {
+        //   // Api.search.getSearchResults(textBeforeSelection.slice(1))
+        //   this.accountSearchResultListStyle = { top: this.getAccountListTopPosition() }
+        // }
+
       })
     }
   }
@@ -160,6 +234,7 @@
 <style lang="less" scoped>
   .cuckoo-input-container {
     width: 100%;
+    position: relative;
 
     .media-area {
       padding-left: 16px;
@@ -177,5 +252,19 @@
         z-index: 20141223;
       }
     }
+
+    .at-account-search-result-list {
+      width: 100%;
+      max-height: 216px;
+      position: absolute;
+      box-shadow: 0 2px 5px 0 rgba(0,0,0,0.26);
+      z-index: 1;
+    }
+  }
+</style>
+
+<style lang="less">
+  .at-account-search-result-list .active > a {
+    background-color: rgba(0,0,0,.1);
   }
 </style>

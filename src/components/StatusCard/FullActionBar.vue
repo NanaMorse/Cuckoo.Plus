@@ -8,6 +8,7 @@
       <div class="input-container">
         <cuckoo-input ref="cuckooInput" @submit="onSubmitReplyContent"
                       :text.sync="inputValue" :uploadProcesses.sync="uploadProcesses"
+                      :presetAtAccounts="presetAtAccounts"
                       :placeholder="$t($i18nTags.statusCard.reply_to_main_status)"/>
       </div>
 
@@ -72,6 +73,8 @@
 
     @Prop() currentReplyToStatus
 
+    @Prop() descendantStatusList: Array<mastodonentities.Status>
+
     @State('currentUserAccount') currentUserAccount
 
     @Action('postStatus') postStatus
@@ -102,6 +105,16 @@
 
     set inputValue (val) {
       this.$emit('update:value', val)
+    }
+
+    get presetAtAccounts (): Array<mastodonentities.Account> {
+      const result: Array<mastodonentities.Account> = [];
+      [this.status, ...this.descendantStatusList].forEach(status => {
+        if (!result.find(acc => acc.id === status.account.id)) {
+          result.push(status.account)
+        }
+      })
+      return result
     }
 
     mounted () {
