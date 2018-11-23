@@ -21,21 +21,8 @@
       </div>
     </div>
 
-    <mu-list v-if="shouldShowAccountSearchResultList" tabindex="0"
-         class="at-account-search-result-list dialog-theme-bg-color"
-         :style="accountSearchResultListStyle">
-      <mu-list-item avatar button :ripple="false" :key="index"
-                    @hover="currentSelectedResultIndex = index"
-                    :class="{ 'active': currentSelectedResultIndex === index }"
-                    v-for="(account, index) in atAccountSearchResultList">
-        <mu-list-item-action>
-          <mu-avatar>
-            <img :src="account.avatar_static">
-          </mu-avatar>
-        </mu-list-item-action>
-        <mu-list-item-title v-html="formatAccountDisplayName(account)" />
-      </mu-list-item>
-    </mu-list>
+    <account-search-list v-if="shouldShowAccountSearchResultList" ref="accountSearchList"
+                         :listStyle="accountSearchResultListStyle" :data="atAccountSearchResultList"/>
   </div>
 </template>
 
@@ -43,7 +30,8 @@
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { mastodonentities } from '@/interface'
   import * as Api from '@/api'
-  import { formatAccountDisplayName } from '@/util'
+  import AccountSearchList from './AccountSearchList'
+
   const autosize = require('autosize')
   const getCaretCoordinates = require('textarea-caret');
 
@@ -52,11 +40,16 @@
   const listVerticalPadding = 8
   const atCheckRegex = /\s@\S*|^@\S*/
 
-  @Component({})
+  @Component({
+    components: {
+      'account-search-list': AccountSearchList
+    }
+  })
   class Input extends Vue {
 
     $refs: {
       textArea: HTMLTextAreaElement
+      accountSearchList: AccountSearchList
     }
 
     @Prop() text: string
@@ -74,8 +67,6 @@
     uploadFileDataUrlList: Array<string> = []
 
     atAccountSearchResultList: Array<mastodonentities.Account> = []
-
-    formatAccountDisplayName = formatAccountDisplayName
 
     currentSelectedResultIndex: number = 0
 
@@ -217,8 +208,6 @@
           this.accountSearchResultListStyle = { top: this.getAccountListTopPosition() }
         }
 
-
-        console.log(searchUsersKeyWords)
         // if (searchUsersKeyWords === ) {
         //   // Api.search.getSearchResults(textBeforeSelection.slice(1))
         //   this.accountSearchResultListStyle = { top: this.getAccountListTopPosition() }
@@ -252,19 +241,5 @@
         z-index: 20141223;
       }
     }
-
-    .at-account-search-result-list {
-      width: 100%;
-      max-height: 216px;
-      position: absolute;
-      box-shadow: 0 2px 5px 0 rgba(0,0,0,0.26);
-      z-index: 1;
-    }
-  }
-</style>
-
-<style lang="less">
-  .at-account-search-result-list .active > a {
-    background-color: rgba(0,0,0,.1);
   }
 </style>
