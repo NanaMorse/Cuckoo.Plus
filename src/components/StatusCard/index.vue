@@ -58,6 +58,7 @@
 
         <full-action-bar v-if="isOAuthUser" :show="shouldShowFullReplyActionArea"
                          :currentReplyToStatus="currentReplyToStatus"
+                         :descendantStatusList="descendantStatusList"
                          :status="status" :value.sync="replyInputValue" @hide="hideFullReplyActionArea"
                          @loadingStart="isCardLoading = true" @loadingEnd="isCardLoading = false" @replySuccess="onReplySuccess"/>
       </mu-card-actions>

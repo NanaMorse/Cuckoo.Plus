@@ -1,6 +1,6 @@
 {
   "name": "cuckoo.plus",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A third-party client for mastodon",
   "scripts": {
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
@@ -19,6 +19,7 @@
     "muse-ui-progress": "^0.1.0",
     "muse-ui-toast": "^0.3.0",
     "sha1": "^1.1.1",
+    "textarea-caret": "^3.1.0",
     "underscore": "^1.9.1",
     "vue": "^2.5.13",
     "vue-i18n": "^8.1.0",
