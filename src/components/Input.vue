@@ -1,9 +1,9 @@
 <template>
   <div class="cuckoo-input-container">
     <textarea ref="textArea" class="auto-size-text-area" v-model="textValue"
-              @keydown.ctrl.enter="onQuickSubmit" @input="onInput" @blur="closeSearchAtUsersList"
+              @keydown.ctrl.enter="onQuickSubmit" @input="onInput"
               @keydown.38="onMinisSelectedResultIndex" @keydown.40="onPlusSelectedResultIndex"
-              @keydown.enter="onSelectedSearchResult"
+              @keydown.enter="onSelectedSearchResult" @click="onTextAreaClick"
               :placeholder="placeholder"/>
 
     <div v-if="uploadProcesses.length" class="media-area" :class="{ 'single-media-area': uploadProcesses.length === 1 }">
@@ -171,6 +171,12 @@
 
     onInput () {
       this.searchAtUsers()
+    }
+
+    onTextAreaClick () {
+      if (this.shouldShowAccountSearchResultList) {
+        this.closeSearchAtUsersList()
+      }
     }
 
     onPlusSelectedResultIndex (e: KeyboardEvent) {
