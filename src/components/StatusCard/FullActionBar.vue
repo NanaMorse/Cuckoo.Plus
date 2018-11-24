@@ -110,7 +110,7 @@
     get presetAtAccounts (): Array<mastodonentities.Account> {
       const result: Array<mastodonentities.Account> = [];
       [this.status, ...this.descendantStatusList].forEach(status => {
-        if (!result.find(acc => acc.id === status.account.id) && (status.account.id !== this.currentUserAccount.id)) {
+        if (!result.find(acc => acc.id === status.account.id)) {
           result.push(status.account)
         }
       })

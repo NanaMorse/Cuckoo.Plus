@@ -14,12 +14,17 @@ async function getSearchResults (q: string, resolve: boolean = false): Promise<{
       q, resolve
     },
     before(request) {
-      if (preSearchRequest) preSearchRequest.abort()
+      abortSearch()
       preSearchRequest = request
     }
   }) as any
 }
 
+function abortSearch () {
+  if (preSearchRequest) preSearchRequest.abort()
+}
+
 export {
-  getSearchResults
+  getSearchResults,
+  abortSearch
 }

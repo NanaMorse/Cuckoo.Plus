@@ -1,7 +1,7 @@
 <template>
   <div class="cuckoo-input-container">
     <textarea ref="textArea" class="auto-size-text-area" v-model="textValue"
-              @keydown.ctrl.enter="onQuickSubmit" @input="onInput"
+              @keydown.ctrl.enter="onQuickSubmit" @input="onInput" @blur="closeSearchAtUsersList"
               @keydown.38="onMinisSelectedResultIndex" @keydown.40="onPlusSelectedResultIndex"
               @keydown.enter="onSelectedSearchResult"
               :placeholder="placeholder"/>
@@ -83,6 +83,8 @@
 
     currentSearchTextPosition: [number, number] = null
 
+    insertedAcctList: Array<string> = []
+
     isLoadingSearchResult = false
 
     get textValue () {
@@ -150,6 +152,7 @@
 
     mounted () {
       this.startUploadProcess()
+      this.insertedAcctList = this.presetAtAccounts.map(accounts => accounts.acct)
       autosize(this.$refs.textArea)
     }
 
@@ -195,14 +198,13 @@
     onSelectedSearchResult (e: KeyboardEvent) {
       if (this.shouldShowAccountSearchResultList) {
         e.preventDefault()
-        // todo
-        console.log(this.currentSearchTextPosition)
         const preText = this.textValue.substring(0, this.currentSearchTextPosition[0])
         const insertText = `@${this.atAccountSearchResultList[this.currentSelectedResultIndex].acct}`
         const endText = this.textValue.substring(this.currentSearchTextPosition[1])
 
         this.textValue = `${preText}${insertText}${endText} `
 
+        this.insertedAcctList.push(this.atAccountSearchResultList[this.currentSelectedResultIndex].acct)
         this.closeSearchAtUsersList()
 
         this.focus()
@@ -242,7 +244,7 @@
         }
       }
 
-      const textBeforeSelection = this.textValue.slice(0, selectionEnd).split(' ').pop().replace(/\n/g, '')
+      const textBeforeSelection = this.textValue.slice(0, selectionEnd).split(' ').pop().split('\n').pop()
 
       if (textBeforeSelection.match(atCheckRegex)) {
         this.currentSearchTextPosition = [selectionEnd - textBeforeSelection.length, selectionEnd]
@@ -255,11 +257,14 @@
       this.$nextTick(async () => {
         const searchUsersKeyWords = this.getSearchAtUsersKeyWords()
 
-        if (searchUsersKeyWords === undefined) {
-          return this.atAccountSearchResultList = []
+        if (searchUsersKeyWords === undefined || this.insertedAcctList.indexOf(searchUsersKeyWords) !== -1) {
+          this.isLoadingSearchResult = false
+          return this.closeSearchAtUsersList()
         }
 
         if (searchUsersKeyWords === '') {
+          Api.search.abortSearch()
+          this.isLoadingSearchResult = false
           this.atAccountSearchResultList = [...this.presetAtAccounts]
         } else {
           // search for accounts
