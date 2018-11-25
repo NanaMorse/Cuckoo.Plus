@@ -9,7 +9,7 @@
 
       <div class="reply-user-display-name">
         <p class="primary-read-text-color">
-          <span class="display-name" v-html="formatAccountDisplayName(status.account)"></span>
+          <span class="display-name" v-html="status.account.display_name"></span>
           <span class="at-name secondary-read-text-color">@{{getAccountAtName(status.account)}}</span>
         </p>
         <span v-if="status.favourites_count > 0"
@@ -19,7 +19,7 @@
                 </span>
       </div>
 
-      <mu-card-text class="status-content full-reply-status-content" v-html="formatStatusContent(status)"></mu-card-text>
+      <mu-card-text class="status-content full-reply-status-content" v-html="status.content"></mu-card-text>
 
       <div class="full-reply-attachment-area">
         <media-panel :mediaList="status.media_attachments" :pixivCards="status.pixiv_cards" :sensitive="status.sensitive"/>
@@ -62,7 +62,7 @@
 <script lang="ts">
   import { Vue, Component, Prop } from 'vue-property-decorator'
   import { Getter, Action, State } from 'vuex-class'
-  import { formatStatusContent, formatAccountDisplayName, getVisibilityDescInfo } from '@/util'
+  import { getVisibilityDescInfo } from '@/util'
   import * as moment from 'moment'
   import { mastodonentities } from "@/interface"
   import MediaPanel from './MediaPanel'
@@ -88,10 +88,6 @@
     @Action('deleteStatus') deleteStatus
 
     @Getter('getAccountAtName') getAccountAtName
-
-    formatStatusContent = formatStatusContent
-
-    formatAccountDisplayName = formatAccountDisplayName
 
     isListItemLoading: boolean = false
 

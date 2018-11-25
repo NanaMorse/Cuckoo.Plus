@@ -3,6 +3,11 @@ import timelinesMutations from './timelines'
 import notificationsMutations from './notifications'
 import appStatusMutations from './appstatus'
 import { cuckoostore, mastodonentities } from '@/interface'
+import { formatHtml, formatAccountDisplayName } from '@/util'
+
+function formatStatusContent (status: mastodonentities.Status) {
+  return formatHtml(status.content, { externalEmojis: status.emojis })
+}
 
 const oAuthInfoMutations = {
 
@@ -39,7 +44,18 @@ const oAuthInfoMutations = {
 const statusesMutations = {
   updateStatusMap (state: cuckoostore.stateInfo, newStatusMap) {
     Object.keys(newStatusMap).forEach(statusId => {
-      // formatter content
+      // format content
+      const newStatus: mastodonentities.Status = newStatusMap[statusId]
+      newStatus.content = formatStatusContent(newStatus)
+
+      // format reblog content
+      if (newStatus.reblog) newStatus.reblog.content = formatStatusContent(newStatus.reblog)
+
+      // format spoiler text
+      if (newStatus.spoiler_text) newStatus.spoiler_text = formatHtml(newStatus.spoiler_text, { externalEmojis: newStatus.emojis })
+
+      // format account display name
+      newStatus.account.display_name = formatAccountDisplayName(newStatus.account)
 
       Vue.set(state.statusMap, statusId, newStatusMap[statusId])
     })
@@ -70,7 +86,9 @@ const mutations = {
     localStorage.setItem('mastodonServerUri', mastodonServerUri)
   },
 
-  updateCurrentUserAccount (state: cuckoostore.stateInfo, currentUserAccount) {
+  updateCurrentUserAccount (state: cuckoostore.stateInfo, currentUserAccount: mastodonentities.Account) {
+    currentUserAccount.display_name = formatAccountDisplayName(currentUserAccount)
+
     state.currentUserAccount = currentUserAccount
 
     localStorage.setItem('currentUserAccount', JSON.stringify(currentUserAccount))
