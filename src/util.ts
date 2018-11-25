@@ -3,6 +3,7 @@ import { TimeLineTypes, RoutersInfo, I18nTags, VisibilityTypes } from '@/constan
 import { Route } from "vue-router"
 import Formatter from "./formatter"
 import { mastodonentities } from "@/interface"
+import * as _ from 'underscore'
 
 export function patchApiUri (uri: string): string {
   const targetServerUri = store.state.mastodonServerUri || 'https://pawoo.net'
@@ -112,7 +113,7 @@ export function formatHtml(html: string, options: { externalEmojis } = { externa
 
   walkTextNodes(parentNode.content, (parentNode, textNode) => {
     const spanNode = document.createElement('span')
-    spanNode.innerHTML = formatter.format(textNode.textContent)
+    spanNode.innerHTML = formatter.format(_.escape(textNode.textContent))
     parentNode.replaceChild(spanNode, textNode)
   })
 
