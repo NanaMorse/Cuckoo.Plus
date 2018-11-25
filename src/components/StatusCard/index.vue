@@ -5,7 +5,7 @@
       <card-header :status="status" @deleteStatus="isCardLoading = true"/>
 
       <div class="spoiler-text-area secondary-read-text-color" v-if="status.spoiler_text">
-        <span v-html="formatStatusSpoiler(status)"/>
+        <span v-html="status.spoiler_text"/>
         <mu-button flat small class="secondary-theme-text-color" :style="{ minWidth: 'unset' }"
                    @click="shouldShowContentWhileSpoilerExists = !shouldShowContentWhileSpoilerExists">
           {{ $t(shouldShowContentWhileSpoilerExists ? $i18nTags.statusCard.hide_content : $i18nTags.statusCard.show_content) }}
@@ -14,7 +14,7 @@
 
       <mu-card-text v-if="!status.reblog && status.content" v-show="(status.spoiler_text ? shouldShowContentWhileSpoilerExists : true)"
                     class="status-content main-status-content"
-                    v-html="formatStatusContent(status)" />
+                    v-html="status.content" />
 
       <mu-divider v-if="!status.media_attachments.length && !(status.pixiv_cards || []).length"/>
 
@@ -25,11 +25,11 @@
       <div v-if="status.reblog" class="reblog-area">
         <div class="reblog-plain-info-area">
           <a class="reblog-source-link" v-html="$t($i18nTags.statusCard.originally_shared_by, {
-              displayName: formatAccountDisplayName(status.reblog.account),
+              displayName: status.reblog.account.display_name,
               atName: getAccountAtName(status.reblog.account)
             })">
           </a>
-          <mu-card-text v-if="status.reblog.content" class="status-content reblog-status-content" v-html="formatStatusContent(status.reblog)" />
+          <mu-card-text v-if="status.reblog.content" class="status-content reblog-status-content" v-html="status.reblog.content" />
         </div>
         <div class="reblog-attachment-area">
           <media-panel :mediaList="status.reblog.media_attachments" :pixivCards="status.reblog.pixiv_cards" :sensitive="status.sensitive"/>
@@ -48,7 +48,7 @@
           <mu-avatar :size="32">
             <img :src="currentReplyToStatus.account.avatar_static">
           </mu-avatar>
-          <span v-html="formatAccountDisplayName(currentReplyToStatus.account)"/> @{{currentReplyToStatus.account.username}}
+          <span v-html="currentReplyToStatus.account.display_name"/> @{{currentReplyToStatus.account.username}}
         </mu-chip>
       </div>
 
@@ -71,7 +71,6 @@
   import { State, Action, Getter, Mutation } from 'vuex-class'
   import { mastodonentities } from '@/interface'
   import ThemeManager from 'muse-ui/lib/theme'
-  import { formatHtml, formatStatusContent, formatAccountDisplayName } from '@/util'
   import * as moment from 'moment'
 
   import CardHeader from './CardHeader'
@@ -120,14 +119,6 @@
     replyInputValue: string = ''
 
     isCardLoading = false
-
-    formatStatusContent = formatStatusContent
-
-    formatAccountDisplayName = formatAccountDisplayName
-
-    formatStatusSpoiler (status: mastodonentities.Status) {
-      return formatHtml(status.spoiler_text, { externalEmojis: status.emojis })
-    }
 
     @Prop() status: mastodonentities.Status
 

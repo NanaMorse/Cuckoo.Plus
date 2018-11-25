@@ -8,7 +8,7 @@
       </mu-avatar>
       <div class="user-and-status-info">
         <a class="user-name primary-read-text-color" :style="userNameAreaStyle">
-          <span class="display-name" v-html="formatAccountDisplayName(status.account)"></span>
+          <span class="display-name" v-html="status.account.display_name"></span>
           <span class="at-name secondary-read-text-color">@{{getAccountAtName(status.account)}}</span>
         </a>
         <div class="visibility-row secondary-read-text-color">
@@ -53,7 +53,6 @@
   import { Vue, Component, Prop } from 'vue-property-decorator'
   import { Getter, State, Action } from 'vuex-class'
   import * as moment from 'moment'
-  import { formatAccountDisplayName } from '@/util'
   import { mastodonentities } from '@/interface'
 
   @Component({})
@@ -90,8 +89,6 @@
     shouldOpenMoreOperationPopOver = false
 
     moreOperationTriggerBtn: any = null
-
-    formatAccountDisplayName = formatAccountDisplayName
 
     mounted () {
       if (this.isOAuthUser) {

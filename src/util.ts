@@ -119,10 +119,6 @@ export function formatHtml(html: string, options: { externalEmojis } = { externa
   return parentNode.innerHTML
 }
 
-export function formatStatusContent (status: mastodonentities.Status) {
-  return formatHtml(status.content, { externalEmojis: status.emojis })
-}
-
 export function formatAccountDisplayName (account: mastodonentities.Account) {
   return formatHtml(store.getters['getAccountDisplayName'](account), { externalEmojis: account.emojis })
 }
