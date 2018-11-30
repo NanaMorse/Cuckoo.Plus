@@ -25,7 +25,7 @@
               </mu-list-item-action>
               <mu-list-item-content>
                 <mu-list-item-title class="primary-read-text-color" v-html="notification.account.display_name"></mu-list-item-title>
-                <mu-list-item-sub-title class="secondary-read-text-color">{{getNotificationSubTitle(notification)}}</mu-list-item-sub-title>
+                <mu-list-item-sub-title class="secondary-read-text-color" v-html="getNotificationSubTitle(notification)" />
               </mu-list-item-content>
             </mu-list-item>
           </mu-list>
@@ -176,6 +176,20 @@
         .status-card-container {
           height: 100%;
         }
+      }
+    }
+  }
+</style>
+
+<style lang="less">
+  .notification-panel-container {
+    .notification-list {
+      .mu-item-wrapper.hover {
+        span, a { color: #fff }
+      }
+
+      .mu-item-sub-title {
+        p { margin: 0 }
       }
     }
   }
