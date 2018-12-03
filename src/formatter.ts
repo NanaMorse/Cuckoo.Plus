@@ -18,10 +18,12 @@ class Formatter {
   }
 
   public insertDels (text: string): string {
-    return text.replace(this.delRegex, (matchString: string) => {
+    return text.replace(this.delRegex, (matchString: string, p1, p2, index) => {
       const trimString = matchString.trim()
 
-      return ` <del>${trimString.substring(1, trimString.length - 1)}</del> `
+      const isFinalPixel = (index + matchString.length) === text.length
+
+      return `${index === 0 ? '' : ' '}<del>${trimString.substring(1, trimString.length - 1)}</del>${isFinalPixel ? '' : ' '}`
     })
   }
 
