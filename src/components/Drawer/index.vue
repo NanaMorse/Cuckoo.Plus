@@ -102,9 +102,13 @@
 
     $router
 
+    $routersInfo
+
     $progress
 
     $toast
+
+    @State('currentUserAccount') currentUserAccount
 
     @State('appStatus') appStatus
 

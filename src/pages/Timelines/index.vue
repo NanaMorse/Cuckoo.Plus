@@ -193,13 +193,13 @@
 
     @Watch('currentRootStatuses')
     onCurrentRootStatusesChanged () {
-      if (this.isInitLoading) return
-
       this.$nextTick(async () => {
         // load more to show scroll
         // todo maybe we could find a better way to serve this?
+        console.log(this.$refs.timelinesContainer.clientHeight)
         if (this.$refs.timelinesContainer.clientHeight < window.screen.availHeight) {
           this.isInitLoading = true
+          this.isLoading = false
           await this.loadStatuses(true)
           this.isInitLoading = false
         }
