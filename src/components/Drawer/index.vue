@@ -87,8 +87,7 @@
     {
       value: 'profile',
       title: I18nTags.drawer.profile,
-      icon: 'person',
-      to: ''
+      icon: 'person'
     }
   ]
 

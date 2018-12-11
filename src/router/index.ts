@@ -10,6 +10,7 @@ import TimeLinesPage from '@/pages/Timelines'
 import OAuthPage from '@/pages/OAuth'
 import StatusesPage from '@/pages/Statuses'
 import Settings from '@/pages/Settings'
+import AccountsPage from '@/pages/Accounts'
 
 Vue.use(Router)
 
@@ -26,6 +27,12 @@ const router = new Router({
     {
       path: RoutersInfo.timelines.path,
       redirect: homePath
+    },
+
+    {
+      path: RoutersInfo.accounts.path,
+      name: RoutersInfo.accounts.name,
+      component: AccountsPage
     },
 
     {
