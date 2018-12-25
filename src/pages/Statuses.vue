@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-  import { Vue, Component } from 'vue-property-decorator'
+  import { Vue, Component, Watch } from 'vue-property-decorator'
   import { State, Action } from 'vuex-class'
   import { mastodonentities } from '@/interface'
   import StatusCard from '@/components/StatusCard'
@@ -27,12 +27,20 @@
       [statusId: string]: mastodonentities.Status
     }
 
+    @Watch('$route')
+    onRouteChanged () {
+      this.fetchTargetStatus()
+    }
+
     get status (): mastodonentities.Status {
       return this.statusMap[this.$route.params.statusId]
     }
 
-    async mounted () {
-      // update anyway
+    mounted () {
+      this.fetchTargetStatus()
+    }
+
+    async fetchTargetStatus () {
       this.$progress.start()
       await this.fetchStatusById(this.$route.params.statusId)
       this.$progress.done()

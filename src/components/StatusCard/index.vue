@@ -24,7 +24,7 @@
 
       <div v-if="status.reblog" class="reblog-area">
         <div class="reblog-plain-info-area">
-          <a class="reblog-source-link" v-html="$t($i18nTags.statusCard.originally_shared_by, {
+          <a @click="onCheckSharedOriginalPost" class="reblog-source-link" v-html="$t($i18nTags.statusCard.originally_shared_by, {
               displayName: status.reblog.account.display_name,
               atName: getAccountAtName(status.reblog.account)
             })">
@@ -136,6 +136,15 @@
       this.shouldShowFullReplyActionArea = false
       this.currentReplyToStatus = null
       this.replyInputValue = ''
+    }
+
+    onCheckSharedOriginalPost () {
+      this.$router.push({
+        name: this.$routersInfo.statuses.name,
+        params: {
+          statusId: this.status.reblog.id
+        }
+      })
     }
 
     onReplyToStatus (status: mastodonentities.Status) {
