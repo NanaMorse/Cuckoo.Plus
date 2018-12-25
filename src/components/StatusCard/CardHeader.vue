@@ -3,11 +3,11 @@
                   @mouseover="shouldShowHeaderActionButtonGroup = true"
                   @mouseout="shouldShowHeaderActionButtonGroup = false">
     <div class="left-area">
-      <mu-avatar class="status-account-avatar" slot="avatar" size="34">
+      <mu-avatar @click="onCheckUserAccountPage" class="status-account-avatar" slot="avatar" size="34">
         <img :src="status.account.avatar_static">
       </mu-avatar>
       <div class="user-and-status-info">
-        <a class="user-name primary-read-text-color" :style="userNameAreaStyle">
+        <a @click="onCheckUserAccountPage" class="user-name primary-read-text-color" :style="userNameAreaStyle">
           <span class="display-name" v-html="status.account.display_name"></span>
           <span class="at-name secondary-read-text-color">@{{getAccountAtName(status.account)}}</span>
         </a>
@@ -58,7 +58,7 @@
   @Component({})
   class CardHeader extends Vue {
 
-    @Prop() status
+    @Prop() status: mastodonentities.Status
 
     $router
 
@@ -99,6 +99,10 @@
 
     onOpenMoreOperationPopOver () {
       this.shouldOpenMoreOperationPopOver = true
+    }
+
+    onCheckUserAccountPage () {
+      window.open(this.status.account.url, "_blank")
     }
 
     onCheckStatusInSinglePage () {
