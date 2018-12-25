@@ -1,17 +1,17 @@
 <template>
   <div class="full-reply-list-item" v-loading="isListItemLoading" @mouseover="onItemMouseOver" @mouseout="onItemMouseOut">
     <div class="left-area">
-      <mu-avatar class="status-replier-avatar" slot="avatar" size="34">
+      <mu-avatar @click="onCheckUserAccountPage" class="status-replier-avatar" slot="avatar" size="34">
         <img :src="status.account.avatar_static">
       </mu-avatar>
     </div>
     <div class="center-area">
 
       <div class="reply-user-display-name">
-        <p class="primary-read-text-color">
+        <a @click="onCheckUserAccountPage" class="primary-read-text-color">
           <span class="display-name" v-html="status.account.display_name"></span>
           <span class="at-name secondary-read-text-color">@{{getAccountAtName(status.account)}}</span>
-        </p>
+        </a>
         <span v-if="status.favourites_count > 0"
               class="reply-favorites-count"
               :class="[ status.favourited ? 'primary-theme-text-color' : 'secondary-read-text-color' ]">
@@ -115,6 +115,10 @@
       this.shouldOpenMoreOperationPopOver = true
     }
 
+    onCheckUserAccountPage () {
+      window.open(this.status.account.url, "_blank")
+    }
+
     async onDeleteStatus () {
       const doDeleteStatus = (await this.$confirm(this.$t(this.$i18nTags.statusCard.delete_status_confirm), {
         okLabel: this.$t(this.$i18nTags.statusCard.do_delete_status_btn),
@@ -145,6 +149,10 @@
     display: flex;
     padding: 12px 16px;
 
+    .status-replier-avatar {
+      cursor: pointer;
+    }
+
     .center-area {
       flex-grow: 1;
       margin: 0 10px 0 16px;
@@ -156,12 +164,13 @@
         display: flex;
         align-items: center;
 
-        > p {
+        > a {
           margin: 0;
           font-size: 15px;
           font-weight: 500;
           text-overflow: ellipsis;
           overflow: hidden;
+          cursor: pointer;
         }
 
         .reply-favorites-count {

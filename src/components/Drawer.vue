@@ -104,6 +104,8 @@
 
     @State('mastodonServerUri') mastodonServerUri
 
+    @State('currentUserAccount') currentUserAccount
+
     @Mutation('updateDrawerOpenStatus') updateDrawerOpenStatus
 
     @Mutation('updateTags') updateTags
@@ -152,6 +154,11 @@
     }
 
     async onBaseRouteItemClick (clickedRouterValue: string) {
+
+      if (clickedRouterValue === 'profile') {
+        return window.open(this.currentUserAccount.url, '_blank')
+      }
+
       const targetPath = baseRouterInfoList.find(routerInfo => routerInfo.value === clickedRouterValue).to
 
       if (isBaseTimeLine(clickedRouterValue) && (targetPath === this.$route.path)) {
