@@ -2,6 +2,8 @@
   <mu-drawer class="cuckoo-drawer default-theme-bg-color primary-read-text-color" :open.sync="appStatus.isDrawerOpened" :style="drawerStyle"
              :docked="shouldDrawerDocked" :z-depth="shouldDrawerDocked ? 0 : 16">
 
+    <search />
+
     <mu-divider />
 
     <mu-list :value="currentListValue" toggle-nested>
@@ -60,6 +62,7 @@
   import { State, Mutation, Action } from 'vuex-class'
   import { isBaseTimeLine } from '@/util'
   import { TimeLineTypes, UiWidthCheckConstants, RoutersInfo, I18nTags } from '@/constant'
+  import Search from './Search'
 
   const baseRouterInfoList = [
     {
@@ -89,7 +92,11 @@
     }
   ]
 
-  @Component({})
+  @Component({
+    components: {
+      'search': Search
+    }
+  })
   class Drawer extends Vue {
 
     $route
@@ -248,7 +255,7 @@
 </style>
 
 <style lang="less">
-  @import "../assets/variable";
+  @import "../../assets/variable";
 
   .cuckoo-drawer {
     .mu-item-wrapper {

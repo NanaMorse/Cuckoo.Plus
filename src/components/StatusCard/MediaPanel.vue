@@ -7,8 +7,8 @@
         <img v-if="media.type === mediaTypes.IMAGE"
              :src="media.url" :key="index"/>
 
-        <div class="gifv-container" v-if="media.type === mediaTypes.GIFV">
-          <video autoplay loop :src="media.url" :key="index" />
+        <div class="gifv-container" v-if="media.type === mediaTypes.GIFV || media.type === mediaTypes.VIDEO">
+          <video width="100%" loop :src="media.url" :key="index" />
         </div>
 
         <mu-button class="hide-sensitive-btn" @click.stop="shouldShowSensitiveCover = true">
@@ -101,7 +101,7 @@
           type = url.endsWith('.mp4') ? AttachmentTypes.GIFV : AttachmentTypes.IMAGE
         }
 
-        return { url, type }
+        return { url, type, previewUrl: item.preview_url }
       })
 
       const pixivCardsPart = this.pixivCards.map(item => {

@@ -18,7 +18,7 @@
   import * as _ from 'underscore'
   import { UiWidthCheckConstants } from '@/constant'
   import Header from '@/components/Header.vue'
-  import Drawer from '@/components/Drawer.vue'
+  import Drawer from '@/components/Drawer'
 
   @Component({
     components: {
