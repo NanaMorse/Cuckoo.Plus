@@ -221,4 +221,27 @@ export namespace mastodonentities {
     // that indicates if the emoji is visible in picker
     visible_in_picker: boolean
   }
+
+  export interface Relationship {
+    // Target account id
+    id: string
+    // Whether the user is currently following the account
+    following: boolean
+    // Whether the user is currently being followed by the account
+    followed_by: boolean
+    // Whether the user is currently blocking the account
+    blocking: boolean
+    // Whether the user is currently muting the account
+    muting: boolean
+    // Whether the user is also muting notifications	no
+    muting_notifications: boolean
+    // Whether the user has requested to follow the account
+    requested: boolean
+    // Whether the user is currently blocking the accounts's domain
+    domain_blocking: boolean
+    // Whether the user's reblogs will show up in the home timeline
+    showing_reblogs: boolean
+    // Whether the user is currently endorsing the account
+    endorsed: boolean
+  }
 }

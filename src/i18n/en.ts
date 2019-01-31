@@ -69,6 +69,10 @@ const postStatusDialog = {
   [I18nTags.postStatusDialog.do_discard_message]: 'DISCARD'
 }
 
+const notifications = {
+  [I18nTags.notifications.someone_followed_you]: '{displayName} followed you'
+}
+
 export default {
   ...oauth,
   ...common,
@@ -76,5 +80,6 @@ export default {
   ...timeLines,
   ...drawer,
   ...settings,
-  ...postStatusDialog
+  ...postStatusDialog,
+  ...notifications
 }

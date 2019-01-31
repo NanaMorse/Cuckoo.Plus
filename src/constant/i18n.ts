@@ -81,5 +81,9 @@ export const I18nTags = {
     do_discard_message_confirm: 'post_status_dialog_do_discard_message_confirm',
     do_keep_message: 'post_status_dialog_do_keep_message',
     do_discard_message: 'post_status_dialog_do_discard_message'
+  },
+
+  notifications: {
+    someone_followed_you: 'notifications_someone_followed_you'
   }
 }

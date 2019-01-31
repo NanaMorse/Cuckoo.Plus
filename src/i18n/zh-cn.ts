@@ -69,6 +69,10 @@ const postStatusDialog = {
   [I18nTags.postStatusDialog.do_discard_message]: '舍弃'
 }
 
+const notifications = {
+  [I18nTags.notifications.someone_followed_you]: '{displayName} 关注了你'
+}
+
 export default {
   ...oauth,
   ...common,
@@ -76,5 +80,6 @@ export default {
   ...timeLines,
   ...drawer,
   ...settings,
-  ...postStatusDialog
+  ...postStatusDialog,
+  ...notifications
 }

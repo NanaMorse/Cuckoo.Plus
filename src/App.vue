@@ -72,10 +72,6 @@
 </style>
 
 <style lang="less">
-  * {
-    transition: background-color .45s cubic-bezier(.23,1,.32,1), color .45s cubic-bezier(.23,1,.32,1);
-  }
-
   body {
     height: 100%;
   }

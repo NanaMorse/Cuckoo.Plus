@@ -10,7 +10,16 @@ async function fetchCurrentUserAccountInfo (): Promise<{ data: mastodonentities.
   return Vue.http.get(patchApiUri('/api/v1/accounts/verify_credentials')) as any
 }
 
+async function fetchRelationships (idList: Array<string>) {
+  return Vue.http.get(patchApiUri('/api/v1/accounts/relationships'), {
+    params: {
+      id: idList
+    }
+  }) as any
+}
+
 export {
   fetchAccountInfoById,
-  fetchCurrentUserAccountInfo
+  fetchCurrentUserAccountInfo,
+  fetchRelationships
 }

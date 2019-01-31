@@ -8,7 +8,7 @@
       </mu-avatar>
       <div class="user-and-status-info">
         <a @click="onCheckUserAccountPage" class="user-name primary-read-text-color" :style="userNameAreaStyle">
-          <span class="display-name" v-html="status.account.display_name"></span>
+          <span class="display-name" v-html="getAccountDisplayName(status.account)"></span>
           <span class="at-name secondary-read-text-color">@{{getAccountAtName(status.account)}}</span>
         </a>
         <div class="visibility-row secondary-read-text-color">
@@ -75,6 +75,7 @@
       moreOperationTriggerBtn: any
     }
 
+    @Getter('getAccountDisplayName') getAccountDisplayName
     @Getter('getAccountAtName') getAccountAtName
     @Getter('isOAuthUser') isOAuthUser
 

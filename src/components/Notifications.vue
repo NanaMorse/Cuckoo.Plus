@@ -17,16 +17,23 @@
 
           <mu-list textline="three-line">
             <mu-list-item :style="notificationCardStyle" class="notification-card dialog-theme-bg-color"
-                          v-for="(notification, index) in notifications" :key="index" @click="onNotificationCardClick(notification)" avatar button>
+                          v-for="(notification, index) in notifications" :key="index" avatar>
               <mu-list-item-action>
-                <mu-avatar>
+                <mu-avatar class="user-avatar" @click="onCheckUserAccountPage(notification.account)">
                   <img :src="notification.account.avatar_static" />
                 </mu-avatar>
               </mu-list-item-action>
               <mu-list-item-content>
-                <mu-list-item-title class="primary-read-text-color" v-html="notification.account.display_name"></mu-list-item-title>
-                <mu-list-item-sub-title class="secondary-read-text-color" v-html="getNotificationSubTitle(notification)" />
+                <mu-list-item-title class="user-display-name primary-read-text-color"
+                                    v-html="getAccountDisplayName(notification.account)"
+                                    @click="onCheckUserAccountPage(notification.account)" />
+                <mu-list-item-sub-title class="notification-content primary-read-text-color"
+                                        v-html="getNotificationSubTitle(notification)"
+                                        @click="onNotificationCardClick(notification)" />
               </mu-list-item-content>
+              <!--<mu-list-item-action v-if="notification.type === NotificationTypes.FOLLOW">-->
+                <!--<mu-icon class="follow-action" value="person_add"></mu-icon>-->
+              <!--</mu-list-item-action>-->
             </mu-list-item>
           </mu-list>
 
@@ -54,7 +61,7 @@
   import { NotificationTypes, ThemeNames } from '@/constant'
   import StatusCard from '@/components/StatusCard'
   import { mastodonentities } from '@/interface'
-  import { prepareRootStatus } from "@/util"
+  import { prepareRootStatus, formatHtml } from "@/util"
 
   @Component({
     components: {
@@ -65,6 +72,10 @@
 
     $progress
 
+    $t
+
+    $i18nTags
+
     @Prop() hideHeader: boolean
 
     @Action('updateNotifications') updateNotifications
@@ -73,13 +84,21 @@
 
     @State('notifications') notifications: Array<mastodonentities.Notification>
 
+    @Getter('getAccountDisplayName') getAccountDisplayName
+
     isLoadingNotifications: boolean = false
 
     isLoadingTargetStatus: boolean = false
 
     shouldShowTargetStatus: boolean = false
 
+    NotificationTypes = NotificationTypes
+
     currentCheckStatus: mastodonentities.Status = null
+
+    relationships: {
+      [id: string]: mastodonentities.Relationship
+    }
 
     @Watch('isLoadingNotifications')
     onLoadingNotificationStatusChanged (toValue) {
@@ -89,6 +108,15 @@
     @Watch('shouldShowTargetStatus')
     onShouldShowTargetStatusChanged (val) {
       this.$emit('shouldShowTargetStatusChanged', val)
+    }
+
+    @Watch('notifications')
+    onNotificationsChanged () {
+      this.updateFollowRelationships()
+    }
+
+    onCheckUserAccountPage (account: mastodonentities.Account) {
+      window.open(account.url, "_blank")
     }
 
     get notificationCardStyle () {
@@ -105,10 +133,21 @@
     }
 
     getNotificationSubTitle (notification) {
-      if (notification.type === NotificationTypes.FOLLOW) {
-        return notification.type
-      } else {
-        return notification.type + ": " + notification.status.content
+      switch (notification.type) {
+        case NotificationTypes.FOLLOW: {
+          return this.$t(this.$i18nTags.notifications.someone_followed_you, {
+            displayName: this.getAccountDisplayName(notification.account)
+          })
+        }
+
+        case NotificationTypes.FAVOURITE:
+        case NotificationTypes.REBLOG: {
+          return notification.type + ": " + formatHtml(notification.status.content)
+        }
+
+        case NotificationTypes.MENTION: {
+          return formatHtml(notification.status.content)
+        }
       }
     }
 
@@ -125,7 +164,9 @@
 
     async onNotificationCardClick (notification: mastodonentities.Notification) {
       if (!notification.status) {
-
+        if (notification.type === NotificationTypes.FOLLOW) {
+          window.open(notification.account.url, "_blank")
+        }
       } else {
         this.isLoadingTargetStatus = true
 
@@ -137,6 +178,11 @@
 
         this.shouldShowTargetStatus = true
       }
+    }
+
+    async updateFollowRelationships () {
+      const followNotifications = this.notifications.filter(notification => notification.type === NotificationTypes.FOLLOW)
+
     }
 
 
@@ -162,7 +208,26 @@
         margin: 2px 0;
         box-shadow: 0 1px 2px rgba(0,0,0,.2);
         border-radius: 3px;
-        cursor: pointer;
+
+        .user-avatar {
+          cursor: pointer;
+        }
+
+        .user-display-name {
+          display: inline;
+          cursor: pointer;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        .notification-content {
+          cursor: pointer;
+        }
+
+        .follow-action {
+          cursor: pointer;
+        }
       }
     }
 
@@ -184,12 +249,23 @@
 <style lang="less">
   .notification-panel-container {
     .notification-list {
+
       .mu-item-wrapper.hover {
-        span, a { color: #fff }
+        background-color: inherit !important;
+        cursor: default;
+      }
+
+      .notification-content {
+        > p { display: inline }
+        .h-card:hover { text-decoration: underline }
       }
 
       .mu-item-sub-title {
         p { margin: 0 }
+      }
+
+      .mu-avatar {
+        margin: 0;
       }
     }
   }
