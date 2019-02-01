@@ -87,6 +87,7 @@ declare module "vue/types/vue" {
         do_discard_message_confirm: string
         do_keep_message: string
         do_discard_message: string
+        text_character_limit_exceed: string
       },
       notifications: {
         someone_followed_you: string

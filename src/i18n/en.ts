@@ -66,7 +66,8 @@ const timeLines = {
 const postStatusDialog = {
   [I18nTags.postStatusDialog.do_discard_message_confirm]: 'Discard this post?',
   [I18nTags.postStatusDialog.do_keep_message]: 'KEEP',
-  [I18nTags.postStatusDialog.do_discard_message]: 'DISCARD'
+  [I18nTags.postStatusDialog.do_discard_message]: 'DISCARD',
+  [I18nTags.postStatusDialog.text_character_limit_exceed]: 'Text character limit of 500 exceeded'
 }
 
 const notifications = {

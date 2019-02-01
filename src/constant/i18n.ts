@@ -80,7 +80,8 @@ export const I18nTags = {
   postStatusDialog: {
     do_discard_message_confirm: 'post_status_dialog_do_discard_message_confirm',
     do_keep_message: 'post_status_dialog_do_keep_message',
-    do_discard_message: 'post_status_dialog_do_discard_message'
+    do_discard_message: 'post_status_dialog_do_discard_message',
+    text_character_limit_exceed: 'post_status_dialog_text_character_limit_exceed'
   },
 
   notifications: {

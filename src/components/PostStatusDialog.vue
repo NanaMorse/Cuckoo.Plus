@@ -65,6 +65,10 @@
             <mu-icon class="secondary-read-text-color" value="link" />
           </mu-button>
         </div>
+
+        <div class="content-length-indicator secondary-read-text-color">
+          {{textContentValue.length}}/500
+        </div>
       </div>
     </section>
 
@@ -112,6 +116,8 @@
     $t
 
     $i18nTags
+
+    $toast
 
     getVisibilityDescInfo = getVisibilityDescInfo
 
@@ -194,6 +200,10 @@
 
     async onSubmitNewStatus () {
       if (!this.shouldEnableSubmitButton) return
+
+      if (this.textContentValue.length > 500) {
+        return this.$toast.error(this.$t(this.$i18nTags.postStatusDialog.text_character_limit_exceed))
+      }
 
       const formData = {
         status: this.textContentValue,
@@ -330,6 +340,17 @@
         height: 187px;
         padding: 0 16px;
         max-height: 373px;
+      }
+
+      .bottom-area {
+        display: flex;
+        justify-content: space-between;
+
+        .content-length-indicator {
+          line-height: 48px;
+          font-size: 16px;
+          margin-right: 20px;
+        }
       }
 
     }

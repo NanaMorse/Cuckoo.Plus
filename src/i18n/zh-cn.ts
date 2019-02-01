@@ -66,7 +66,8 @@ const timeLines = {
 const postStatusDialog = {
   [I18nTags.postStatusDialog.do_discard_message_confirm]: '要舍弃这条信息吗？',
   [I18nTags.postStatusDialog.do_keep_message]: '保留',
-  [I18nTags.postStatusDialog.do_discard_message]: '舍弃'
+  [I18nTags.postStatusDialog.do_discard_message]: '舍弃',
+  [I18nTags.postStatusDialog.text_character_limit_exceed]: '内容超过500个字符的限制了'
 }
 
 const notifications = {
