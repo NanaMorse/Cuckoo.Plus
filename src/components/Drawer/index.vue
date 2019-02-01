@@ -258,6 +258,9 @@
   @import "../../assets/variable";
 
   .cuckoo-drawer {
+    background: url("https://i.imgur.com/vKv5bn5.png") no-repeat left bottom;
+    background-size: 42%;
+
     .mu-item-wrapper {
       -webkit-transition: background-color .3s cubic-bezier(0,0,0.2,1);
       -moz-transition: background-color .3s cubic-bezier(0,0,0.2,1);
