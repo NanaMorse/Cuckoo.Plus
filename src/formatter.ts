@@ -23,7 +23,7 @@ class Formatter {
 
       const isFinalPixel = (index + matchString.length) === text.length
 
-      return `${index === 0 ? '' : ' '}<del>${trimString.substring(1, trimString.length - 1)}</del>${isFinalPixel ? '' : ' '}`
+      return `${matchString[0] === ' ' ? ' ' : ''}<del>${trimString.substring(1, trimString.length - 1)}</del>${isFinalPixel ? '' : ' '}`
     })
   }
 
