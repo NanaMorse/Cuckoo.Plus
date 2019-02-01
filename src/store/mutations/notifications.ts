@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { cuckoostore, mastodonentities } from '@/interface'
 import { formatAccountDisplayName, formatHtml } from '@/util'
 
@@ -16,5 +17,11 @@ export default {
 
   pushNotifications (state: cuckoostore.stateInfo, newNotifications: Array<mastodonentities.Notification>) {
     state.notifications = state.notifications.concat(newNotifications)
+  },
+
+  updateRelationships (state: cuckoostore.stateInfo, newRelationships: { [id: string]: mastodonentities.Relationship }) {
+    Object.keys(newRelationships).forEach(id => {
+      Vue.set(state.relationships, id, newRelationships[id])
+    })
   }
 }

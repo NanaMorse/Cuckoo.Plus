@@ -130,6 +130,10 @@ class Streaming {
     // update notification list
     store.commit('unShiftNotification', [newNotification])
 
+    if (newNotification.type === NotificationTypes.FOLLOW) {
+      store.dispatch('updateRelationships', { idList: [newNotification.account.id] })
+    }
+
     // set notification icon unread
     store.commit('updateUnreadNotificationCount', store.state.appStatus.unreadNotificationCount + 1)
 

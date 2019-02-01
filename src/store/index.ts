@@ -42,6 +42,8 @@ const state: cuckoostore.stateInfo = {
 
   notifications: [],
 
+  relationships: {},
+
   appStatus: {
     documentWidth: document.body.clientWidth,
 

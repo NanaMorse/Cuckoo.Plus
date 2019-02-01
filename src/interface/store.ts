@@ -32,6 +32,10 @@ export namespace cuckoostore {
 
     notifications: Array<mastodonentities.Notification>
 
+    relationships: {
+      [id: string]: mastodonentities.Relationship
+    }
+
     customEmojis: Array<mastodonentities.Emoji>
 
     appStatus: {

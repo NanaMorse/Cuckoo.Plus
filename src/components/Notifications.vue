@@ -31,9 +31,9 @@
                                         v-html="getNotificationSubTitle(notification)"
                                         @click="onNotificationCardClick(notification)" />
               </mu-list-item-content>
-              <!--<mu-list-item-action v-if="notification.type === NotificationTypes.FOLLOW">-->
-                <!--<mu-icon class="follow-action" value="person_add"></mu-icon>-->
-              <!--</mu-list-item-action>-->
+              <mu-list-item-action v-if="shouldShowFollowingBtn(notification)">
+                <mu-icon @click="onFollowingAccount(notification.account.id)" class="follow-action" value="person_add" />
+              </mu-list-item-action>
             </mu-list-item>
           </mu-list>
 
@@ -78,11 +78,17 @@
 
     @Prop() hideHeader: boolean
 
+    @Action('followAccountById') followAccountById
+
     @Action('updateNotifications') updateNotifications
 
     @State('appStatus') appStatus
 
     @State('notifications') notifications: Array<mastodonentities.Notification>
+
+    @State('relationships') relationships: {
+      [id: string]: mastodonentities.Relationship
+    }
 
     @Getter('getAccountDisplayName') getAccountDisplayName
 
@@ -96,10 +102,6 @@
 
     currentCheckStatus: mastodonentities.Status = null
 
-    relationships: {
-      [id: string]: mastodonentities.Relationship
-    }
-
     @Watch('isLoadingNotifications')
     onLoadingNotificationStatusChanged (toValue) {
       toValue ? this.$progress.start() : this.$progress.done()
@@ -108,11 +110,6 @@
     @Watch('shouldShowTargetStatus')
     onShouldShowTargetStatusChanged (val) {
       this.$emit('shouldShowTargetStatusChanged', val)
-    }
-
-    @Watch('notifications')
-    onNotificationsChanged () {
-      this.updateFollowRelationships()
     }
 
     onCheckUserAccountPage (account: mastodonentities.Account) {
@@ -180,11 +177,19 @@
       }
     }
 
-    async updateFollowRelationships () {
-      const followNotifications = this.notifications.filter(notification => notification.type === NotificationTypes.FOLLOW)
-
+    shouldShowFollowingBtn (notification: mastodonentities.Notification) {
+      const isFollowingNotification = notification.type === NotificationTypes.FOLLOW
+      const isAccountStatusUnFollow = this.relationships[notification.account.id] && !this.relationships[notification.account.id].following
+      return isFollowingNotification && isAccountStatusUnFollow
     }
 
+    async onFollowingAccount (id: string) {
+      this.followAccountById(id)
+    }
+
+    async onUnFollowingAccount () {
+
+    }
 
   }
 

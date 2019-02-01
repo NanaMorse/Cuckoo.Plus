@@ -18,8 +18,18 @@ async function fetchRelationships (idList: Array<string>) {
   }) as any
 }
 
+async function followAccountById (id: string) {
+  return Vue.http.post(patchApiUri(`/api/v1/accounts/${id}/follow`)) as any
+}
+
+async function unFollowAccountById (id: string) {
+  return Vue.http.post(patchApiUri(`/api/v1/accounts/${id}/unfollow`)) as any
+}
+
 export {
   fetchAccountInfoById,
   fetchCurrentUserAccountInfo,
-  fetchRelationships
+  fetchRelationships,
+  followAccountById,
+  unFollowAccountById
 }
