@@ -35,16 +35,18 @@
     @Mutation('updateDocumentWidth') updateDocumentWidth
 
     @Getter('isOAuthUser') isOAuthUser
+    @Getter('isMobileMode') isMobileMode
 
     mounted () {
       window.addEventListener('resize', _.debounce(() => this.updateDocumentWidth(), 200))
     }
 
     get appContentStyle () {
-      if (this.appStatus.isDrawerOpened && !this.$route.meta.hideDrawer && this.isOAuthUser &&
-        (this.appStatus.documentWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY)) {
+      if (this.appStatus.isDrawerOpened &&
+        !this.$route.meta.hideDrawer &&
+        this.isOAuthUser && this.isMobileMode) {
         return {
-          paddingLeft: '210px'
+          paddingLeft: `${UiWidthCheckConstants.DRAWER_DESKTOP_WIDTH}px`
         }
       }
     }

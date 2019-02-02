@@ -60,6 +60,8 @@ declare module "vue/types/vue" {
         profile: string
         settings: string
         toHostInstance: string
+        search_result_people_label: string
+        search_result_hashtag_label: string
       },
       settings: {
         general_label: string

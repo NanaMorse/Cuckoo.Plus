@@ -1,5 +1,6 @@
 import { cuckoostore, mastodonentities } from '@/interface'
 import { isBaseTimeLine } from '@/util'
+import { UiWidthCheckConstants } from '@/constant'
 
 const accounts = {
   getAccountDisplayName () {
@@ -33,6 +34,10 @@ const getters = {
 
   isOAuthUser (state: cuckoostore.stateInfo) {
     return state.OAuthInfo.accessToken
+  },
+
+  isMobileMode (state: cuckoostore.stateInfo) {
+    return state.appStatus.documentWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY
   }
 }
 

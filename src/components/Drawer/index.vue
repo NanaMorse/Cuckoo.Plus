@@ -141,7 +141,7 @@
       if (this.shouldDrawerDocked) {
         return {
           top: '64px',
-          width: '210px'
+          width: `${UiWidthCheckConstants.DRAWER_DESKTOP_WIDTH}px`
         }
       } else {
         return {

@@ -46,7 +46,7 @@
 <script lang="ts">
   import { Vue, Component, Watch } from 'vue-property-decorator'
   import { Action, State, Getter } from 'vuex-class'
-  import { TimeLineTypes } from '@/constant'
+  import { TimeLineTypes, UiWidthCheckConstants } from '@/constant'
   import { cuckoostore, mastodonentities } from '@/interface'
   import { getTimeLineTypeAndHashName, isBaseTimeLine } from '@/util'
   import StatusCard from '@/components/StatusCard'
@@ -155,7 +155,7 @@
     }
 
     get statusCardsContainerWidth (): number {
-      return this.appStatus.documentWidth - 210
+      return this.appStatus.documentWidth - UiWidthCheckConstants.DRAWER_DESKTOP_WIDTH
     }
 
     get waterfallLineCount () {
