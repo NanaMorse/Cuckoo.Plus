@@ -56,7 +56,8 @@ export const I18nTags = {
     show_sensitive_media_files: 'settings_show_sensitive_media_files',
     auto_load_new_status: 'settings_auto_load_new_status',
     stream_label: 'settings_stream_label',
-    media_label: 'settings_media_label'
+    media_label: 'settings_media_label',
+    personality_label: 'settings_personality_label'
   },
 
   header: {

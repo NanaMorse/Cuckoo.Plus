@@ -39,6 +39,13 @@
           <mu-switch class="setting-switch" v-model="showSensitiveContentMode" />
         </div>
 
+        <p class="card-label">{{$t($i18nTags.settings.personality_label)}}</p>
+
+        <div class="setting-row">
+          <span class="setting-label primary-read-text-color">Drawer Background Image Source Link：</span>
+          <mu-text-field class="setting-input" placeholder="on developing"/>
+        </div>
+
       </mu-card-actions>
     </mu-card>
   </div>
@@ -157,6 +164,12 @@
 
         .setting-switch {
           margin-right: 12px;
+        }
+
+        .setting-input {
+          min-height: unset;
+          margin: 0;
+          padding: 0;
         }
       }
 

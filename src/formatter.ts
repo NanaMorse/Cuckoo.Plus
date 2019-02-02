@@ -5,7 +5,7 @@ class Formatter {
   private customEmojiRegex = /:\w+:/g
 
   // todo fix test
-  private delRegex = /(^|\s)-.*-(\s|$)/g
+  private delRegex = /(^|\s)-.*-($|\s|\.|,|\?|!|~)/g
 
   private customEmojiMap: {
     [index: string]: mastodonentities.Emoji
@@ -21,9 +21,11 @@ class Formatter {
     return text.replace(this.delRegex, (matchString: string, p1, p2, index) => {
       const trimString = matchString.trim()
 
-      const isFinalPixel = (index + matchString.length) === text.length
+      const isFinalCharacterDel = trimString[trimString.length - 1] === '-'
+      const isMatchStringFinalPixel = (index + matchString.length) === text.length && isFinalCharacterDel
+      const centralSubString = trimString.substring(1, trimString.length - ( isFinalCharacterDel ? 1 : 2 ))
 
-      return `${matchString[0] === ' ' ? ' ' : ''}<del>${trimString.substring(1, trimString.length - 1)}</del>${isFinalPixel ? '' : ' '}`
+      return `${matchString[0] === ' ' ? ' ' : ''}<del>${centralSubString}</del>${isMatchStringFinalPixel ? '' : matchString[matchString.length - 1]}`
     })
   }
 

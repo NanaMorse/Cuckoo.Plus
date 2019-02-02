@@ -70,6 +70,7 @@ declare module "vue/types/vue" {
         auto_load_new_status: string
         stream_label: string
         media_label: string
+        personality_label: string
       },
       home: {
 
