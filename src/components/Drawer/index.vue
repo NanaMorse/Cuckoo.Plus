@@ -82,7 +82,7 @@
       title: I18nTags.drawer.tag,
       icon: 'loyalty',
       to: '/timelines/tag',
-      hashList: ['kimermark']
+      hashList: []
     },
     {
       value: 'profile',
@@ -141,11 +141,11 @@
       if (this.shouldDrawerDocked) {
         return {
           top: '64px',
-          width: '210px'
+          width: `${UiWidthCheckConstants.DRAWER_DESKTOP_WIDTH}px`
         }
       } else {
         return {
-          width: '300px'
+          width: `${UiWidthCheckConstants.DRAWER_MOBILE_WIDTH}px`
         }
       }
     }
