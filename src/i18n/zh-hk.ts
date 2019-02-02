@@ -45,6 +45,7 @@ const drawer = {
   [I18nTags.drawer.profile]: '個人檔案',
   [I18nTags.drawer.settings]: '設定',
   [I18nTags.drawer.toHostInstance]: '前往當前實例站點',
+  [I18nTags.drawer.search_input_placeholder]: '搜索',
   [I18nTags.drawer.search_result_people_label]: '用戶',
   [I18nTags.drawer.search_result_hashtag_label]: '話題標籤'
 }

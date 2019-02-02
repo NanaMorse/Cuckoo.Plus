@@ -46,6 +46,7 @@ export const I18nTags = {
     profile: 'drawer_profile',
     settings: 'drawer_settings',
     toHostInstance: 'drawer_to_host_instance',
+    search_input_placeholder: 'drawer_search_input_placeholder',
     search_result_people_label: 'drawer_search_result_people_label',
     search_result_hashtag_label: 'drawer_search_result_hashtag_label'
   },

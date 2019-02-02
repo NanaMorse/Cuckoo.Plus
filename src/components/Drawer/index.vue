@@ -145,7 +145,7 @@
         }
       } else {
         return {
-          width: '300px'
+          width: `${UiWidthCheckConstants.DRAWER_MOBILE_WIDTH}px`
         }
       }
     }

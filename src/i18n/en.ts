@@ -45,6 +45,7 @@ const drawer = {
   [I18nTags.drawer.profile]: 'Profile',
   [I18nTags.drawer.settings]: 'Settings',
   [I18nTags.drawer.toHostInstance]: 'Open Current Instance Site',
+  [I18nTags.drawer.search_input_placeholder]: 'Search',
   [I18nTags.drawer.search_result_people_label]: 'People',
   [I18nTags.drawer.search_result_hashtag_label]: 'HashTag'
 }
