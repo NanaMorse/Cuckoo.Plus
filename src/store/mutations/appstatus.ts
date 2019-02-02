@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { getTargetStatusesList } from '@/util'
 import { ThemeNames } from '@/constant'
 import { cuckoostore } from '@/interface'

@@ -22,9 +22,9 @@
         <mu-list-item v-for="(hashTag, index) in searchResults.hashtags" :key="index"
                       class="hashtag-result-card" :ripple="false">
           <mu-list-item-title class="hash-tag ellipsis-text primary-read-text-color"
-                              v-html="hashTag" />
-          <mu-list-item-action>
-            <mu-icon class="operate-btn" value="playlist_add" />
+                              v-html="hashTag" @click="onCheckHashTagTimeLine(hashTag)"/>
+          <mu-list-item-action v-if="!appStatus.settings.tags.includes(hashTag)">
+            <mu-icon class="operate-btn" value="playlist_add" @click="onSaveHashTag(hashTag)"/>
           </mu-list-item-action>
         </mu-list-item>
 
@@ -35,7 +35,7 @@
 
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
-  import { Getter, State, Action } from 'vuex-class'
+  import { Getter, State, Action, Mutation } from 'vuex-class'
   import * as Api from '@/api'
   import { mastodonentities } from '@/interface'
   import { UiWidthCheckConstants } from '@/constant'
@@ -54,13 +54,21 @@
 
     $i18nTags
 
+    $router
+
+    $routersInfo
+
     @State('relationships') relationships: {
       [id: string]: mastodonentities.Relationship
     }
+    @State('appStatus') appStatus
 
     @Getter('isMobileMode') isMobileMode
 
     @Action('updateRelationships') updateRelationships
+
+    @Mutation('updateDrawerOpenStatus') updateDrawerOpenStatus
+    @Mutation('updateTags') updateTags
 
     searchKey: string = ''
 
@@ -118,6 +126,21 @@
     updateRelationship () {
       const newAccountResultList = this.searchResults.accounts.filter(account => !this.relationships[account.id])
       this.updateRelationships({ idList: newAccountResultList.map(account => account.id) })
+    }
+
+    onCheckHashTagTimeLine (hashTagName: string) {
+      console.log(hashTagName)
+
+      this.$router.push({
+        name: this.$routersInfo.tagtimelines.name,
+        params: {
+          tagName: hashTagName
+        }
+      })
+    }
+
+    onSaveHashTag (hashTagName: string) {
+      this.updateTags([...this.appStatus.settings.tags, hashTagName])
     }
   }
 

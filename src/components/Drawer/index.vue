@@ -82,7 +82,7 @@
       title: I18nTags.drawer.tag,
       icon: 'loyalty',
       to: '/timelines/tag',
-      hashList: ['kimermark']
+      hashList: []
     },
     {
       value: 'profile',
