@@ -37,7 +37,7 @@ const getters = {
   },
 
   isMobileMode (state: cuckoostore.stateInfo) {
-    return state.appStatus.documentWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY
+    return state.appStatus.documentWidth < UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY
   }
 }
 

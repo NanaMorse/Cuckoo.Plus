@@ -44,7 +44,7 @@
     get appContentStyle () {
       if (this.appStatus.isDrawerOpened &&
         !this.$route.meta.hideDrawer &&
-        this.isOAuthUser && this.isMobileMode) {
+        this.isOAuthUser && !this.isMobileMode) {
         return {
           paddingLeft: `${UiWidthCheckConstants.DRAWER_DESKTOP_WIDTH}px`
         }

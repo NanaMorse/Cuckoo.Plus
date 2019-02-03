@@ -88,6 +88,7 @@
 
     get resultPanelStyle () {
       return {
+        height: `calc(100vh - 68px${this.isMobileMode ? '' : ' - 64px'})`,
         left: this.shouldShowResultPanel ? '0' : `-${this.isMobileMode ? UiWidthCheckConstants.DRAWER_MOBILE_WIDTH : UiWidthCheckConstants.DRAWER_DESKTOP_WIDTH}px`
       }
     }
@@ -129,14 +130,14 @@
     }
 
     onCheckHashTagTimeLine (hashTagName: string) {
-      console.log(hashTagName)
-
       this.$router.push({
         name: this.$routersInfo.tagtimelines.name,
         params: {
           tagName: hashTagName
         }
       })
+
+      if (this.isMobileMode) this.updateDrawerOpenStatus(false)
     }
 
     onSaveHashTag (hashTagName: string) {
@@ -177,10 +178,11 @@
 
     .search-results {
       position: absolute;
+      // todo 在iPhone X上失效
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
       top: 68px;
       width: 100%;
-      // todo
-      height: calc(100vh - 64px - 68px);
       z-index: 1;
       -webkit-transition: left .45s cubic-bezier(.23,1,.32,1);
       -moz-transition: left .45s cubic-bezier(.23,1,.32,1);
