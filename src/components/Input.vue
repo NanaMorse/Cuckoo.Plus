@@ -50,6 +50,8 @@
   const autosize = require('autosize')
   const getCaretCoordinates = require('textarea-caret');
 
+  const maxImageSize = 7.8 * 1024 * 1024
+
   const searchResultListMaxHeight = 240
   const listItemHeight = 48
   const listVerticalPadding = 0
@@ -105,7 +107,23 @@
     startUploadProcess () {
       this.uploadProcesses.forEach(async (processInfo, index) => {
         // update data url list
-        if (!this.uploadFileDataUrlList[index]) {
+        if (!this.uploadFileDataUrlList[index] && !processInfo.hasStartedUpload) {
+          // resize image
+          if (processInfo.file.size > maxImageSize) {
+            //const imageDepth = processInfo.file.size /
+            const image = new Image()
+            image.src = window.URL.createObjectURL(processInfo.file)
+            image.onload = () => {
+              const resizeRadio = Math.sqrt(maxImageSize / processInfo.file.size)
+              const newWidth = image.width * resizeRadio
+              const newHeight = image.height * resizeRadio
+
+              console.log(newWidth, newHeight)
+              // const canvas = document.createElement('cavans')
+            }
+
+          }
+
           const fileReader = new FileReader()
           fileReader.readAsDataURL(processInfo.file)
           // @ts-ignore
