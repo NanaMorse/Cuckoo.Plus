@@ -45,7 +45,7 @@
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { mastodonentities } from '@/interface'
   import * as Api from '@/api'
-  import { formatAccountDisplayName } from '@/util'
+  import { formatAccountDisplayName, resetImageFileSizeForUpload } from '@/util'
 
   const autosize = require('autosize')
   const getCaretCoordinates = require('textarea-caret');
@@ -105,23 +105,14 @@
 
     @Watch('uploadProcesses')
     startUploadProcess () {
-      this.uploadProcesses.forEach(async (processInfo, index) => {
+      const uploadProcessesCopy = [...this.uploadProcesses]
+
+      uploadProcessesCopy.forEach(async (processInfo, index) => {
         // update data url list
         if (!this.uploadFileDataUrlList[index] && !processInfo.hasStartedUpload) {
-          // resize image
-          if (processInfo.file.size > maxImageSize) {
-            //const imageDepth = processInfo.file.size /
-            const image = new Image()
-            image.src = window.URL.createObjectURL(processInfo.file)
-            image.onload = () => {
-              const resizeRadio = Math.sqrt(maxImageSize / processInfo.file.size)
-              const newWidth = image.width * resizeRadio
-              const newHeight = image.height * resizeRadio
-
-              console.log(newWidth, newHeight)
-              // const canvas = document.createElement('cavans')
-            }
-
+          const resolvedFile = await resetImageFileSizeForUpload(processInfo.file)
+          if (resolvedFile !== processInfo.file) {
+            uploadProcessesCopy[index].file = resolvedFile as any
           }
 
           const fileReader = new FileReader()
@@ -132,8 +123,6 @@
 
         // start upload process
         if (!processInfo.hasStartedUpload) {
-          // 好像没意义
-          const uploadProcessesCopy = [...this.uploadProcesses]
           uploadProcessesCopy[index].hasStartedUpload = true
 
           this.$emit('update:uploadProcesses', uploadProcessesCopy)
@@ -144,7 +133,6 @@
           try {
             const result = await Api.media.postMediaFile(formData)
 
-            const uploadProcessesCopy = [...this.uploadProcesses]
             uploadProcessesCopy[index].uploadResult = result.data
 
             this.$emit('update:uploadProcesses', uploadProcessesCopy)
