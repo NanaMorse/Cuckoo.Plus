@@ -32,7 +32,7 @@
           <mu-card-text v-if="status.reblog.content" class="status-content reblog-status-content" v-html="status.reblog.content" />
         </div>
         <div class="reblog-attachment-area">
-          <media-panel :mediaList="status.reblog.media_attachments" :pixivCards="status.reblog.pixiv_cards" :sensitive="status.sensitive"/>
+          <media-panel :mediaList="status.reblog.media_attachments" :pixivCards="status.reblog.pixiv_cards" :sensitive="status.reblog.sensitive"/>
         </div>
       </div>
 
