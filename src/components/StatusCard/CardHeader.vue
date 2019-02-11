@@ -11,7 +11,7 @@
           <span class="display-name" v-html="getAccountDisplayName(status.account)"></span>
           <span class="at-name secondary-read-text-color">@{{getAccountAtName(status.account)}}</span>
         </a>
-        <div class="visibility-row secondary-read-text-color">
+        <div ref="visibilityInfo" class="visibility-row secondary-read-text-color">
           <div class="arrow-container">
             <svg viewBox="0 0 48 48" height="100%" width="100%">
               <path class="header-svg-fill" d="M20 14l10 10-10 10z" />
@@ -72,6 +72,7 @@
 
     $refs: {
       cardHeader: any
+      visibilityInfo: any
       moreOperationTriggerBtn: any
     }
 
@@ -95,6 +96,7 @@
       if (this.isOAuthUser) {
         this.moreOperationTriggerBtn = this.$refs.moreOperationTriggerBtn
       }
+
       this.setMainStatusUserNameAreaStyle()
     }
 
@@ -136,7 +138,7 @@
       const headerPadding = 16
       const avatarWidth = 34
       const avatarRightMargin = 8
-      const visibilityInfoWidth = 50
+      const visibilityInfoWidth = this.$refs.visibilityInfo.clientWidth
       const rightAreaWidth = 50
       const leftToRightMargin = 5
 
