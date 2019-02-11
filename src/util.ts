@@ -138,6 +138,34 @@ export function extractText(html: string): string {
   return text
 }
 
+const maxImageSize = 7.8 * 1024 * 1024
+export async function resetImageFileSizeForUpload (file: File) {
+  if (file.size < maxImageSize) return new Promise(r => r(file))
+
+  const oldImage = new Image()
+  oldImage.src = window.URL.createObjectURL(file)
+
+  // todo set to 1280 width for now
+  const newWidth = 1280
+
+  return new Promise(resolve => {
+    oldImage.onload = () => {
+      const newHeight = oldImage.height * newWidth / oldImage.width
+      const canvas = document.createElement('canvas')
+      const canvasContext = canvas.getContext('2d')
+
+      canvas.width = newWidth
+      canvas.height = newHeight
+
+      canvasContext.drawImage(oldImage, 0, 0, newWidth, newHeight)
+
+      canvas.toBlob((blob) => {
+        resolve(blob)
+      })
+    }
+  })
+}
+
 function walkTextNodes(node, textNodeHandler) {
   if (node) {
     for (let i = 0; i < node.childNodes.length; ++i) {

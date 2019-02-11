@@ -45,10 +45,12 @@
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { mastodonentities } from '@/interface'
   import * as Api from '@/api'
-  import { formatAccountDisplayName } from '@/util'
+  import { formatAccountDisplayName, resetImageFileSizeForUpload } from '@/util'
 
   const autosize = require('autosize')
   const getCaretCoordinates = require('textarea-caret');
+
+  const maxImageSize = 7.8 * 1024 * 1024
 
   const searchResultListMaxHeight = 240
   const listItemHeight = 48
@@ -103,9 +105,16 @@
 
     @Watch('uploadProcesses')
     startUploadProcess () {
-      this.uploadProcesses.forEach(async (processInfo, index) => {
+      const uploadProcessesCopy = [...this.uploadProcesses]
+
+      uploadProcessesCopy.forEach(async (processInfo, index) => {
         // update data url list
-        if (!this.uploadFileDataUrlList[index]) {
+        if (!this.uploadFileDataUrlList[index] && !processInfo.hasStartedUpload) {
+          const resolvedFile = await resetImageFileSizeForUpload(processInfo.file)
+          if (resolvedFile !== processInfo.file) {
+            uploadProcessesCopy[index].file = resolvedFile as any
+          }
+
           const fileReader = new FileReader()
           fileReader.readAsDataURL(processInfo.file)
           // @ts-ignore
@@ -114,8 +123,6 @@
 
         // start upload process
         if (!processInfo.hasStartedUpload) {
-          // 好像没意义
-          const uploadProcessesCopy = [...this.uploadProcesses]
           uploadProcessesCopy[index].hasStartedUpload = true
 
           this.$emit('update:uploadProcesses', uploadProcessesCopy)
@@ -126,7 +133,6 @@
           try {
             const result = await Api.media.postMediaFile(formData)
 
-            const uploadProcessesCopy = [...this.uploadProcesses]
             uploadProcessesCopy[index].uploadResult = result.data
 
             this.$emit('update:uploadProcesses', uploadProcessesCopy)
