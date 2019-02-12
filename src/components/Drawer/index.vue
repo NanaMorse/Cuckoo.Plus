@@ -164,22 +164,30 @@
     }
 
     async onBaseRouteItemClick (clickedRouterValue: string) {
-
       if (clickedRouterValue === 'profile') {
+        // todo
+        // this.$router.push({
+        //   name: this.$routersInfo.accounts.name,
+        //   params: {
+        //     accountId: this.currentUserAccount.id
+        //   }
+        // })
+
         return window.open(this.currentUserAccount.url, '_blank')
+      } else {
+
+        const targetPath = baseRouterInfoList.find(routerInfo => routerInfo.value === clickedRouterValue).to
+
+        if (isBaseTimeLine(clickedRouterValue) && (targetPath === this.$route.path)) {
+          this.fetchTimeLineStatuses(clickedRouterValue)
+        }
+
+        if (!this.shouldDrawerDocked) this.updateDrawerOpenStatus(false)
+
+        this.$router.push(targetPath)
+
+        window.scrollTo(0, 0)
       }
-
-      const targetPath = baseRouterInfoList.find(routerInfo => routerInfo.value === clickedRouterValue).to
-
-      if (isBaseTimeLine(clickedRouterValue) && (targetPath === this.$route.path)) {
-        this.fetchTimeLineStatuses(clickedRouterValue)
-      }
-
-      if (!this.shouldDrawerDocked) this.updateDrawerOpenStatus(false)
-
-      this.$router.push(targetPath)
-
-      window.scrollTo(0, 0)
     }
 
     async onHashRouteItemClick (clickedRouterValue: string, hashName: string) {
