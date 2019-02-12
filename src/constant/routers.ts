@@ -42,5 +42,10 @@ export const RoutersInfo = {
   settings: {
     path: '/settings',
     name: 'settings'
+  },
+
+  accounts: {
+    path: '/accounts/:accountId',
+    name: 'accounts'
   }
 };

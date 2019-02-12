@@ -41,7 +41,7 @@
   import { State, Mutation, Action, Getter } from 'vuex-class'
   import { TimeLineTypes, RoutersInfo, UiWidthCheckConstants } from '@/constant'
   import { cuckoostore } from '@/interface'
-  import Notifications from '@/components/Notifications'
+  import Notifications from '@/components/Notifications/index'
 
   // todo 统一位置管理
   const pathToRouteInfo = {

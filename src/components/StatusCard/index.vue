@@ -67,11 +67,9 @@
 </template>
 
 <script lang="ts">
-  import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-  import { State, Action, Getter, Mutation } from 'vuex-class'
+  import { Vue, Component, Prop } from 'vue-property-decorator'
+  import { State, Getter } from 'vuex-class'
   import { mastodonentities } from '@/interface'
-  import ThemeManager from 'muse-ui/lib/theme'
-  import * as moment from 'moment'
 
   import CardHeader from './CardHeader'
   import MediaPanel from './MediaPanel'
@@ -171,7 +169,6 @@
         this.$refs.replyListContainer.scrollTo({ top: this.$refs.replyListContainer.scrollHeight, left: 0, behavior: 'smooth' })
       })
     }
-
   }
 
   export default StatusCard

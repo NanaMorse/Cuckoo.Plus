@@ -17,6 +17,7 @@ declare module "vue/types/vue" {
       defaulttimelines: routerInfo
       tagtimelines: routerInfo
       listtimelines: routerInfo
+      accounts: routerInfo
     }
 
     $i18nTags: {
