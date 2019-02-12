@@ -114,8 +114,6 @@
 
     @State('mastodonServerUri') mastodonServerUri
 
-    @State('currentUserAccount') currentUserAccount
-
     @Mutation('updateDrawerOpenStatus') updateDrawerOpenStatus
 
     @Mutation('updateTags') updateTags
