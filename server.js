@@ -2,17 +2,23 @@ const express = require('express')
 const http = require('http')
 const https = require('https')
 const fs = require('fs')
-const app = express()
+
+const httpApp = express()
+const httpsApp = express()
 
 const httpPort = 80
 const httpsPort = 443
 
-app.use(express.static('public'))
+httpApp.all("*", (req, res) => {
+  let host = req.headers.host
+  host = host.replace(/:\d+$/, '')
+  res.redirect(301, `https://${host}${req.path}`)
+})
 
-const httpsOptions = {
+http.createServer(httpApp).listen(httpPort)
+
+httpsApp.use(express.static('public'))
+https.createServer({
   key: fs.readFileSync('../ssl/private.key'),
   cert: fs.readFileSync('../ssl/certificate.pem')
-}
-
-http.createServer(app).listen(httpPort)
-https.createServer(httpsOptions, app).listen(httpsPort)
+}, httpsApp).listen(httpsPort)
