@@ -1,6 +1,6 @@
 {
   "name": "cuckoo.plus",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "A third-party client for mastodon",
   "scripts": {
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
