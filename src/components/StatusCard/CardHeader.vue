@@ -7,7 +7,7 @@
         <img :src="status.account.avatar_static">
       </mu-avatar>
       <div class="user-and-status-info">
-        <a @click="onCheckUserAccountPage" class="user-name primary-read-text-color" :style="userNameAreaStyle">
+        <a @click="onCheckUserAccountPage" class="user-name primary-read-text-color">
           <span class="display-name" v-html="getAccountDisplayName(status.account)"></span>
           <span class="at-name secondary-read-text-color">@{{getAccountAtName(status.account)}}</span>
         </a>
@@ -84,8 +84,6 @@
 
     @Action('deleteStatus') deleteStatus
 
-    userNameAreaStyle = {}
-
     shouldShowHeaderActionButtonGroup = false
 
     shouldOpenMoreOperationPopOver = false
@@ -96,8 +94,6 @@
       if (this.isOAuthUser) {
         this.moreOperationTriggerBtn = this.$refs.moreOperationTriggerBtn
       }
-
-      this.setMainStatusUserNameAreaStyle()
     }
 
     onOpenMoreOperationPopOver () {
@@ -130,26 +126,6 @@
       }
     }
 
-    /**
-     * @desc set max-width
-     * */
-    setMainStatusUserNameAreaStyle () {
-      const cardWidth = this.$refs.cardHeader.clientWidth
-      const headerPadding = 16
-      const avatarWidth = 34
-      const avatarRightMargin = 8
-      const visibilityInfoWidth = this.$refs.visibilityInfo.clientWidth
-      const rightAreaWidth = 50
-      const leftToRightMargin = 5
-
-      const maxWidth = cardWidth - headerPadding * 2 - avatarWidth - avatarRightMargin -
-        visibilityInfoWidth - rightAreaWidth - leftToRightMargin
-
-      this.userNameAreaStyle = {
-        maxWidth: `${maxWidth}px`
-      }
-    }
-
     getFromNowTime (createdAt: string) {
       return moment(createdAt).fromNow(true)
     }
@@ -171,10 +147,12 @@
       .status-account-avatar {
         margin-right: 8px;
         cursor: pointer;
+        flex-shrink: 0;
       }
 
       .user-and-status-info {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
 
         .user-name {

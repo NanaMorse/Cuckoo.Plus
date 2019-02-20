@@ -39,7 +39,7 @@
       </div>
 
     </div>
-    <div class="right-area">
+    <div class="right-area" ref="rightArea" :style="rightAreaStyle">
       <span v-show="!shouldOpenMoreOperationPopOver && !shouldShowMoreOperationTriggerBtn" class="reply-from-now secondary-read-text-color">{{getFromNowTime()}}</span>
       <mu-button v-show="shouldOpenMoreOperationPopOver || shouldShowMoreOperationTriggerBtn" icon style="width: 16px; height: 16px" @click="onOpenMoreOperationPopOver">
         <mu-icon class="header-icon secondary-read-text-color" value="more_vert"/>
@@ -74,6 +74,10 @@
   })
   class FullReplyListItem extends Vue {
 
+    $refs: {
+      rightArea: HTMLDivElement
+    }
+
     $confirm
 
     $t
@@ -94,6 +98,15 @@
     shouldShowMoreOperationTriggerBtn: boolean = false
     shouldOpenMoreOperationPopOver: boolean = false
     moreOperationTriggerBtn = null
+
+    rightAreaStyle = null
+
+    mounted () {
+      this.rightAreaStyle = {
+        // todo 2 is magic number
+        width: `${this.$refs.rightArea.clientWidth + 2}px`
+      }
+    }
 
     getFromNowTime () {
       return moment(this.status.created_at).fromNow(true)
@@ -213,8 +226,7 @@
 
     .right-area {
       display: flex;
-      flex-shrink: 0;
-      width: 38px;
+      flex-direction: row-reverse;
 
       .reply-from-now {
         font-size: 13px;
