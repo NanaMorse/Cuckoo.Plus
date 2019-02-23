@@ -81,6 +81,7 @@
 
     localesOptions = [
       { label: 'English', value: I18nLocales.EN },
+      { label: '日本語', value: I18nLocales.JA },
       { label: '简体中文', value: I18nLocales.ZH_CN },
       { label: '繁體中文（香港）', value: I18nLocales.ZH_HK },
       { label: '繁體中文（台灣）', value: I18nLocales.ZH_TW }
