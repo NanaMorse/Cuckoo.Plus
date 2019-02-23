@@ -2,80 +2,80 @@ import { I18nTags } from '@/constant'
 
 const oauth = {
   [I18nTags.oauth.form_brand]: 'Cuckoo Plus',
-  [I18nTags.oauth.login_hint]: 'Authorize Login',
-  [I18nTags.oauth.server_input_label]: 'Mastodon URL',
-  [I18nTags.oauth.please_input_server_url]: 'please input Mastodon URL',
-  [I18nTags.oauth.please_input_correct_server_url]: 'check your Mastodon URL',
-  [I18nTags.oauth.register_app_error_message]: 'Something went wrong! please check your Mastodon URL again',
-  [I18nTags.oauth.confirm_input]: 'CONFIRM'
+  [I18nTags.oauth.login_hint]: '連携ログイン',
+  [I18nTags.oauth.server_input_label]: 'マストドンのURL',
+  [I18nTags.oauth.please_input_server_url]: 'マストドンのURLを入力してください',
+  [I18nTags.oauth.please_input_correct_server_url]: 'マストドンのURLを確認してください',
+  [I18nTags.oauth.register_app_error_message]: '何かがおかしいです！ マストドンのURLを確認してください',
+  [I18nTags.oauth.confirm_input]: '確認'
 }
 
 const common = {
-  [I18nTags.common.status_visibility_public]: 'Public',
-  [I18nTags.common.status_visibility_unlisted]: 'Unlisted',
-  [I18nTags.common.status_visibility_private]: 'Followers-only',
-  [I18nTags.common.status_visibility_direct]: 'Direct',
-  [I18nTags.common.status_visibility_public_desc]: 'Post to public timelines',
-  [I18nTags.common.status_visibility_unlisted_desc]: 'Do not post to public timelines',
-  [I18nTags.common.status_visibility_private_desc]: 'Post to followers only',
-  [I18nTags.common.status_visibility_direct_desc]: 'Post to mentioned users only',
+  [I18nTags.common.status_visibility_public]: '公開',
+  [I18nTags.common.status_visibility_unlisted]: '未収載',
+  [I18nTags.common.status_visibility_private]: 'フォロワー限定',
+  [I18nTags.common.status_visibility_direct]: 'ダイレクト',
+  [I18nTags.common.status_visibility_public_desc]: '公開TLに投稿する',
+  [I18nTags.common.status_visibility_unlisted_desc]: '公開TLで表示しない',
+  [I18nTags.common.status_visibility_private_desc]: 'フォロワーだけに公開',
+  [I18nTags.common.status_visibility_direct_desc]: 'メンションしたユーザーだけに公開',
 }
 
 const statusCard = {
-  [I18nTags.statusCard.post_new_status_placeholder]: 'What is on your mind?',
-  [I18nTags.statusCard.reply_to_main_status]: 'Add a comment...',
-  [I18nTags.statusCard.reply_to_replier]: 'REPLY',
-  [I18nTags.statusCard.cancel_post]: 'CANCEL',
-  [I18nTags.statusCard.submit_post]: 'POST',
-  [I18nTags.statusCard.show_content]: 'SHOW MORE',
-  [I18nTags.statusCard.hide_content]: 'SHOW LESS',
-  [I18nTags.statusCard.mute_status]: 'Mute',
-  [I18nTags.statusCard.delete_status]: 'Delete',
-  [I18nTags.statusCard.delete_status_confirm]: 'Are you sure you want to delete the post?',
-  [I18nTags.statusCard.do_delete_status_btn]: 'DELETE',
-  [I18nTags.statusCard.cancel_delete_status_btn]: 'CANCEL',
-  [I18nTags.statusCard.originally_shared_by]: 'Originally shared by {displayName}<span class="at-name">@{atName}</span>',
-  [I18nTags.statusCard.sensitive_media_alert]: 'Hide content <br/> Click to view'
+  [I18nTags.statusCard.post_new_status_placeholder]: '今なにしてる？',
+  [I18nTags.statusCard.reply_to_main_status]: 'コメントを追加してください...',
+  [I18nTags.statusCard.reply_to_replier]: '返信',
+  [I18nTags.statusCard.cancel_post]: 'キャンセル',
+  [I18nTags.statusCard.submit_post]: '送信',
+  [I18nTags.statusCard.show_content]: '開く',
+  [I18nTags.statusCard.hide_content]: '閉じる',
+  [I18nTags.statusCard.mute_status]: 'ミュート',
+  [I18nTags.statusCard.delete_status]: '削除',
+  [I18nTags.statusCard.delete_status_confirm]: 'この投稿を削除してもよろしいですか？',
+  [I18nTags.statusCard.do_delete_status_btn]: '削除',
+  [I18nTags.statusCard.cancel_delete_status_btn]: 'キャンセル',
+  [I18nTags.statusCard.originally_shared_by]: '{displayName}<span class="at-name">@{atName}</span> さんから',
+  [I18nTags.statusCard.sensitive_media_alert]: '隠されたメディア <br/> クリックで開きます'
 }
 
 const drawer = {
-  [I18nTags.drawer.home]: 'Home',
-  [I18nTags.drawer.public]: 'Public',
-  [I18nTags.drawer.tag]: 'Tag',
-  [I18nTags.drawer.profile]: 'Profile',
-  [I18nTags.drawer.settings]: 'Settings',
-  [I18nTags.drawer.toHostInstance]: 'Open Current Instance Site',
-  [I18nTags.drawer.search_input_placeholder]: 'Search',
-  [I18nTags.drawer.search_result_people_label]: 'People',
-  [I18nTags.drawer.search_result_hashtag_label]: 'HashTag'
+  [I18nTags.drawer.home]: 'ホーム',
+  [I18nTags.drawer.public]: 'パブリック',
+  [I18nTags.drawer.tag]: 'タグ',
+  [I18nTags.drawer.profile]: 'プロフィール',
+  [I18nTags.drawer.settings]: '設定',
+  [I18nTags.drawer.toHostInstance]: '現在のインスタンスを開く',
+  [I18nTags.drawer.search_input_placeholder]: '検索',
+  [I18nTags.drawer.search_result_people_label]: 'ユーザー',
+  [I18nTags.drawer.search_result_hashtag_label]: 'ハッシュタグ'
 }
 
 const settings = {
-  [I18nTags.settings.general_label]: 'General',
-  [I18nTags.settings.choose_theme]: 'Choose Theme:',
-  [I18nTags.settings.choose_language]: 'Choose Language:',
-  [I18nTags.settings.use_multi_line_mode]: 'Use multi-column layout mode:',
-  [I18nTags.settings.show_sensitive_media_files]: 'Always show media marked as sensitive:',
-  [I18nTags.settings.auto_load_new_status]: 'Always auto load new post:',
-  [I18nTags.settings.stream_label]: 'Stream',
-  [I18nTags.settings.media_label]: 'Media',
-  [I18nTags.settings.personality_label]: 'Personality'
+  [I18nTags.settings.general_label]: '一般',
+  [I18nTags.settings.choose_theme]: 'テーマ:',
+  [I18nTags.settings.choose_language]: '言語:',
+  [I18nTags.settings.use_multi_line_mode]: 'マルチカラムレイアウトを使う:',
+  [I18nTags.settings.show_sensitive_media_files]: 'メディアを常に閲覧注意としてマークする:',
+  [I18nTags.settings.auto_load_new_status]: '新しい投稿を常に自動的に読み込む:',
+  [I18nTags.settings.stream_label]: 'ストリーム',
+  [I18nTags.settings.media_label]: 'メディア',
+  [I18nTags.settings.personality_label]: 'パーソナリティ'
 }
 
 const timeLines = {
-  [I18nTags.timeLines.no_load_more_status_notice]: 'You have seen all posts.',
-  [I18nTags.timeLines.new_message_notice]: '{count} new post | {count} new posts'
+  [I18nTags.timeLines.no_load_more_status_notice]: 'すべての投稿を見ました。',
+  [I18nTags.timeLines.new_message_notice]: '新しい投稿 {count} | 新しい投稿 {count}'
 }
 
 const postStatusDialog = {
-  [I18nTags.postStatusDialog.do_discard_message_confirm]: 'Discard this post?',
-  [I18nTags.postStatusDialog.do_keep_message]: 'KEEP',
-  [I18nTags.postStatusDialog.do_discard_message]: 'DISCARD',
-  [I18nTags.postStatusDialog.text_character_limit_exceed]: 'Text character limit of 500 exceeded'
+  [I18nTags.postStatusDialog.do_discard_message_confirm]: 'この投稿を破棄しますか？',
+  [I18nTags.postStatusDialog.do_keep_message]: '保持',
+  [I18nTags.postStatusDialog.do_discard_message]: '破棄',
+  [I18nTags.postStatusDialog.text_character_limit_exceed]: '文字数が500を超えています。'
 }
 
 const notifications = {
-  [I18nTags.notifications.someone_followed_you]: '{displayName} followed you'
+  [I18nTags.notifications.someone_followed_you]: '{displayName} さんがあなたをフォローしています'
 }
 
 export default {
