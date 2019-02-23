@@ -1,9 +1,9 @@
 export const I18nLocales = {
   EN: 'en',
+  JA: 'ja',
   ZH_CN: 'zh-cn',
   ZH_HK: 'zh-hk',
-  ZH_TW: 'zh-tw',
-  JA: 'ja'
+  ZH_TW: 'zh-tw'
 }
 
 export const I18nTags = {
