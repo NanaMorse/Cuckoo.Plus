@@ -6,7 +6,9 @@
         <img :src="currentUserAccount.avatar_static">
       </mu-avatar>
 
-      <div v-if="isOAuthUser" class="active-reply-entry secondary-read-text-color" @click="onReplyToStatus">
+      <div v-if="isOAuthUser" :style="activeReplyEntryStyle"
+           class="active-reply-entry secondary-read-text-color"
+           @click="onReplyToStatus">
         {{$t($i18nTags.statusCard.reply_to_main_status)}}
       </div>
     </div>
@@ -34,7 +36,8 @@
 <script lang="ts">
   import { Vue, Component, Prop } from 'vue-property-decorator'
   import { State, Getter, Action } from 'vuex-class'
-  import { mastodonentities } from '@/interface'
+  import { I18nLocales } from '@/constant'
+  import { mastodonentities, cuckoostore } from '@/interface'
 
   @Component({})
   class SimpleActionBar extends Vue {
@@ -43,9 +46,19 @@
 
     @State('currentUserAccount') currentUserAccount: mastodonentities.AuthenticatedAccount
 
+    @State('appStatus') appStatus
+
     @Getter('isOAuthUser') isOAuthUser
 
     @Action('updateFavouriteStatusById') updateFavouriteStatusById
+
+    get activeReplyEntryStyle () {
+      if (this.appStatus.settings.locale === I18nLocales.JA) {
+        return {
+          fontSize: '12px'
+        }
+      }
+    }
 
     onFavoriteButtonClick () {
       this.updateFavouriteStatusById({
