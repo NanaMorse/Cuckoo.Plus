@@ -2,7 +2,8 @@ export const I18nLocales = {
   EN: 'en',
   ZH_CN: 'zh-cn',
   ZH_HK: 'zh-hk',
-  ZH_TW: 'zh-tw'
+  ZH_TW: 'zh-tw',
+  JA: 'ja'
 }
 
 export const I18nTags = {
