@@ -47,6 +47,20 @@ const statuses = {
     }
   },
 
+  async updateReblogStatusById ({ commit }, { reblogged, mainStatusId, targetStatusId }) {
+    try {
+      if (reblogged) {
+        api.statuses.reblogStatusById(targetStatusId)
+      } else {
+        api.statuses.unReblogStatusById(targetStatusId)
+      }
+
+      commit('updateReblogStatusById', { reblogged, mainStatusId, targetStatusId })
+    } catch (e) {
+      throw new Error(e)
+    }
+  },
+
   async updateContextMap ({ commit }, statusId: string) {
     if (!statusId) throw new Error('unknown status id!')
 
