@@ -13,7 +13,8 @@ const TimeLineTypes = {
   HOME: 'home',
   DIRECT: 'direct',
   TAG: 'tag',
-  LIST: 'list'
+  LIST: 'list',
+  LOCAL: 'local'
 }
 
 const VisibilityTypes = {
