@@ -46,6 +46,7 @@ declare module "vue/types/vue" {
         status_visibility_private_desc: string,
         status_visibility_unlisted_desc: string,
         status_visibility_direct_desc: string,
+        drag_and_drop_to_upload: string
       },
       timeLines: {
         no_load_more_status_notice: string

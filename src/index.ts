@@ -15,6 +15,7 @@ import * as moment from 'moment'
 import i18nMessages from './i18n'
 import { I18nTags, RoutersInfo } from '@/constant'
 import ThemeManager from '@/themes'
+import './directives'
 
 Vue.use({
   install (Vue) {

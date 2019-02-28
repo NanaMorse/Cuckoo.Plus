@@ -1,6 +1,6 @@
 <template>
-  <div class="status-card-container">
-    <mu-card class="status-card status-card-bg-color" v-loading="isCardLoading">
+  <div class="status-card-container" @dragover="onDragFileOver" @dragleave="isFileDragOver = false" @drop="onDropFile">
+    <mu-card class="status-card status-card-bg-color" v-loading="isCardLoading" v-drag-over="isFileDragOver">
 
       <card-header :status="status" @deleteStatus="isCardLoading = true"/>
 
@@ -59,6 +59,7 @@
         <full-action-bar v-if="isOAuthUser" :show="shouldShowFullReplyActionArea"
                          :currentReplyToStatus="currentReplyToStatus"
                          :descendantStatusList="descendantStatusList"
+                         :droppedFiles="droppedFiles"
                          :status="status" :value.sync="replyInputValue" @hide="hideFullReplyActionArea"
                          @loadingStart="isCardLoading = true" @loadingEnd="isCardLoading = false" @replySuccess="onReplySuccess"/>
       </mu-card-actions>
@@ -118,6 +119,10 @@
 
     isCardLoading = false
 
+    isFileDragOver = false
+
+    droppedFiles: Array<File> = null
+
     @Prop() status: mastodonentities.Status
 
     get descendantStatusList (): Array<mastodonentities.Status> {
@@ -168,6 +173,24 @@
       this.$nextTick(() => {
         this.$refs.replyListContainer.scrollTo({ top: this.$refs.replyListContainer.scrollHeight, left: 0, behavior: 'smooth' })
       })
+    }
+
+    onDragFileOver (e: DragEvent) {
+      e.preventDefault()
+
+      this.isFileDragOver = true
+    }
+
+    onDropFile (e: DragEvent) {
+      e.preventDefault()
+
+      this.isFileDragOver = false
+
+      if (!this.shouldShowFullReplyActionArea) {
+        this.onReplyToStatus(this.status)
+      }
+
+      this.droppedFiles = Array.from(e.dataTransfer.files)
     }
   }
 
