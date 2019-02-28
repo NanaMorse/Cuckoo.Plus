@@ -43,6 +43,9 @@
       <mu-list-item button :to="$routersInfo.settings.path" @click="onSecondaryItemClick">
         <mu-list-item-title class="secondary-read-text-color">{{$t($i18nTags.drawer.settings)}}</mu-list-item-title>
       </mu-list-item>
+      <mu-list-item button @click="onLogoutClick">
+        <mu-list-item-title class="secondary-read-text-color">Logout</mu-list-item-title>
+      </mu-list-item>
     </mu-list>
 
     <div class="bottom-info-area secondary-read-text-color">
@@ -205,6 +208,13 @@
     onSecondaryItemClick () {
       if (!this.shouldDrawerDocked) this.updateDrawerOpenStatus(false)
       window.scrollTo(0, 0)
+    }
+
+    onLogoutClick () {
+      localStorage.removeItem('clientId')
+      localStorage.removeItem('clientSecret')
+      localStorage.removeItem('accessToken')
+      location.href="/";
     }
 
     onDeleteHash (hashName: string) {
