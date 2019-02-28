@@ -65,6 +65,8 @@
       textArea: HTMLTextAreaElement
     }
 
+    $toast
+
     @Prop() text: string
 
     @Prop() uploadProcesses: Array<{
@@ -138,7 +140,8 @@
             this.$emit('update:uploadProcesses', uploadProcessesCopy)
 
           } catch (e) {
-
+            this.onRemoveMediaFileByIndex(index)
+            this.$toast.error(e.data.error)
           }
         }
       })
@@ -169,6 +172,7 @@
     onRemoveMediaFileByIndex (index: number) {
       const uploadProcessesCopy = [...this.uploadProcesses]
       uploadProcessesCopy.splice(index, 1)
+      // todo update upload processes
       this.$emit('update:uploadProcesses', uploadProcessesCopy)
 
       // update uploadFileDataUrlList

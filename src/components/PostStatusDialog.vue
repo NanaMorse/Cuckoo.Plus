@@ -1,5 +1,6 @@
 <template>
   <mu-dialog dialog-class="post-status-dialog-container"
+             @dragover=""
              :open.sync="isDialogOpening" overlay-color="rgba(0,0,0,0.12)"
              :overlay-opacity="1" @close="onTryCloseDialog" :transition="transition"
              :width="dialogWidth" :fullscreen="isFullScreen" v-loading="isPostLoading">
@@ -94,7 +95,73 @@
   import Input from '@/components/Input'
   import { mastodonentities } from "../interface";
 
-  const preViewAreaHeight = 212
+  const maxUploadLength = 4
+
+  class InjectDragAndDropEvents {
+
+    private dialogComponent
+
+    private beingDragOver: boolean = false
+
+    constructor (dialogComponent: PostStatusDialog) {
+      this.dialogComponent = dialogComponent
+
+      this.dialogComponent.$el.addEventListener('dragenter', this.onDragOver.bind(this))
+    }
+
+    private insertDragOverLayer () {
+      const layer = document.createElement('div')
+      layer.className = 'mu-loading-wrap drag-over-layer'
+
+      layer.innerText = this.dialogComponent.$t(this.dialogComponent.$i18nTags.common.drag_and_drop_to_upload)
+
+      this.dialogComponent.$el.appendChild(layer)
+
+      layer.addEventListener('dragover', e => e.preventDefault())
+      layer.addEventListener('dragleave', this.onDragLeave.bind(this))
+      layer.addEventListener('drop', this.onDrop.bind(this))
+    }
+
+    private removeDragOverLayer () {
+      this.dialogComponent.$el.removeChild(this.dialogComponent.$el.querySelector('.drag-over-layer'))
+    }
+
+    private onDragOver (e: DragEvent) {
+      e.preventDefault()
+
+      if (!this.beingDragOver) {
+        this.beingDragOver = true
+        this.insertDragOverLayer()
+      }
+    }
+
+    private onDragLeave (e: DragEvent) {
+      e.preventDefault()
+
+      if (this.beingDragOver) {
+        this.beingDragOver = false
+        this.removeDragOverLayer()
+      }
+    }
+
+    private onDrop (e: DragEvent) {
+      e.preventDefault()
+
+      this.beingDragOver = false
+      this.removeDragOverLayer()
+
+      const filesToUpload = Array.from(e.dataTransfer.files)
+        .splice(0, maxUploadLength - this.dialogComponent.uploadProcesses.length)
+
+      if (filesToUpload.length === 0) return
+
+      filesToUpload.forEach(file => {
+        this.dialogComponent.uploadProcesses.push({
+          file, hasStartedUpload: false, uploadResult: null
+        })
+      })
+    }
+  }
 
   @Component({
     components: {
@@ -165,6 +232,8 @@
         this.$nextTick(() => {
           this.visibilityTriggerBtn = this.$refs.visibilitySelectBtn
           this.$refs.cuckooInput.focus()
+
+          new InjectDragAndDropEvents(this)
         })
       } else {
         this.setVisibilitySelectPopOverDisplay(false)
@@ -226,11 +295,9 @@
     }
 
     onUploadMediaFiles () {
-      const maxUploadLength = 4
-
       Array.from(this.$refs.fileInput.files)
         .splice(0, maxUploadLength - this.uploadProcesses.length)
-        .forEach(async (file) => {
+        .forEach(file => {
           this.uploadProcesses.push({
             file, hasStartedUpload: false, uploadResult: null
           })
