@@ -41,6 +41,7 @@ const statusCard = {
 const drawer = {
   [I18nTags.drawer.home]: '主页',
   [I18nTags.drawer.public]: '公共',
+  [I18nTags.drawer.local]: '本站时间轴',
   [I18nTags.drawer.tag]: '标签',
   [I18nTags.drawer.profile]: '个人资料',
   [I18nTags.drawer.settings]: '设置',

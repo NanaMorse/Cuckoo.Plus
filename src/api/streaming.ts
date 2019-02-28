@@ -76,7 +76,20 @@ class Streaming {
 
     this.initEventListener(this.userStreamWs, TimeLineTypes.HOME)
   }
+  public openLocalConnection () {
+    const wsUrl = `wss://${new URL(store.state.mastodonServerUri).hostname}/api/v1/streaming/?stream=public:local&access_token=${store.state.OAuthInfo.accessToken}`
 
+    this.userStreamWs = new WebSocket(wsUrl)
+
+    this.initEventListener(this.userStreamWs, TimeLineTypes.LOCAL)
+  }
+  public openPublicConnection () {
+    const wsUrl = `wss://${new URL(store.state.mastodonServerUri).hostname}/api/v1/streaming/?stream=public&access_token=${store.state.OAuthInfo.accessToken}`
+
+    this.userStreamWs = new WebSocket(wsUrl)
+
+    this.initEventListener(this.userStreamWs, TimeLineTypes.PUBLIC)
+  }
   private initEventListener (targetWs: WebSocket, timeLineType, hashName?) {
     targetWs.onmessage = (message) => {
       const parsedMessage = JSON.parse(message.data)
@@ -98,17 +111,14 @@ class Streaming {
   }
 
   private updateStatus (newStatus: mastodonentities.Status, timeLineType, hashName?) {
-
     if (store.state.statusMap[newStatus.id]) return
 
     // update status map
     store.commit('updateStatusMap', { [newStatus.id]: newStatus })
-
     prepareRootStatus(newStatus)
 
     // update target timeline list
     const targetMutationName = store.state.appStatus.settings.realTimeLoadStatusMode ? 'unShiftTimeLineStatuses' : 'unShiftStreamStatusesPool'
-
     store.commit(targetMutationName, {
       newStatusIdList: [newStatus.id],
       timeLineType, hashName

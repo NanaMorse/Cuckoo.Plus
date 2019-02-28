@@ -44,6 +44,7 @@ export const I18nTags = {
     home: 'drawer_home',
     public: 'drawer_public',
     tag: 'drawer_tag',
+    local: 'drawer_local',
     profile: 'drawer_profile',
     settings: 'drawer_settings',
     logout: 'drawer_logout',

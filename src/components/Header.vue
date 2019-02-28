@@ -50,6 +50,9 @@
     },
     '/timelines/public': {
       name: 'Public'
+    },
+    '/timelines/local': {
+      name: 'Local'
     }
   }
 

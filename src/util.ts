@@ -22,7 +22,7 @@ export function generateUniqueKey () {
 }
 
 export function isBaseTimeLine (timeLineType: string): boolean {
-  return [TimeLineTypes.HOME, TimeLineTypes.PUBLIC, TimeLineTypes.DIRECT].indexOf(timeLineType) !== -1
+  return [TimeLineTypes.HOME, TimeLineTypes.PUBLIC, TimeLineTypes.DIRECT, TimeLineTypes.LOCAL].indexOf(timeLineType) !== -1
 }
 
 export function getTimeLineTypeAndHashName (route: Route) {

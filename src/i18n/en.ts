@@ -42,6 +42,7 @@ const drawer = {
   [I18nTags.drawer.home]: 'Home',
   [I18nTags.drawer.public]: 'Public',
   [I18nTags.drawer.tag]: 'Tag',
+  [I18nTags.drawer.local]: 'Local',
   [I18nTags.drawer.profile]: 'Profile',
   [I18nTags.drawer.settings]: 'Settings',
   [I18nTags.drawer.logout]: 'Logout',
