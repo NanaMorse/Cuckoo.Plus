@@ -44,7 +44,7 @@
         <mu-list-item-title class="secondary-read-text-color">{{$t($i18nTags.drawer.settings)}}</mu-list-item-title>
       </mu-list-item>
       <mu-list-item button @click="onLogoutClick">
-        <mu-list-item-title class="secondary-read-text-color">Logout</mu-list-item-title>
+        <mu-list-item-title class="secondary-read-text-color">{{$t($i18nTags.drawer.logout)}}</mu-list-item-title>
       </mu-list-item>
     </mu-list>
 
