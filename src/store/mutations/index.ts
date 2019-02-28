@@ -70,12 +70,16 @@ const statusesMutations = {
     Vue.set(state.statusMap, statusId, undefined)
   },
 
-  updateFavouriteStatusById (state: cuckoostore.stateInfo, { favourited, targetStatusId, notSelfOperate }) {
-    const targetStatus = state.statusMap[targetStatusId]
+  updateFavouriteStatusById (state: cuckoostore.stateInfo, { favourited, mainStatusId, targetStatusId, notSelfOperate }) {
+    let targetStatus
+    if (mainStatusId === targetStatusId) {
+      targetStatus = state.statusMap[targetStatusId]
+    } else {
+      targetStatus = state.statusMap[mainStatusId].reblog
+    }
 
     if (!targetStatus) return
 
-    // todo where?
     if (!notSelfOperate) {
       Vue.set(targetStatus, 'favourited', favourited)
     }
@@ -84,15 +88,19 @@ const statusesMutations = {
       targetStatus.favourites_count + 1 : targetStatus.favourites_count - 1)
   },
 
-  updateReblogStatusById (state: cuckoostore.stateInfo, { reblogged, mainStatusId, targetStatusId }) {
-    // if reblog target is original status
-
-
-    const targetStatus = state.statusMap[targetStatusId]
+  updateReblogStatusById (state: cuckoostore.stateInfo, { reblogged, mainStatusId, targetStatusId, notSelfOperate }) {
+    let targetStatus
+    if (mainStatusId === targetStatusId) {
+      targetStatus = state.statusMap[targetStatusId]
+    } else {
+      targetStatus = state.statusMap[mainStatusId].reblog
+    }
 
     if (!targetStatus) return
 
-    Vue.set(targetStatus, 'reblogged', reblogged)
+    if (!notSelfOperate) {
+      Vue.set(targetStatus, 'reblogged', reblogged)
+    }
 
     Vue.set(targetStatus, 'reblogs_count', reblogged ?
       targetStatus.reblogs_count + 1 : targetStatus.reblogs_count - 1)

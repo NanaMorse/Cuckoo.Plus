@@ -16,7 +16,7 @@
     <div class="right-area">
       <div class="plus-one operate-btn-group">
         <mu-button :disabled="!isOAuthUser" class="status-card-circle-btn" icon @click="onFavoriteButtonClick"
-                   :class="{ 'primary-theme-bg-color': status.favourited }">
+                   :class="{ 'primary-theme-bg-color': operateCheckTargetStatus.favourited }">
           +1
         </mu-button>
         <span v-if="operateCheckTargetStatus.favourites_count > 0" class="count">{{operateCheckTargetStatus.favourites_count}}</span>
@@ -38,7 +38,6 @@
   import { State, Getter, Action } from 'vuex-class'
   import { I18nLocales, VisibilityTypes } from '@/constant'
   import { mastodonentities, cuckoostore } from '@/interface'
-  import { mastodonentities } from '@/interface'
 
   @Component({})
   class SimpleActionBar extends Vue {
@@ -71,16 +70,18 @@
     }
 
     onFavoriteButtonClick () {
+      const mainStatusId = this.status.id
+      const targetStatusId = this.operateCheckTargetStatus.id
+
       this.updateFavouriteStatusById({
-        favourited: !this.status.favourited,
-        targetStatusId: this.status.id
+        favourited: !this.operateCheckTargetStatus.favourited,
+        mainStatusId, targetStatusId
       })
     }
 
     onReBlogButtonClick () {
       const mainStatusId = this.status.id
-      const targetStatus = this.status.reblog || this.status
-      const targetStatusId = (this.status.reblog || this.status).id
+      const targetStatusId = this.operateCheckTargetStatus.id
 
       this.updateReblogStatusById({
         reblogged: !this.operateCheckTargetStatus.reblogged,

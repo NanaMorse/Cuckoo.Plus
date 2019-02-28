@@ -267,8 +267,9 @@
   @import "../../assets/variable";
 
   .cuckoo-drawer {
-    background: url("https://i.imgur.com/vKv5bn5.png") no-repeat left bottom;
-    background-size: 42%;
+    // todo current size is not fit to every screen
+    //background: url("https://i.imgur.com/vKv5bn5.png") no-repeat left bottom;
+    //background-size: 42%;
 
     .mu-item-wrapper {
       -webkit-transition: background-color .3s cubic-bezier(0,0,0.2,1);

@@ -29,10 +29,7 @@ const statuses = {
     }
   },
 
-  async updateFavouriteStatusById ({ commit }, { favourited, targetStatusId }: {
-    favourited: boolean
-    targetStatusId: string
-  }) {
+  async updateFavouriteStatusById ({ commit }, { favourited, mainStatusId, targetStatusId }) {
     try {
 
       if (favourited) {
@@ -41,7 +38,7 @@ const statuses = {
         api.statuses.unFavouriteStatusById(targetStatusId)
       }
 
-      commit('updateFavouriteStatusById', { favourited, targetStatusId })
+      commit('updateFavouriteStatusById', { favourited, mainStatusId, targetStatusId })
     } catch (e) {
       throw new Error(e)
     }
