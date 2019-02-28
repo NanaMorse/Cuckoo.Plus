@@ -19,6 +19,7 @@ const common = {
   [I18nTags.common.status_visibility_unlisted_desc]: '所有人可见，但不会出现在公共时间轴上',
   [I18nTags.common.status_visibility_private_desc]: '只有关注你的用户能看到',
   [I18nTags.common.status_visibility_direct_desc]: '只有被提及的用户能看到',
+  [I18nTags.common.drag_and_drop_to_upload]: '将文件拖放至此处开始上传'
 }
 
 const statusCard = {

@@ -19,6 +19,7 @@ const common = {
   [I18nTags.common.status_visibility_unlisted_desc]: '公開TLで表示しない',
   [I18nTags.common.status_visibility_private_desc]: 'フォロワーだけに公開',
   [I18nTags.common.status_visibility_direct_desc]: 'メンションしたユーザーだけに公開',
+  [I18nTags.common.drag_and_drop_to_upload]: 'ドラッグ＆ドロップでアップロード'
 }
 
 const statusCard = {

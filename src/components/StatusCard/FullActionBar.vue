@@ -50,6 +50,8 @@
   import Input from '@/components/Input'
   import { mastodonentities } from '@/interface'
 
+  const maxUploadLength = 4
+
   @Component({
     components: {
       'cuckoo-input': Input,
@@ -74,6 +76,8 @@
     @Prop() currentReplyToStatus
 
     @Prop() descendantStatusList: Array<mastodonentities.Status>
+
+    @Prop() droppedFiles: Array<File>
 
     @State('currentUserAccount') currentUserAccount
 
@@ -131,6 +135,20 @@
       }
     }
 
+    @Watch('droppedFiles')
+    onDropFiles (val: Array<File>) {
+      const filesToUpload = [...val].splice(0, maxUploadLength - this.uploadProcesses.length)
+
+      // todo show notification toast
+      if (!filesToUpload.length) return
+
+      filesToUpload.forEach(file => {
+        this.uploadProcesses.push({
+          file, hasStartedUpload: false, uploadResult: null
+        })
+      })
+    }
+
     async onSubmitReplyContent () {
       if (!this.shouldEnableSubmitButton) return
 
@@ -160,11 +178,9 @@
     }
 
     onUploadMediaFiles () {
-      const maxUploadLength = 4
-
       Array.from(this.$refs.fileInput.files)
         .splice(0, maxUploadLength - this.uploadProcesses.length)
-        .forEach(async (file) => {
+        .forEach(file => {
           this.uploadProcesses.push({
             file, hasStartedUpload: false, uploadResult: null
           })

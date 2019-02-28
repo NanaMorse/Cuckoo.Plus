@@ -92,6 +92,12 @@
     z-index: 20141222 !important;
   }
 
+  .drag-over-layer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .custom-emoji {
     width: 20px;
     height: 20px;
