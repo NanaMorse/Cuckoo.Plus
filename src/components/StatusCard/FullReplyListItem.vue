@@ -115,6 +115,7 @@
     onFavoriteButtonClick () {
       this.updateFavouriteStatusById({
         favourited: !this.status.favourited,
+        mainStatusId: this.status.id,
         targetStatusId: this.status.id
       })
     }
