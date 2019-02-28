@@ -16,17 +16,17 @@
     <div class="right-area">
       <div class="plus-one operate-btn-group">
         <mu-button :disabled="!isOAuthUser" class="status-card-circle-btn" icon @click="onFavoriteButtonClick"
-                   :class="{ 'primary-theme-bg-color': status.favourited }">
+                   :class="{ 'primary-theme-bg-color': operateCheckTargetStatus.favourited }">
           +1
         </mu-button>
-        <span v-if="status.favourites_count > 0" class="count">{{status.favourites_count}}</span>
+        <span v-if="operateCheckTargetStatus.favourites_count > 0" class="count">{{operateCheckTargetStatus.favourites_count}}</span>
       </div>
-      <div class="share operate-btn-group">
-        <mu-button :disabled="!isOAuthUser" class="status-card-circle-btn unset-display" @click="onReBlogMainStatus"
-                   :class="{ 'primary-theme-bg-color': status.reblogged }" icon>
+      <div class="share operate-btn-group" v-if="shouldShowReblogButton">
+        <mu-button :disabled="!isOAuthUser" class="status-card-circle-btn unset-display" @click="onReBlogButtonClick"
+                   :class="{ 'primary-theme-bg-color': operateCheckTargetStatus.reblogged }" icon>
           <mu-icon class="share-icon" value="share" />
         </mu-button>
-        <span v-if="status.reblogs_count > 0" class="count">{{status.reblogs_count}}</span>
+        <span v-if="operateCheckTargetStatus.reblogs_count > 0" class="count">{{operateCheckTargetStatus.reblogs_count}}</span>
       </div>
     </div>
 
@@ -36,7 +36,7 @@
 <script lang="ts">
   import { Vue, Component, Prop } from 'vue-property-decorator'
   import { State, Getter, Action } from 'vuex-class'
-  import { I18nLocales } from '@/constant'
+  import { I18nLocales, VisibilityTypes } from '@/constant'
   import { mastodonentities, cuckoostore } from '@/interface'
 
   @Component({})
@@ -51,6 +51,15 @@
     @Getter('isOAuthUser') isOAuthUser
 
     @Action('updateFavouriteStatusById') updateFavouriteStatusById
+    @Action('updateReblogStatusById') updateReblogStatusById
+
+    get shouldShowReblogButton () {
+      return this.status.visibility !== VisibilityTypes.DIRECT
+    }
+
+    get operateCheckTargetStatus () {
+      return this.status.reblog || this.status
+    }
 
     get activeReplyEntryStyle () {
       if (this.appStatus.settings.locale === I18nLocales.JA) {
@@ -61,14 +70,23 @@
     }
 
     onFavoriteButtonClick () {
+      const mainStatusId = this.status.id
+      const targetStatusId = this.operateCheckTargetStatus.id
+
       this.updateFavouriteStatusById({
-        favourited: !this.status.favourited,
-        targetStatusId: this.status.id
+        favourited: !this.operateCheckTargetStatus.favourited,
+        mainStatusId, targetStatusId
       })
     }
 
-    onReBlogMainStatus () {
+    onReBlogButtonClick () {
+      const mainStatusId = this.status.id
+      const targetStatusId = this.operateCheckTargetStatus.id
 
+      this.updateReblogStatusById({
+        reblogged: !this.operateCheckTargetStatus.reblogged,
+        mainStatusId, targetStatusId
+      })
     }
 
     onReplyToStatus () {

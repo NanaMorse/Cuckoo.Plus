@@ -57,6 +57,11 @@ const statusesMutations = {
       // format account display name
       newStatus.account.display_name = formatAccountDisplayName(newStatus.account)
 
+      // fix favourited and reblogged count sync bug
+      const checkTarget = newStatus.reblog || newStatus
+      if (checkTarget.favourited && checkTarget.favourites_count === 0) checkTarget.favourites_count = 1
+      if (checkTarget.reblogged && checkTarget.reblogs_count === 0) checkTarget.reblogs_count = 1
+
       Vue.set(state.statusMap, statusId, newStatusMap[statusId])
     })
   },
@@ -65,8 +70,13 @@ const statusesMutations = {
     Vue.set(state.statusMap, statusId, undefined)
   },
 
-  updateFavouriteStatusById (state: cuckoostore.stateInfo, { favourited, targetStatusId, notSelfOperate }) {
-    const targetStatus = state.statusMap[targetStatusId]
+  updateFavouriteStatusById (state: cuckoostore.stateInfo, { favourited, mainStatusId, targetStatusId, notSelfOperate }) {
+    let targetStatus
+    if (mainStatusId === targetStatusId) {
+      targetStatus = state.statusMap[targetStatusId]
+    } else {
+      targetStatus = state.statusMap[mainStatusId].reblog
+    }
 
     if (!targetStatus) return
 
@@ -76,6 +86,24 @@ const statusesMutations = {
 
     Vue.set(targetStatus, 'favourites_count', favourited ?
       targetStatus.favourites_count + 1 : targetStatus.favourites_count - 1)
+  },
+
+  updateReblogStatusById (state: cuckoostore.stateInfo, { reblogged, mainStatusId, targetStatusId, notSelfOperate }) {
+    let targetStatus
+    if (mainStatusId === targetStatusId) {
+      targetStatus = state.statusMap[targetStatusId]
+    } else {
+      targetStatus = state.statusMap[mainStatusId].reblog
+    }
+
+    if (!targetStatus) return
+
+    if (!notSelfOperate) {
+      Vue.set(targetStatus, 'reblogged', reblogged)
+    }
+
+    Vue.set(targetStatus, 'reblogs_count', reblogged ?
+      targetStatus.reblogs_count + 1 : targetStatus.reblogs_count - 1)
   }
 }
 
