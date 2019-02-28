@@ -44,6 +44,7 @@ const drawer = {
   [I18nTags.drawer.tag]: 'タグ',
   [I18nTags.drawer.profile]: 'プロフィール',
   [I18nTags.drawer.settings]: '設定',
+  [I18nTags.drawer.logout]: 'ログアウト',
   [I18nTags.drawer.toHostInstance]: '現在のインスタンスを開く',
   [I18nTags.drawer.search_input_placeholder]: '検索',
   [I18nTags.drawer.search_result_people_label]: 'ユーザー',

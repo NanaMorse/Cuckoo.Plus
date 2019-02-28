@@ -44,6 +44,7 @@ const drawer = {
   [I18nTags.drawer.tag]: '标签',
   [I18nTags.drawer.profile]: '个人资料',
   [I18nTags.drawer.settings]: '设置',
+  [I18nTags.drawer.logout]: '登出',
   [I18nTags.drawer.toHostInstance]: '打开当前实例站点',
   [I18nTags.drawer.search_input_placeholder]: '搜索',
   [I18nTags.drawer.search_result_people_label]: '用户',
