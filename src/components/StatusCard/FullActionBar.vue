@@ -24,7 +24,7 @@
                  style="display: none" multiple/>
         </mu-button>
         <mu-button ref="visibilityTriggerBtn" @click="shouldOpenVisibilitySelectPopOver = true" class="operate-btn change-visibility secondary-read-text-color" icon>
-          <mu-icon class="reply-action-icon" :value="getVisibilityDescInfo(replyVisibility).icon" />
+          <mu-icon class="reply-action-icon" :value="getVisibilityDescInfo(visibility).icon" />
         </mu-button>
       </div>
       <div class="right-area">
@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <visibility-select-pop-over :visibility.sync="replyVisibility"
+    <visibility-select-pop-over :visibility.sync="visibility"
                                 :open.sync="shouldOpenVisibilitySelectPopOver"
                                 :trigger="visibilityTriggerBtn"/>
   </div>
@@ -81,9 +81,19 @@
 
     @State('currentUserAccount') currentUserAccount
 
+    @State('appStatus') appStatus
+
     @Action('postStatus') postStatus
 
-    replyVisibility = VisibilityTypes.PUBLIC
+    postPrivacy = null
+
+    get visibility () {
+      return this.postPrivacy || this.appStatus.settings.postPrivacy
+    }
+
+    set visibility (val) {
+      this.postPrivacy = val
+    }
 
     shouldOpenVisibilitySelectPopOver = false
 
@@ -161,7 +171,7 @@
         formData: {
           status: this.value,
           inReplyToId: currentReplyToStatus.id,
-          visibility: this.replyVisibility,
+          visibility: this.visibility,
           mediaIds: this.uploadProcesses.map(info => info.uploadResult.id)
         }
       })

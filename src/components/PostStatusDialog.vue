@@ -188,7 +188,15 @@
 
     getVisibilityDescInfo = getVisibilityDescInfo
 
-    visibility: string = VisibilityTypes.PUBLIC
+    postPrivacy = null
+
+    get visibility () {
+      return this.postPrivacy || this.appStatus.settings.postPrivacy
+    }
+
+    set visibility (val) {
+      this.postPrivacy = val
+    }
 
     visibilityTriggerBtn: HTMLDivElement = null
 

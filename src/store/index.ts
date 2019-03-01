@@ -4,7 +4,7 @@ import mutations from './mutations'
 import actions from './actions'
 import getters from './getters'
 import { cuckoostore } from '@/interface'
-import { UiWidthCheckConstants, ThemeNames, I18nLocales } from '@/constant'
+import { UiWidthCheckConstants, ThemeNames, I18nLocales, VisibilityTypes } from '@/constant'
 
 Vue.use(Vuex)
 
@@ -67,7 +67,8 @@ const state: cuckoostore.stateInfo = {
       realTimeLoadStatusMode: getLocalSetting('realTimeLoadStatusMode', false),
       theme: localStorage.getItem('theme') || ThemeNames.GOOGLE_PLUS,
       tags: getLocalSetting('tags', ['hello']),
-      locale: localStorage.getItem('locale') || I18nLocales.EN
+      locale: localStorage.getItem('locale') || I18nLocales.EN,
+      postPrivacy: localStorage.getItem('postPrivacy') || VisibilityTypes.PUBLIC
     },
 
   }

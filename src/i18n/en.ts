@@ -59,9 +59,11 @@ const settings = {
   [I18nTags.settings.use_multi_line_mode]: 'Use multi-column layout mode:',
   [I18nTags.settings.show_sensitive_media_files]: 'Always show media marked as sensitive:',
   [I18nTags.settings.auto_load_new_status]: 'Always auto load new post:',
+  [I18nTags.settings.post_privacy]: 'Post privacy:',
   [I18nTags.settings.stream_label]: 'Stream',
   [I18nTags.settings.media_label]: 'Media',
-  [I18nTags.settings.personality_label]: 'Personality'
+  [I18nTags.settings.personality_label]: 'Personality',
+  [I18nTags.settings.publishing_label]: 'Publishing'
 }
 
 const timeLines = {
