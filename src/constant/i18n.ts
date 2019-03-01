@@ -61,8 +61,11 @@ export const I18nTags = {
     use_multi_line_mode: 'settings_use_multi_line_mode',
     show_sensitive_media_files: 'settings_show_sensitive_media_files',
     auto_load_new_status: 'settings_auto_load_new_status',
+    post_privacy: 'settings_post_privacy',
+
     stream_label: 'settings_stream_label',
     media_label: 'settings_media_label',
+    publishing_label: 'settings_publishing_label',
     personality_label: 'settings_personality_label'
   },
 

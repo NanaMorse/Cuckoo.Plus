@@ -39,11 +39,14 @@
           <mu-switch class="setting-switch" v-model="showSensitiveContentMode" />
         </div>
 
-        <p class="card-label">{{$t($i18nTags.settings.personality_label)}}</p>
+        <p class="card-label">{{$t($i18nTags.settings.publishing_label)}}</p>
 
-        <div class="setting-row">
-          <span class="setting-label primary-read-text-color">Drawer Background Image Source Link：</span>
-          <mu-text-field class="setting-input" placeholder="on developing"/>
+        <div class="setting-row select-row">
+          <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.post_privacy)}}</span>
+          <mu-select class="setting-select" v-model="postPrivacy">
+            <mu-option v-for="(visibilityInfo, index) in postPrivacyOptions" :key="index"
+                       :label="visibilityInfo.label" :value="visibilityInfo.value" />
+          </mu-select>
         </div>
 
       </mu-card-actions>
@@ -54,13 +57,15 @@
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
   import { State, Mutation } from 'vuex-class'
-  import { ThemeNames, I18nLocales } from '@/constant'
+  import { ThemeNames, I18nLocales, VisibilityTypes } from '@/constant'
   import * as moment from 'moment'
 
   @Component({})
   class Setting extends Vue {
 
     $i18n
+
+    $t
 
     @State('appStatus') appStatus
 
@@ -74,6 +79,8 @@
 
     @Mutation('updateLocale') updateLocale
 
+    @Mutation('updatePostPrivacy') updatePostPrivacy
+
     themeOptions = [
       { label: 'Google Plus', value: ThemeNames.GOOGLE_PLUS },
       { label: 'Dark', value: ThemeNames.DARK }
@@ -86,6 +93,12 @@
       { label: '繁體中文（香港）', value: I18nLocales.ZH_HK },
       { label: '繁體中文（台灣）', value: I18nLocales.ZH_TW }
     ]
+
+    get postPrivacyOptions () {
+      return [VisibilityTypes.PUBLIC, VisibilityTypes.UNLISTED, VisibilityTypes.PRIVATE].map(visibilityType => {
+        return { label: this.$t(visibilityType), value: visibilityType }
+      })
+    }
 
     get themeName (): string {
       return this.appStatus.settings.theme
@@ -129,6 +142,13 @@
       this.updateRealTimeLoadStatusMode(val)
     }
 
+    get postPrivacy () {
+      return this.appStatus.settings.postPrivacy
+    }
+
+    set postPrivacy (val) {
+      this.updatePostPrivacy(val)
+    }
   }
 
   export default Setting

@@ -73,8 +73,10 @@ declare module "vue/types/vue" {
         use_multi_line_mode: string
         show_sensitive_media_files: string
         auto_load_new_status: string
+        post_privacy: string
         stream_label: string
         media_label: string
+        publishing_label: string
         personality_label: string
       },
       home: {

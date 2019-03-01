@@ -59,9 +59,11 @@ const settings = {
   [I18nTags.settings.use_multi_line_mode]: '使用多行佈局模式：',
   [I18nTags.settings.show_sensitive_media_files]: '總是顯示標記為敏感的媒體文件：',
   [I18nTags.settings.auto_load_new_status]: '總是自動加載最新嘟文：',
+  [I18nTags.settings.post_privacy]: '文章預設為：',
   [I18nTags.settings.stream_label]: '訊息串',
   [I18nTags.settings.media_label]: '媒體內容',
-  [I18nTags.settings.personality_label]: '個人化'
+  [I18nTags.settings.personality_label]: '個人化',
+  [I18nTags.settings.publishing_label]: '發佈'
 }
 
 const timeLines = {

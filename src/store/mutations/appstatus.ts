@@ -68,5 +68,10 @@ export default {
   clearStreamStatusesPool (state: cuckoostore.stateInfo, { timeLineType, hashName }) {
     const targetStatusesPool = getTargetStatusesList(state.appStatus.streamStatusesPool, timeLineType, hashName)
     targetStatusesPool.splice(0, targetStatusesPool.length)
+  },
+
+  updatePostPrivacy (state: cuckoostore.stateInfo, newPostPrivacy: string) {
+    state.appStatus.settings.postPrivacy = newPostPrivacy
+    localStorage.setItem('postPrivacy', newPostPrivacy)
   }
 }
