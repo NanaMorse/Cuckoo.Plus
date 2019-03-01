@@ -66,6 +66,7 @@
   import { isBaseTimeLine } from '@/util'
   import { TimeLineTypes, UiWidthCheckConstants, RoutersInfo, I18nTags } from '@/constant'
   import Search from './Search'
+  import store from '@/store'
 
   const baseRouterInfoList = [
     {
@@ -79,6 +80,12 @@
       title: I18nTags.drawer.public,
       icon: 'public',
       to: '/timelines/public'
+    },
+    {
+      value: TimeLineTypes.LOCAL,
+      title: I18nTags.drawer.local,
+      icon: 'people',
+      to: '/timelines/local'
     },
     {
       value: TimeLineTypes.TAG,

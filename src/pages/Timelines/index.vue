@@ -119,9 +119,8 @@
 
     get allTimeLineNameList (): Array<string> {
       const result = [
-        TimeLineTypes.HOME, TimeLineTypes.PUBLIC
-      ].filter(type => this.timelines[type].length);
-
+        TimeLineTypes.HOME, TimeLineTypes.PUBLIC, TimeLineTypes.LOCAL
+      ];
       [TimeLineTypes.TAG, TimeLineTypes.LIST].forEach(secondType => {
         Object.keys(this.timelines[secondType]).forEach(hashName => {
           if (Array.isArray(this.timelines[secondType][hashName])) {

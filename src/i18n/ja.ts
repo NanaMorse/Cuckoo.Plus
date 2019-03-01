@@ -42,6 +42,7 @@ const statusCard = {
 const drawer = {
   [I18nTags.drawer.home]: 'ホーム',
   [I18nTags.drawer.public]: 'パブリック',
+  [I18nTags.drawer.local]: 'ローカル',
   [I18nTags.drawer.tag]: 'タグ',
   [I18nTags.drawer.profile]: 'プロフィール',
   [I18nTags.drawer.settings]: '設定',

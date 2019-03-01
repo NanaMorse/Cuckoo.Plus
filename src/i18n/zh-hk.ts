@@ -43,6 +43,7 @@ const drawer = {
   [I18nTags.drawer.home]: '主頁',
   [I18nTags.drawer.public]: '跨站時間軸',
   [I18nTags.drawer.tag]: '標籤',
+  [I18nTags.drawer.local]: '本站時間軸',
   [I18nTags.drawer.profile]: '個人檔案',
   [I18nTags.drawer.settings]: '設定',
   [I18nTags.drawer.logout]: '登出',

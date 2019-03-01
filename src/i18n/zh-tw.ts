@@ -42,6 +42,7 @@ const statusCard = {
 const drawer = {
   [I18nTags.drawer.home]: '首頁',
   [I18nTags.drawer.public]: '聯盟時間軸',
+  [I18nTags.drawer.local]: '本地時間軸',
   [I18nTags.drawer.tag]: '主題標籤',
   [I18nTags.drawer.profile]: '個人資料',
   [I18nTags.drawer.settings]: '設定',

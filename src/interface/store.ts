@@ -11,6 +11,7 @@ export namespace cuckoostore {
       home: Array<string>
       public: Array<string>
       direct: Array<string>
+      local: Array<string>
       tag: {
         [index: string]: Array<string>
       }
@@ -47,6 +48,7 @@ export namespace cuckoostore {
         home: Array<string>
         public: Array<string>
         direct: Array<string>
+        local: Array<string>
         tag: {
           [index: string]: Array<string>
         }

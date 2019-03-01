@@ -30,6 +30,7 @@ const state: cuckoostore.stateInfo = {
     home: [],
     public: [],
     direct: [],
+    local: [],
     tag: {},
     list: {}
   },
@@ -57,6 +58,7 @@ const state: cuckoostore.stateInfo = {
       home: [],
       public: [],
       direct: [],
+      local: [],
       tag: {},
       list: {}
     },

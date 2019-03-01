@@ -15,6 +15,8 @@ import AccountsPage from '@/pages/Accounts'
 Vue.use(Router)
 
 const homePath = '/timelines/home'
+const localPath = '/timelines/local'
+const publicPath = '/timelines/public'
 
 const router = new Router({
   routes: [
@@ -126,6 +128,8 @@ const statusInitManager = new class {
   private hasInitFetchNotifications: boolean = false
 
   private hasInitStreamConnection: boolean = false
+  private hasInitLocalStreamConnection: boolean = false
+  private hasInitPublicStreamConnection: boolean = false
 
   private hasUpdateOAuthAccessToken: boolean = false
 
@@ -165,6 +169,19 @@ const statusInitManager = new class {
       this.hasInitStreamConnection = true
     }
   }
+  public initLocalStreamConnection () {
+    if (!this.hasInitLocalStreamConnection) {
+      Api.streaming.openLocalConnection()
+      this.hasInitLocalStreamConnection = true
+    }
+  }
+  public initPublicStreamConnection () {
+    if (!this.hasInitPublicStreamConnection) {
+      Api.streaming.openPublicConnection()
+      this.hasInitPublicStreamConnection = true
+    }
+  }
+
 
   public async updateCurrentUserAccount () {
     if (!this.hasUpdateCurrentUserAccount) {
@@ -260,6 +277,20 @@ const beforeEachHooks = {
   beforeHomeTimeLine (to, from, next) {
     if (to.path === homePath) {
       statusInitManager.initStreamConnection()
+    }
+
+    next()
+  },
+  beforeLocalTimeLine (to, from, next) {
+    if (to.path === localPath) {
+      statusInitManager.initLocalStreamConnection()
+    }
+
+    next()
+  },
+  beforePublicTimeLine (to, from, next) {
+    if (to.path === publicPath) {
+      statusInitManager.initPublicStreamConnection()
     }
 
     next()
