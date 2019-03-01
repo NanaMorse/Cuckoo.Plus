@@ -69,27 +69,48 @@ class Streaming {
 
   private userStreamWs: WebSocket
 
+  private localStreamWs: WebSocket
+
+  private publicStreamWs: WebSocket
+
+  private createWsUrl (streamName: string) {
+    return `wss://${new URL(store.state.mastodonServerUri).hostname}/api/v1/streaming/?stream=${streamName}&access_token=${store.state.OAuthInfo.accessToken}`
+  }
+
   public openUserConnection () {
-    const wsUrl = `wss://${new URL(store.state.mastodonServerUri).hostname}/api/v1/streaming/?stream=user&access_token=${store.state.OAuthInfo.accessToken}`
+    const wsUrl = this.createWsUrl('user')
 
     this.userStreamWs = new WebSocket(wsUrl)
 
     this.initEventListener(this.userStreamWs, TimeLineTypes.HOME)
   }
+
   public openLocalConnection () {
-    const wsUrl = `wss://${new URL(store.state.mastodonServerUri).hostname}/api/v1/streaming/?stream=public:local&access_token=${store.state.OAuthInfo.accessToken}`
+    const wsUrl = this.createWsUrl('public:local')
 
-    this.userStreamWs = new WebSocket(wsUrl)
+    this.localStreamWs = new WebSocket(wsUrl)
 
-    this.initEventListener(this.userStreamWs, TimeLineTypes.LOCAL)
+    this.initEventListener(this.localStreamWs, TimeLineTypes.LOCAL)
   }
+
   public openPublicConnection () {
-    const wsUrl = `wss://${new URL(store.state.mastodonServerUri).hostname}/api/v1/streaming/?stream=public&access_token=${store.state.OAuthInfo.accessToken}`
+    const wsUrl = this.createWsUrl('public')
 
-    this.userStreamWs = new WebSocket(wsUrl)
+    this.publicStreamWs = new WebSocket(wsUrl)
 
-    this.initEventListener(this.userStreamWs, TimeLineTypes.PUBLIC)
+    this.initEventListener(this.publicStreamWs, TimeLineTypes.PUBLIC)
   }
+
+  public closeConnection (timeLineType: string) {
+    const typeToWsMap = {
+      [TimeLineTypes.HOME]: this.userStreamWs,
+      [TimeLineTypes.LOCAL]: this.localStreamWs,
+      [TimeLineTypes.PUBLIC]: this.publicStreamWs
+    }
+
+    typeToWsMap[timeLineType].close()
+  }
+
   private initEventListener (targetWs: WebSocket, timeLineType, hashName?) {
     targetWs.onmessage = (message) => {
       const parsedMessage = JSON.parse(message.data)
@@ -115,7 +136,9 @@ class Streaming {
 
     // update status map
     store.commit('updateStatusMap', { [newStatus.id]: newStatus })
-    prepareRootStatus(newStatus)
+    if (timeLineType === TimeLineTypes.HOME) {
+      prepareRootStatus(newStatus)
+    }
 
     // update target timeline list
     const targetMutationName = store.state.appStatus.settings.realTimeLoadStatusMode ? 'unShiftTimeLineStatuses' : 'unShiftStreamStatusesPool'

@@ -1,3 +1,5 @@
+import { TimeLineTypes } from "../constant";
+
 const Loading = require('muse-ui-loading').default
 import Vue from 'vue'
 import Router, { Route } from 'vue-router'
@@ -169,16 +171,32 @@ const statusInitManager = new class {
       this.hasInitStreamConnection = true
     }
   }
+
   public initLocalStreamConnection () {
     if (!this.hasInitLocalStreamConnection) {
       Api.streaming.openLocalConnection()
       this.hasInitLocalStreamConnection = true
     }
   }
+
+  public destroyLocalStreamConnection () {
+    if (this.hasInitLocalStreamConnection) {
+      Api.streaming.closeConnection(TimeLineTypes.LOCAL)
+      this.hasInitLocalStreamConnection = false
+    }
+  }
+
   public initPublicStreamConnection () {
     if (!this.hasInitPublicStreamConnection) {
       Api.streaming.openPublicConnection()
       this.hasInitPublicStreamConnection = true
+    }
+  }
+
+  public destroyPublicStreamConnection () {
+    if (this.hasInitPublicStreamConnection) {
+      Api.streaming.closeConnection(TimeLineTypes.PUBLIC)
+      this.hasInitPublicStreamConnection = false
     }
   }
 
@@ -281,6 +299,7 @@ const beforeEachHooks = {
 
     next()
   },
+
   beforeLocalTimeLine (to, from, next) {
     if (to.path === localPath) {
       statusInitManager.initLocalStreamConnection()
@@ -288,9 +307,26 @@ const beforeEachHooks = {
 
     next()
   },
+
+  afterLocalTimeLine (to, from, next) {
+    if (from.path === localPath) {
+      statusInitManager.destroyLocalStreamConnection()
+    }
+
+    next()
+  },
+
   beforePublicTimeLine (to, from, next) {
     if (to.path === publicPath) {
       statusInitManager.initPublicStreamConnection()
+    }
+
+    next()
+  },
+
+  afterPublicTimeLine (to, from, next) {
+    if (from.path === publicPath) {
+      statusInitManager.destroyPublicStreamConnection()
     }
 
     next()

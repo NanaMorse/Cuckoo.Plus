@@ -1,7 +1,7 @@
 import * as api from '@/api'
 import { mastodonentities } from '@/interface'
 import { isBaseTimeLine } from '@/util'
-const Toast = require('muse-ui-toast').default
+import { TimeLineTypes } from '@/constant'
 
 export default {
   async updateTimeLineStatuses ({ commit, dispatch, state }, { timeLineType, hashName, isLoadMore, isFetchMore }: {
@@ -41,30 +41,33 @@ export default {
       })
 
       // update context map
-      Promise.all(resultToFetchContext.map((status: mastodonentities.Status) => {
-        return api.statuses.getStatusContextById(status.id)
-      })).then(results => {
-        const newContextMap = {}
-        const newStatusMap = {}
-        results.forEach((contextResult, index) => {
-          const descendantIdList = contextResult.data.descendants.map(status => status.id)
+      // optimize only home time line's result should check context
+      if (timeLineType === TimeLineTypes.HOME) {
+        Promise.all(resultToFetchContext.map((status: mastodonentities.Status) => {
+          return api.statuses.getStatusContextById(status.id)
+        })).then(results => {
+          const newContextMap = {}
+          const newStatusMap = {}
+          results.forEach((contextResult, index) => {
+            const descendantIdList = contextResult.data.descendants.map(status => status.id)
 
-          // only record descendant here
-          if (descendantIdList.length) {
-            newContextMap[resultToFetchContext[index].id] = {
-              ancestors: contextResult.data.ancestors.map(status => status.id),
-              descendants: descendantIdList
+            // only record descendant here
+            if (descendantIdList.length) {
+              newContextMap[resultToFetchContext[index].id] = {
+                ancestors: contextResult.data.ancestors.map(status => status.id),
+                descendants: descendantIdList
+              }
             }
-          }
 
-          contextResult.data.ancestors.forEach(status => newStatusMap[status.id] = status)
-          contextResult.data.descendants.forEach(status => newStatusMap[status.id] = status)
+            contextResult.data.ancestors.forEach(status => newStatusMap[status.id] = status)
+            contextResult.data.descendants.forEach(status => newStatusMap[status.id] = status)
+          })
+
+          Object.keys(newContextMap).length && commit('updateContextMap', newContextMap)
+          // also update status map
+          Object.keys(newStatusMap).length && commit('updateStatusMap', newStatusMap)
         })
-
-        Object.keys(newContextMap).length && commit('updateContextMap', newContextMap)
-        // also update status map
-        Object.keys(newStatusMap).length && commit('updateStatusMap', newStatusMap)
-      })
+      }
 
       // update status map
       const newStatusMap = {}

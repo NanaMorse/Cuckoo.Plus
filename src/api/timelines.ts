@@ -4,7 +4,7 @@ import { TimeLineTypes } from '@/constant'
 import { mastodonentities } from '@/interface'
 
 const allTimeLineTypeList = [
-  TimeLineTypes.HOME, TimeLineTypes.PUBLIC, TimeLineTypes.DIRECT,TimeLineTypes.LOCAL,
+  TimeLineTypes.HOME, TimeLineTypes.PUBLIC, TimeLineTypes.DIRECT, TimeLineTypes.LOCAL,
   TimeLineTypes.TAG, TimeLineTypes.LIST
 ]
 
@@ -23,8 +23,8 @@ async function getTimeLineStatuses ({ timeLineType = '', maxId = '', sinceId = '
   if (maxId) params.max_id = maxId
   if (sinceId) params.since_id = sinceId
   if (local) params.local = true
-  if(timeLineType=="local"){
-    urlFragmentString="public";
+  if (timeLineType === TimeLineTypes.LOCAL) {
+    urlFragmentString = TimeLineTypes.PUBLIC
     params.local = true
   }
   return Vue.http.get(patchApiUri(`/api/v1/timelines/${urlFragmentString}`), {
