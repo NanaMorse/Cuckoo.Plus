@@ -306,6 +306,10 @@
       this.currentSelectedResultIndex = 0
       this.currentSearchTextPosition = [0, 0]
     }
+
+    beforeDestroy () {
+      this.$refs.textArea.dispatchEvent(new Event('autosize:destroy'))
+    }
   }
 
   export default Input

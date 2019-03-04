@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { cuckoostore } from '@/interface'
+import { TimeLineTypes } from '@/constant'
 import { isBaseTimeLine } from '@/util'
 
 export default {
