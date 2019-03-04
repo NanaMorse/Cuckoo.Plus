@@ -1,5 +1,5 @@
 <template>
-  <div class="full-action-bar" v-show="show">
+  <div class="full-action-bar">
     <div class="reply-input-area">
       <mu-avatar class="current-user-avatar" slot="avatar" size="24">
         <img :src="currentUserAccount.avatar_static">
@@ -69,8 +69,6 @@
 
     @Prop() status
 
-    @Prop() show
-
     @Prop() value
 
     @Prop() currentReplyToStatus
@@ -133,16 +131,8 @@
 
     mounted () {
       this.visibilityTriggerBtn = this.$refs.visibilityTriggerBtn.$el
-    }
-
-    @Watch('show')
-    onShowFullActionBar (val) {
-      if (val) {
-        this.$nextTick(() => {
-          this.$refs.cuckooInput.focus()
-          this.$refs.cuckooInput.updateSize()
-        })
-      }
+      this.$refs.cuckooInput.focus()
+      this.$refs.cuckooInput.updateSize()
     }
 
     @Watch('droppedFiles')

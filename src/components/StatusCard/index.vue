@@ -56,7 +56,7 @@
         <simple-action-bar v-show="!shouldShowFullReplyActionArea" :status="status"
                            @reply="onReplyToStatus(status)"/>
 
-        <full-action-bar v-if="isOAuthUser" :show="shouldShowFullReplyActionArea"
+        <full-action-bar v-if="isOAuthUser && shouldShowFullReplyActionArea"
                          :currentReplyToStatus="currentReplyToStatus"
                          :descendantStatusList="descendantStatusList"
                          :droppedFiles="droppedFiles"

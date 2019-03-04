@@ -4,21 +4,18 @@
     <template v-for="(timeLineName, index) in allTimeLineNameList">
       <transition name="slide-fade">
         <mu-load-more :key="index" @load="loadStatuses(true)" v-show="isTimeLineNameEqualCurrentRoute(timeLineName)"
-                      :loading="isLoading" loading-text="">
-          <div class="status-cards-container">
+                      :loading="!isInitLoading && isLoading" loading-text="">
+          <div class="status-cards-container" :style="statusCardContainerStyle">
 
-            <div class="water-flow-wrapper" v-for="count in waterfallLineCount" :key="count">
-              <template v-for="(status, index) in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
-                <status-card v-if="(index % waterfallLineCount) === (count - 1)"
-                             class="status-card-container" :style="statusCardStyle"
-                             :key="status.id" :status="status"/>
-              </template>
+            <template v-for="(status, index) in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
+              <status-card class="status-card-container"
+                           :key="status.id" :status="status"/>
+            </template>
 
-              <p class="no-more-status-notice secondary-read-text-color"
-                 v-if="currentTimeLineCannotLoadMore && (count === waterfallLineCount) ">
-                {{$t($i18nTags.timeLines.no_load_more_status_notice)}}
-              </p>
-            </div>
+            <p class="no-more-status-notice secondary-read-text-color"
+               v-if="currentTimeLineCannotLoadMore && (count === waterfallLineCount) ">
+              {{$t($i18nTags.timeLines.no_load_more_status_notice)}}
+            </p>
 
           </div>
         </mu-load-more>
@@ -163,6 +160,18 @@
       return calcFitWaterFallLineCount(this.statusCardsContainerWidth * 0.9)
     }
 
+    get statusCardContainerStyle () {
+      let containerPadding = 0
+      if (this.statusCardStyle) {
+         containerPadding  = (this.statusCardsContainerWidth - parseInt(this.statusCardStyle.width) * this.waterfallLineCount) / 2;
+      }
+
+      return {
+        columnCount: this.waterfallLineCount,
+        padding: `14px ${containerPadding}px 0 ${containerPadding}px`
+      }
+    }
+
     get statusCardStyle () {
       if (this.waterfallLineCount === 1) return null
 
@@ -274,23 +283,13 @@
     }
 
     .status-cards-container {
-      display: flex;
-      justify-content: center;
-
-      @media (max-width: 530px) {
-        display: block;
-      }
-
-      .water-flow-wrapper {
-        margin-left: 2%;
-        &:first-child {
-          margin-left: 0;
-        }
-      }
+      column-gap: 30px;
 
       .status-card-container, .no-more-status-notice {
         max-width: 530px;
-        margin: 16px 0 16px 0;
+        margin: 0 auto 16px;
+        break-inside: avoid;
+        box-sizing: border-box;
       }
 
       .no-more-status-notice {
