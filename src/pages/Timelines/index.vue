@@ -2,24 +2,24 @@
   <div class="timelines-container" ref="timelinesContainer" v-loading="isInitLoading">
 
     <template v-for="(timeLineName, index) in allTimeLineNameList">
-      <transition name="slide-fade">
-        <mu-load-more :key="index" @load="loadStatuses(true)" v-show="isTimeLineNameEqualCurrentRoute(timeLineName)"
-                      :loading="!isInitLoading && isLoading" loading-text="">
-          <div class="status-cards-container" :style="statusCardContainerStyle">
+      <mu-load-more :key="index" @load="loadStatuses(true)" v-show="isTimeLineNameEqualCurrentRoute(timeLineName)"
+                    :loading="!isInitLoading && isLoading" loading-text="">
+        <div v-masonry-container="getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])"
+             ref="statusCardsContainer" class="status-cards-container">
 
-            <template v-for="(status, index) in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
-              <status-card class="status-card-container"
-                           :key="status.id" :status="status"/>
-            </template>
+          <template v-for="status in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
+            <status-card v-masonry-item :style="statusCardStyle"
+                         class="status-card-container"
+                         :key="status.id" :status="status"/>
+          </template>
 
-            <p class="no-more-status-notice secondary-read-text-color"
-               v-if="currentTimeLineCannotLoadMore && (count === waterfallLineCount) ">
-              {{$t($i18nTags.timeLines.no_load_more_status_notice)}}
-            </p>
+          <p class="no-more-status-notice secondary-read-text-color"
+             v-if="currentTimeLineCannotLoadMore && (count === waterfallLineCount) ">
+            {{$t($i18nTags.timeLines.no_load_more_status_notice)}}
+          </p>
 
-          </div>
-        </mu-load-more>
-      </transition>
+        </div>
+      </mu-load-more>
     </template>
 
     <!-- todo move those widgets to a common area -->
@@ -54,7 +54,7 @@
   const statusCardMinWidth = 360
 
   function getFitStatusWidth (containerWidth, lineCount): number {
-    return containerWidth / ( lineCount + (lineCount - 1) * 0.02 )
+    return (containerWidth - (lineCount - 1) * 10) / lineCount
   }
 
   function calcFitWaterFallLineCount (containerWidth: number, testLineCount: number = 3) {
@@ -154,36 +154,6 @@
       return this.appStatus.documentWidth - UiWidthCheckConstants.DRAWER_DESKTOP_WIDTH
     }
 
-    get waterfallLineCount () {
-      if (!this.appStatus.settings.multiLineMode) return 1
-
-      return calcFitWaterFallLineCount(this.statusCardsContainerWidth * 0.9)
-    }
-
-    get statusCardContainerStyle () {
-      let containerPadding = 0
-      if (this.statusCardStyle) {
-         containerPadding  = (this.statusCardsContainerWidth - parseInt(this.statusCardStyle.width) * this.waterfallLineCount) / 2;
-      }
-
-      return {
-        columnCount: this.waterfallLineCount,
-        padding: `14px ${containerPadding}px 0 ${containerPadding}px`
-      }
-    }
-
-    get statusCardStyle () {
-      if (this.waterfallLineCount === 1) return null
-
-      let fitWidth = getFitStatusWidth(this.statusCardsContainerWidth * 0.9, this.waterfallLineCount)
-
-      if (fitWidth > statusCardMaxWidth) fitWidth = statusCardMaxWidth
-
-      return {
-        width: `${fitWidth}px`
-      }
-    }
-
     @Watch('$route')
     async onRouteChanged () {
       if (!this.isCurrentTimeLineRoute) return
@@ -204,12 +174,12 @@
       this.$nextTick(async () => {
         // load more to show scroll
         // todo maybe we could find a better way to serve this?
-        if (this.$refs.timelinesContainer.clientHeight < window.screen.availHeight) {
-          this.isInitLoading = true
-          this.isLoading = false
-          await this.loadStatuses(true)
-          this.isInitLoading = false
-        }
+        // if (this.$refs.timelinesContainer.clientHeight < window.screen.availHeight) {
+        //   this.isInitLoading = true
+        //   this.isLoading = false
+        //   await this.loadStatuses(true)
+        //   this.isInitLoading = false
+        // }
       })
     }
 
@@ -263,6 +233,23 @@
       }
     }
 
+    get waterfallLineCount () {
+      if (!this.appStatus.settings.multiLineMode) return 1
+
+      return calcFitWaterFallLineCount(this.statusCardsContainerWidth * 0.9)
+    }
+
+    get statusCardStyle () {
+      if (this.waterfallLineCount === 1) return null
+
+      let fitWidth = getFitStatusWidth(this.statusCardsContainerWidth * 0.9, this.waterfallLineCount)
+
+      if (fitWidth > statusCardMaxWidth) fitWidth = statusCardMaxWidth
+
+      return {
+        width: `${fitWidth}px`
+      }
+    }
   }
 
   export default TimeLines
@@ -283,7 +270,8 @@
     }
 
     .status-cards-container {
-      column-gap: 30px;
+      margin: 0 auto;
+      padding-top: 24px;
 
       .status-card-container, .no-more-status-notice {
         max-width: 530px;
@@ -304,13 +292,5 @@
       left: 50%;
     }
 
-  }
-
-  .slide-fade-enter-active {
-    transition: all .3s ease;
-  }
-  .slide-fade-enter, .slide-fade-leave-to {
-    transform: translateY(30px);
-    opacity: 0;
   }
 </style>

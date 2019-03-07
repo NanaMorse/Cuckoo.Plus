@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import * as Masonry from 'masonry-layout'
+import ResizeObserver from 'resize-observer-polyfill'
 
 {
 
@@ -25,4 +27,58 @@ import Vue from 'vue'
     }
   } as any)
 
+}
+
+{
+  interface MasonryItem {
+    element: HTMLDivElement
+    position: { x: number, y: number }
+  }
+
+  interface MasonryContainer extends HTMLDivElement {
+    $masonryEl: {
+      size: { width: number, height: number }
+      layout()
+      addItems(el)
+      reloadItems()
+      layoutItems(masonryItemList: Array<MasonryItem>)
+      items: Array<MasonryItem>
+    }
+  }
+
+  Vue.directive('masonry-container', {
+
+    inserted (el: MasonryContainer) {
+      el.$masonryEl = new Masonry(el, {
+        itemSelector: '.status-card-container',
+        transitionDuration: 0,
+         gutter: 20,
+        initLayout: false,
+        fitWidth: true
+      })
+    },
+
+    update (el: MasonryContainer) {
+      // todo optimize
+      el.$masonryEl.reloadItems()
+    }
+
+  } as any)
+
+  const ro = new ResizeObserver((entries) => {
+    const targetMasonryContainer = entries[0].target.parentNode as MasonryContainer
+
+    if (!targetMasonryContainer || !targetMasonryContainer.$masonryEl) return
+
+    // todo optimize
+    return targetMasonryContainer.$masonryEl.layout()
+  })
+
+  Vue.directive('masonry-item', {
+
+    inserted (el) {
+      ro.observe(el);
+    }
+
+  } as any)
 }
