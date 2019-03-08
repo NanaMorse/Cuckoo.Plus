@@ -1,4 +1,8 @@
 import Vue from 'vue'
+import * as Masonry from 'masonry-layout'
+import ResizeObserver from 'resize-observer-polyfill'
+import * as _ from 'underscore'
+import { UiWidthCheckConstants } from '@/constant'
 
 {
 
@@ -25,4 +29,76 @@ import Vue from 'vue'
     }
   } as any)
 
+}
+
+{
+  interface MasonryItem {
+    element: HTMLDivElement
+    position: { x: number, y: number }
+  }
+
+  interface MasonryContainer extends HTMLDivElement {
+    $masonryEl: {
+      size: { width: number, height: number }
+      layout()
+      addItems(el)
+      reloadItems()
+      layoutItems(masonryItemList: Array<MasonryItem>)
+      items: Array<MasonryItem>
+    }
+  }
+
+  const reLayoutMasonry = _.throttle(($masonryEl) => {
+    $masonryEl.layout()
+  }, 200)
+
+  Vue.directive('masonry-container', {
+
+    inserted (el: MasonryContainer) {
+
+      el.$masonryEl = new Masonry(el, {
+        itemSelector: '.status-card-container',
+        gutter: UiWidthCheckConstants.TIMELINE_WATER_FALL_GUTTER,
+        initLayout: false,
+      })
+
+    },
+
+    update: (el: MasonryContainer) => {
+      if (!el.parentElement || (el.parentElement.style.display === 'none')) return
+
+      const $masonryEl = el.$masonryEl
+
+      setTimeout(() => {
+        const oldItemLength = $masonryEl.items.length
+        $masonryEl.reloadItems()
+
+        if (oldItemLength === $masonryEl.items.length) return
+
+        reLayoutMasonry($masonryEl)
+      })
+    }
+
+  } as any)
+
+  const onMasonryItemSizeChanged = _.throttle(($masonryEl) => {
+    $masonryEl.layout()
+  }, 200)
+
+  const ro = new ResizeObserver((entries) => {
+    const targetMasonryContainer = entries[0].target.parentNode as MasonryContainer
+
+    if (!targetMasonryContainer || !targetMasonryContainer.$masonryEl) return
+
+    // todo optimize
+    return onMasonryItemSizeChanged(targetMasonryContainer.$masonryEl)
+  })
+
+  Vue.directive('masonry-item', {
+
+    inserted (el) {
+      ro.observe(el);
+    }
+
+  } as any)
 }
