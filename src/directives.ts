@@ -64,7 +64,7 @@ import { UiWidthCheckConstants } from '@/constant'
         itemSelector: '.status-card-container',
         transitionDuration: 0,
         gutter: UiWidthCheckConstants.TIMELINE_WATER_FALL_GUTTER,
-        initLayout: false,
+        initLayout: false
       })
 
     },

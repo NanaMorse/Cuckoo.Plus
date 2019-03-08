@@ -148,7 +148,7 @@
       return this.noLoadMoreTimeLineList.indexOf(`${timeLineType}/${hashName}`) !== -1
     }
 
-    get statusCardsContainerWidth (): number {
+    get contentAreaWidth (): number {
       return this.appStatus.documentWidth - UiWidthCheckConstants.DRAWER_DESKTOP_WIDTH
     }
 
@@ -234,39 +234,35 @@
     get waterfallLineCount () {
       if (!this.appStatus.settings.multiLineMode) return 1
 
-      return calcFitWaterFallLineCount(this.statusCardsContainerWidth)
+      return calcFitWaterFallLineCount(this.contentAreaWidth - UiWidthCheckConstants.TIMELINE_WATER_FALL_GUTTER * 2)
     }
 
     get statusCardsContainerStyle () {
-      let maxWidth, width: string
-
       if (this.waterfallLineCount === 1) {
-        maxWidth = UiWidthCheckConstants.STATUS_CARD_MAX_WIDTH
-        width = 'initial'
+        return {
+          maxWidth: `${UiWidthCheckConstants.STATUS_CARD_MAX_WIDTH}px`
+        }
       } else {
-        maxWidth = UiWidthCheckConstants.STATUS_CARD_MAX_WIDTH * waterFallMaxLineCount +
-          UiWidthCheckConstants.TIMELINE_WATER_FALL_GUTTER * (waterFallMaxLineCount - 1)
+        const width = this.statusCardMultiLineFinalWidth * this.waterfallLineCount +
+          UiWidthCheckConstants.TIMELINE_WATER_FALL_GUTTER * (this.waterfallLineCount - 1)
 
-        width = `${UiWidthCheckConstants.STATUS_CARD_MAX_WIDTH * this.waterfallLineCount +
-          UiWidthCheckConstants.TIMELINE_WATER_FALL_GUTTER * (this.waterfallLineCount - 1)}px`
+        return { width: `${width}px` }
       }
+    }
 
+    get statusCardMultiLineFinalWidth () {
+      let fitWidth = getFitStatusWidth(this.contentAreaWidth - UiWidthCheckConstants.TIMELINE_WATER_FALL_GUTTER * 2, this.waterfallLineCount)
 
-      return {
-        maxWidth: `${maxWidth}px`,
-        width
-      }
+      if (fitWidth > UiWidthCheckConstants.STATUS_CARD_MAX_WIDTH) fitWidth = UiWidthCheckConstants.STATUS_CARD_MAX_WIDTH
+
+      return fitWidth
     }
 
     get statusCardStyle () {
       if (this.waterfallLineCount === 1) return null
 
-      let fitWidth = getFitStatusWidth(this.statusCardsContainerWidth, this.waterfallLineCount)
-
-      if (fitWidth > UiWidthCheckConstants.STATUS_CARD_MAX_WIDTH) fitWidth = UiWidthCheckConstants.STATUS_CARD_MAX_WIDTH
-
       return {
-        width: `${fitWidth}px`
+        width: `${this.statusCardMultiLineFinalWidth}px`
       }
     }
   }
