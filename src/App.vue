@@ -103,4 +103,9 @@
     height: 20px;
     vertical-align: text-bottom;
   }
+
+  @keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
 </style>

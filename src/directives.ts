@@ -50,7 +50,11 @@ import { UiWidthCheckConstants } from '@/constant'
 
   const reLayoutMasonry = _.throttle(($masonryEl) => {
     $masonryEl.layout()
-  }, 200)
+
+    $masonryEl.items.forEach((item: MasonryItem) => {
+      item.element.style.animation = 'fadein 1s';
+      item.element.style.opacity = '1'
+    })}, 200)
 
   Vue.directive('masonry-container', {
 
@@ -58,6 +62,7 @@ import { UiWidthCheckConstants } from '@/constant'
 
       el.$masonryEl = new Masonry(el, {
         itemSelector: '.status-card-container',
+        transitionDuration: 0,
         gutter: UiWidthCheckConstants.TIMELINE_WATER_FALL_GUTTER,
         initLayout: false,
       })
@@ -96,8 +101,10 @@ import { UiWidthCheckConstants } from '@/constant'
 
   Vue.directive('masonry-item', {
 
-    inserted (el) {
-      ro.observe(el);
+    inserted (el: HTMLDivElement) {
+      el.style.opacity = '0'
+
+      ro.observe(el)
     }
 
   } as any)
