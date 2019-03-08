@@ -4,8 +4,7 @@
     <template v-for="(timeLineName, index) in allTimeLineNameList">
       <mu-load-more :key="index" @load="loadStatuses(true)" v-show="isTimeLineNameEqualCurrentRoute(timeLineName)"
                     :loading="!isInitLoading && isLoading" loading-text="">
-        <div v-masonry-container="getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])"
-             ref="statusCardsContainer" class="status-cards-container">
+        <div v-masonry-container :style="statusCardsContainerStyle" class="status-cards-container">
 
           <template v-for="status in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
             <status-card v-masonry-item :style="statusCardStyle"
@@ -50,19 +49,18 @@
   import PostStatusDialog from '@/components/PostStatusDialog.vue'
   import NewStatusNoticeButton from './NewStatusNoticeButton'
 
-  const statusCardMaxWidth = 530
-  const statusCardMinWidth = 360
+  const waterFallMaxLineCount = 3
 
   function getFitStatusWidth (containerWidth, lineCount): number {
-    return (containerWidth - (lineCount - 1) * 10) / lineCount
+    return (containerWidth - (lineCount - 1) * UiWidthCheckConstants.TIMELINE_WATER_FALL_GUTTER) / lineCount
   }
 
-  function calcFitWaterFallLineCount (containerWidth: number, testLineCount: number = 3) {
+  function calcFitWaterFallLineCount (containerWidth: number, testLineCount: number = waterFallMaxLineCount) {
     if (testLineCount <= 1) return 1
 
     const testStatusCardWidth = getFitStatusWidth(containerWidth, testLineCount)
 
-    if (testStatusCardWidth > statusCardMinWidth) {
+    if (testStatusCardWidth > UiWidthCheckConstants.STATUS_CARD_MIN_WIDTH) {
       return testLineCount
     } else {
       return calcFitWaterFallLineCount(containerWidth, testLineCount - 1)
@@ -236,15 +234,36 @@
     get waterfallLineCount () {
       if (!this.appStatus.settings.multiLineMode) return 1
 
-      return calcFitWaterFallLineCount(this.statusCardsContainerWidth * 0.9)
+      return calcFitWaterFallLineCount(this.statusCardsContainerWidth)
+    }
+
+    get statusCardsContainerStyle () {
+      let maxWidth, width: string
+
+      if (this.waterfallLineCount === 1) {
+        maxWidth = UiWidthCheckConstants.STATUS_CARD_MAX_WIDTH
+        width = 'initial'
+      } else {
+        maxWidth = UiWidthCheckConstants.STATUS_CARD_MAX_WIDTH * waterFallMaxLineCount +
+          UiWidthCheckConstants.TIMELINE_WATER_FALL_GUTTER * (waterFallMaxLineCount - 1)
+
+        width = `${UiWidthCheckConstants.STATUS_CARD_MAX_WIDTH * this.waterfallLineCount +
+          UiWidthCheckConstants.TIMELINE_WATER_FALL_GUTTER * (this.waterfallLineCount - 1)}px`
+      }
+
+
+      return {
+        maxWidth: `${maxWidth}px`,
+        width
+      }
     }
 
     get statusCardStyle () {
       if (this.waterfallLineCount === 1) return null
 
-      let fitWidth = getFitStatusWidth(this.statusCardsContainerWidth * 0.9, this.waterfallLineCount)
+      let fitWidth = getFitStatusWidth(this.statusCardsContainerWidth, this.waterfallLineCount)
 
-      if (fitWidth > statusCardMaxWidth) fitWidth = statusCardMaxWidth
+      if (fitWidth > UiWidthCheckConstants.STATUS_CARD_MAX_WIDTH) fitWidth = UiWidthCheckConstants.STATUS_CARD_MAX_WIDTH
 
       return {
         width: `${fitWidth}px`
