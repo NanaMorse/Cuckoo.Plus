@@ -2,7 +2,7 @@
   <mu-card-header class="mu-card-header" ref="cardHeader"
                   @mouseover="shouldShowHeaderActionButtonGroup = true"
                   @mouseout="shouldShowHeaderActionButtonGroup = false">
-    <div class="left-area">
+    <div class="left-area" :style="leftAreaStyle">
       <mu-avatar @click="onCheckUserAccountPage" class="status-account-avatar" slot="avatar" size="34">
         <img :src="status.account.avatar_static">
       </mu-avatar>
@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <div class="right-area" v-if="isOAuthUser">
+    <div class="right-area" ref="rightArea" v-if="isOAuthUser">
       <span v-show="!shouldOpenMoreOperationPopOver && !shouldShowHeaderActionButtonGroup" class="status-from-now secondary-read-text-color">{{getFromNowTime(status.created_at)}}</span>
 
       <div v-show="shouldOpenMoreOperationPopOver || shouldShowHeaderActionButtonGroup" class="card-header-action">
@@ -71,8 +71,9 @@
     $i18nTags
 
     $refs: {
-      cardHeader: any
+      cardHeader: HTMLDivElement
       visibilityInfo: any
+      rightArea: HTMLDivElement
       moreOperationTriggerBtn: any
     }
 
@@ -90,10 +91,14 @@
 
     moreOperationTriggerBtn: any = null
 
+    leftAreaStyle = null
+
     mounted () {
       if (this.isOAuthUser) {
         this.moreOperationTriggerBtn = this.$refs.moreOperationTriggerBtn
       }
+
+      this.setLeftAreaStyle()
     }
 
     onOpenMoreOperationPopOver () {
@@ -129,6 +134,15 @@
     getFromNowTime (createdAt: string) {
       return moment(createdAt).fromNow(true)
     }
+
+    setLeftAreaStyle () {
+      const headerPadding = 16 * 2
+      const rightAreaWidth = Math.max(60, this.$refs.rightArea.clientWidth)
+
+      this.leftAreaStyle = {
+        maxWidth: `${this.$refs.cardHeader.clientWidth - headerPadding - rightAreaWidth}px`
+      }
+    }
   }
 
   export default CardHeader
@@ -154,6 +168,7 @@
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+        max-width: calc(100% - 34px - 8px);
 
         .user-name {
           cursor: pointer;
