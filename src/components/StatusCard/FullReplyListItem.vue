@@ -28,12 +28,18 @@
       <div class="reply-action-list">
 
         <a class="reply-button secondary-theme-text-color"
-           @click="onReplyToStatus()">{{$t($i18nTags.statusCard.reply_to_replier)}}</a>
+           @click="onReplyToStatus">{{$t($i18nTags.statusCard.reply_to_replier)}}</a>
 
         <div class="plus-one-button secondary-theme-text-color"
-             @click="onFavoriteButtonClick()"
+             @click="onFavoriteButtonClick"
              :class="{ 'primary-theme-bg-color': status.favourited }">
           <a>+1</a>
+        </div>
+
+        <div class="reshare-button secondary-theme-text-color"
+             @click="onReBlogButtonClick"
+             :class="{ 'primary-theme-bg-color': status.reblogged }">
+          <mu-icon class="share-icon" value="share" />
         </div>
 
       </div>
@@ -51,7 +57,7 @@
                 :trigger="moreOperationTriggerBtn">
       <mu-list>
         <mu-list-item button v-if="currentUserAccount.id === status.account.id"
-                      @click="onDeleteStatus()">
+                      @click="onDeleteStatus">
           <mu-list-item-title>Delete</mu-list-item-title>
         </mu-list-item>
       </mu-list>
@@ -89,6 +95,7 @@
     @State('currentUserAccount') currentUserAccount: mastodonentities.AuthenticatedAccount
 
     @Action('updateFavouriteStatusById') updateFavouriteStatusById
+    @Action('updateReblogStatusById') updateReblogStatusById
     @Action('deleteStatus') deleteStatus
 
     @Getter('getAccountAtName') getAccountAtName
@@ -115,6 +122,14 @@
     onFavoriteButtonClick () {
       this.updateFavouriteStatusById({
         favourited: !this.status.favourited,
+        mainStatusId: this.status.id,
+        targetStatusId: this.status.id
+      })
+    }
+
+    onReBlogButtonClick () {
+      this.updateReblogStatusById({
+        reblogged: !this.status.reblogged,
         mainStatusId: this.status.id,
         targetStatusId: this.status.id
       })
@@ -221,6 +236,20 @@
           line-height: 24px;
           text-align: center;
           border-radius: 50%;
+        }
+
+        .reshare-button {
+          .common-style-mixin();
+          line-height: 1;
+          width: 24px;
+          height: 24px;
+          text-align: center;
+          border-radius: 50%;
+
+          .share-icon {
+            font-size: 16px;
+            line-height: 24px;
+          }
         }
       }
     }
