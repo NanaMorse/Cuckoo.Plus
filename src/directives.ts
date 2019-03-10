@@ -78,7 +78,10 @@ import { UiWidthCheckConstants } from '@/constant'
         const oldItemLength = $masonryEl.items.length
         $masonryEl.reloadItems()
 
-        if (oldItemLength === $masonryEl.items.length) return
+        const hasItemsLengthChanged = oldItemLength !== $masonryEl.items.length
+        const IsSomeItemHided = $masonryEl.items.some(item => item.element.style.opacity === '0')
+
+        if (!hasItemsLengthChanged && !IsSomeItemHided) return
 
         reLayoutMasonry($masonryEl)
       })
