@@ -130,7 +130,8 @@ module.exports = {
   },
 
   externals: {
-    'moment': 'moment'
+    'moment': 'moment',
+    'underscore': '_'
     // todo muse ui has bug
   },
 
