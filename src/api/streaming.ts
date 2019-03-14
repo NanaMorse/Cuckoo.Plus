@@ -40,7 +40,9 @@ class NotificationHandler {
   }
 
   private getFromName (newNotification: mastodonentities.Notification): string {
+    // account's display name have been formatted
     return store.getters['getAccountDisplayName'](newNotification.account)
+      .replace('<span>', '').replace('</span>', '')
   }
 
   private getImageUrl (newNotification: mastodonentities.Notification): string {
