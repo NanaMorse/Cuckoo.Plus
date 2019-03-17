@@ -1,6 +1,6 @@
 <template>
   <div class="status-card-container" @dragover="onDragFileOver" @dragleave="isFileDragOver = false" @drop="onDropFile">
-    <mu-card class="status-card status-card-bg-color" v-loading="isCardLoading" v-drag-over="isFileDragOver">
+    <mu-card class="status-card status-card-bg-color" :style="statusCardStyle" v-loading="isCardLoading" v-drag-over="isFileDragOver">
 
       <card-header :status="status" @deleteStatus="isCardLoading = true"/>
 
@@ -125,6 +125,14 @@
 
     @Prop() status: mastodonentities.Status
 
+    get statusCardStyle () {
+      if (!this.shouldShowFullReplyActionArea) return null
+
+      return {
+        'box-shadow': '0 0 20px rgba(0,0,0,0.3)'
+      }
+    }
+
     get descendantStatusList (): Array<mastodonentities.Status> {
       if (!this.contextMap[this.status.id] || !this.contextMap[this.status.id].descendants) return []
 
@@ -205,6 +213,7 @@
       height: 100%;
       display: flex;
       flex-direction: column;
+      transition: box-shadow 0.3s ease-in-out;
     }
   }
 

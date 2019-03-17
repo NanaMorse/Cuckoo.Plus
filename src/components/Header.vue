@@ -41,6 +41,7 @@
   import { State, Mutation, Action, Getter } from 'vuex-class'
   import { TimeLineTypes, RoutersInfo, UiWidthCheckConstants } from '@/constant'
   import { cuckoostore } from '@/interface'
+  import * as animatedScrollTo from 'animated-scrollto'
   import Notifications from '@/components/Notifications/index'
 
   // todo 统一位置管理
@@ -141,7 +142,7 @@
     }
 
     onHeaderBarClick () {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+      animatedScrollTo(document.querySelector('html'), 0, 400)
     }
 
     onOpenNotificationPanel () {

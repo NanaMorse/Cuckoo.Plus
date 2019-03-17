@@ -12,7 +12,10 @@
 <script lang="ts">
   import { Vue, Component, Watch } from 'vue-property-decorator'
   import { State, Mutation, Action } from 'vuex-class'
+  import * as animatedScrollTo from 'animated-scrollto'
   import { getTimeLineTypeAndHashName, isBaseTimeLine, getTargetStatusesList } from '@/util'
+
+  (window as any).animatedScrollTo = animatedScrollTo
 
   @Component({})
   class NewStatusNoticeButton extends Vue {
@@ -70,8 +73,9 @@
     }
 
     onNoticeButtonClick () {
-      this.loadStreamStatusesPool({ ...getTimeLineTypeAndHashName(this.$route) })
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+      animatedScrollTo(document.querySelector('html'), 0, 400, () => {
+        this.loadStreamStatusesPool({ ...getTimeLineTypeAndHashName(this.$route) })
+      })
     }
   }
 

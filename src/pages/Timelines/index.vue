@@ -290,7 +290,7 @@
 
       .status-card-container, .no-more-status-notice {
         max-width: 530px;
-        margin: 0 auto 16px;
+        margin: 0 auto 24px;
         break-inside: avoid;
         box-sizing: border-box;
       }

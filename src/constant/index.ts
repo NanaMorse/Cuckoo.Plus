@@ -33,7 +33,7 @@ const UiWidthCheckConstants = {
 
   STATUS_CARD_MAX_WIDTH: 530,
   STATUS_CARD_MIN_WIDTH: 360,
-  TIMELINE_WATER_FALL_GUTTER: 20
+  TIMELINE_WATER_FALL_GUTTER: 24
 }
 
 const ThemeNames = {
