@@ -15,14 +15,14 @@
 
     <div class="right-area">
       <div class="plus-one operate-btn-group">
-        <mu-button :disabled="!isOAuthUser" class="status-card-circle-btn" icon @click="onFavoriteButtonClick"
+        <mu-button :disabled="!isOAuthUser" class="circle-btn" icon @click="onFavoriteButtonClick"
                    :class="{ 'primary-theme-bg-color': operateCheckTargetStatus.favourited }">
           +1
         </mu-button>
         <span v-if="operateCheckTargetStatus.favourites_count > 0" class="count">{{operateCheckTargetStatus.favourites_count}}</span>
       </div>
       <div class="share operate-btn-group" v-if="shouldShowReblogButton">
-        <mu-button :disabled="!isOAuthUser" class="status-card-circle-btn unset-display" @click="onReBlogButtonClick"
+        <mu-button :disabled="!isOAuthUser" class="circle-btn unset-display" @click="onReBlogButtonClick"
                    :class="{ 'primary-theme-bg-color': operateCheckTargetStatus.reblogged }" icon>
           <mu-icon class="share-icon" value="share" />
         </mu-button>
@@ -136,36 +136,6 @@
 
       .operate-btn-group {
         display: flex;
-
-        .status-card-circle-btn {
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          cursor: pointer;
-          -webkit-transition: background .3s;
-          -moz-transition: background .3s;
-          -ms-transition: background .3s;
-          -o-transition: background .3s;
-          transition: background .3s;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          line-height: 1;
-          margin: 0 8px;
-          font-size: 15px;
-
-          &.unset-display {
-            display: unset;
-          }
-
-          &.hover:before {
-            background-color: unset;
-          }
-        }
 
         &.plus-one {
           font-size: 12px;

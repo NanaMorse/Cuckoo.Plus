@@ -69,7 +69,8 @@ const settings = {
 
 const timeLines = {
   [I18nTags.timeLines.no_load_more_status_notice]: 'You have seen all posts.',
-  [I18nTags.timeLines.new_message_notice]: '{count} new post | {count} new posts'
+  [I18nTags.timeLines.new_message_notice]: '{count} new post | {count} new posts',
+  [I18nTags.timeLines.whats_new_with_you]: 'What\'s new with you?'
 }
 
 const postStatusDialog = {

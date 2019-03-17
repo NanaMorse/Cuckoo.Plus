@@ -37,8 +37,9 @@ export const I18nTags = {
   },
 
   timeLines: {
-    no_load_more_status_notice: 'no_load_more_status_notice',
-    new_message_notice: 'timelines_new_message_notice'
+    no_load_more_status_notice: 'timeLines_no_load_more_status_notice',
+    new_message_notice: 'timeLines_new_message_notice',
+    whats_new_with_you: 'timeLines_whats_new_with_you'
   },
 
   drawer: {

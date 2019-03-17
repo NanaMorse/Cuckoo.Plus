@@ -69,7 +69,8 @@ const settings = {
 
 const timeLines = {
   [I18nTags.timeLines.no_load_more_status_notice]: '没有更多啦！',
-  [I18nTags.timeLines.new_message_notice]: '{count}条新信息'
+  [I18nTags.timeLines.new_message_notice]: '{count}条新信息',
+  [I18nTags.timeLines.whats_new_with_you]: '你最近有什么新鲜事要分享吗？'
 }
 
 const postStatusDialog = {

@@ -49,30 +49,58 @@ a {
 // 复杂的或者通用的会放在这里，其余尽量使用mixin
 .status-card {
   .operate-btn-group {
-    .status-card-circle-btn {
-      background-color: @backgroundColor;
-      color: @textColor;
-
-      &.disabled {
-        cursor: not-allowed !important;
-
-        &:hover {
-          box-shadow: none;
-        }
-      }
-
-      &:hover {
-        box-shadow: 0 1px 3px 0 rgba(0,0,0,0.26);
-      }
-
-      &.primary-theme-bg-color {
-        background-color: @primaryColor;
-      }
-    }
-
     .count {
       color: @textColor;
     }
+  }
+}
+
+.circle-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  -webkit-transition: background .3s;
+  -moz-transition: background .3s;
+  -ms-transition: background .3s;
+  -o-transition: background .3s;
+  transition: background .3s;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  margin: 0 8px;
+  font-size: 15px;
+
+  background-color: @backgroundColor;
+  color: @textColor;
+
+  &.disabled {
+    cursor: not-allowed !important;
+
+    &:hover {
+      box-shadow: none;
+    }
+  }
+
+  &:hover {
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,0.26);
+  }
+
+  &.primary-theme-bg-color {
+    background-color: @primaryColor;
+  }
+
+  &.unset-display {
+    display: unset;
+  }
+
+  &.hover:before {
+    background-color: unset;
   }
 }
 

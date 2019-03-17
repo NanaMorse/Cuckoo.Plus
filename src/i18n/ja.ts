@@ -70,7 +70,8 @@ const settings = {
 
 const timeLines = {
   [I18nTags.timeLines.no_load_more_status_notice]: 'すべての投稿を見ました。',
-  [I18nTags.timeLines.new_message_notice]: '新しい投稿 {count} | 新しい投稿 {count}'
+  [I18nTags.timeLines.new_message_notice]: '新しい投稿 {count} | 新しい投稿 {count}',
+  [I18nTags.timeLines.whats_new_with_you]: '最近の出来事を共有してみましょう'
 }
 
 const postStatusDialog = {

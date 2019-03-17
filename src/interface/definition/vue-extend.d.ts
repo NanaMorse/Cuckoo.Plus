@@ -51,6 +51,7 @@ declare module "vue/types/vue" {
       timeLines: {
         no_load_more_status_notice: string
         new_message_notice: string
+        whats_new_with_you: string
       },
       header: {
 

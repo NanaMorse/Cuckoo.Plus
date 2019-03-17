@@ -6,6 +6,9 @@
                     :loading="!isInitLoading && isLoading" loading-text="">
         <div v-masonry-container :style="statusCardsContainerStyle" class="status-cards-container">
 
+          <post-status-stamp-card @click="showNewPostDialogPanel"
+            class="status-card-container" :style="statusCardStyle" />
+
           <template v-for="status in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
             <status-card v-masonry-item :style="statusCardStyle"
                          class="status-card-container"
@@ -46,8 +49,9 @@
   import { cuckoostore, mastodonentities } from '@/interface'
   import { getTimeLineTypeAndHashName, isBaseTimeLine } from '@/util'
   import StatusCard from '@/components/StatusCard'
-  import PostStatusDialog from '@/components/PostStatusDialog.vue'
+  import PostStatusDialog from '@/components/PostStatusDialog'
   import NewStatusNoticeButton from './NewStatusNoticeButton'
+  import PostStatusStampCard from './PostStatusStampCard'
 
   const waterFallMaxLineCount = 3
 
@@ -71,7 +75,8 @@
     components: {
       'status-card': StatusCard,
       'post-status-dialog': PostStatusDialog,
-      'new-status-notice-button': NewStatusNoticeButton
+      'new-status-notice-button': NewStatusNoticeButton,
+      'post-status-stamp-card': PostStatusStampCard
     }
   })
   class TimeLines extends Vue {
@@ -287,6 +292,10 @@
     .status-cards-container {
       margin: 0 auto;
       padding-top: 24px;
+
+      .new-status-stamp {
+        height: 60px;
+      }
 
       .status-card-container, .no-more-status-notice {
         max-width: 530px;

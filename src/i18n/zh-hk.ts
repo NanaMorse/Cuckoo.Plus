@@ -69,7 +69,8 @@ const settings = {
 
 const timeLines = {
   [I18nTags.timeLines.no_load_more_status_notice]: '你已看完了所有訊息',
-  [I18nTags.timeLines.new_message_notice]: '{count}條新訊息'
+  [I18nTags.timeLines.new_message_notice]: '{count}條新訊息',
+  [I18nTags.timeLines.whats_new_with_you]: '你有什麼新動態？'
 }
 
 const postStatusDialog = {
