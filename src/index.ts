@@ -61,6 +61,10 @@ if (window.Notification) {
 
 ThemeManager.setTheme(store.state.appStatus.settings.theme)
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+}
+
 new Vue({
   el: '#app',
   store,
