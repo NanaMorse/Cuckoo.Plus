@@ -17,6 +17,11 @@ class ThemeManager {
     [ThemeNames.DARK]: 'dark'
   }
 
+  private themeToThemeColor = {
+    [ThemeNames.GOOGLE_PLUS]: '#db4437',
+    [ThemeNames.DARK]: '#1976d2'
+  }
+
   private getThemeStyleElem (): HTMLStyleElement {
     const themeElemId = 'cuckoo-plus-theme'
     let styleElem = document.getElementById(themeElemId)
@@ -41,10 +46,17 @@ class ThemeManager {
     })
   }
 
+  private setThemeColorByThemeName (themeName: string) {
+    Array.from(document.head.querySelectorAll('meta')).find(el => {
+      return el.getAttribute('name') === 'theme-color'
+    }).setAttribute('content', this.themeToThemeColor[themeName])
+  }
+
   public setTheme (themeName: string) {
     this.getThemeStyleElem().innerHTML = this.themeMap[themeName] || ''
 
     this.setFavIconByThemeName(themeName)
+    this.setThemeColorByThemeName(themeName)
   }
 }
 
