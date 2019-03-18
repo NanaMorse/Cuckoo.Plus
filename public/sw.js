@@ -1,4 +1,4 @@
-const version = '0.1.7'
+const version = '0.2.0'
 const CACHE = version + ':CP'
 const offlineURL = ''
 const cacheFilePaths = [
