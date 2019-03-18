@@ -64,14 +64,11 @@ class SW {
 
           if (response) {
             // return cached file
-            console.log('cache fetch: ' + url)
             return response
           }
 
           // make network request
           return fetch(event.request).then(newreq => {
-            console.log('network fetch: ' + url)
-
             if (newreq.ok) cache.put(event.request, newreq.clone())
 
             return newreq
