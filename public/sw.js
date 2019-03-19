@@ -22,6 +22,12 @@ const cacheRequestAPIs = [
   'api/v1/accounts/verify_credentials'
 ]
 
+const corsScriptsSiteList = [
+  'https://www.google-analytics.com',
+  'https://www.googletagmanager.com',
+  'https://hm.baidu.com'
+]
+
 const swContext = this
 
 class SW {
@@ -65,8 +71,9 @@ class SW {
       const request = event.request
       const url = request.url
 
-      const isRequestImage = event.request.destination === 'image'
+      if (this.isCORSSiteScript(url)) return
 
+      const isRequestImage = event.request.destination === 'image'
       // cache first
       if (isRequestImage || this.isCacheAPI(url) || this.isCacheFilePath(url)) {
         return event.respondWith(caches.open(CACHE).then(cache => {
@@ -106,6 +113,10 @@ class SW {
 
   isCacheFilePath (url) {
     return cacheFilePaths.some(filePath => url.endsWith(filePath))
+  }
+
+  isCORSSiteScript (url) {
+    return corsScriptsSiteList.some(site => url.startsWith(site))
   }
 }
 
