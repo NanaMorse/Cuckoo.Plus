@@ -59,8 +59,14 @@ class SW {
       if (event.request.method !== 'GET') return
 
       const url = event.request.url
+
       event.respondWith(caches.open(CACHE).then(cache => {
         return cache.match(event.request).then(response => {
+
+          // todo use regex
+          if (url.endsWith('/context')) {
+            return this.fetchRequestFromNetWork(event, cache)
+          }
 
           if (response) {
             // return cached file
@@ -68,15 +74,18 @@ class SW {
           }
 
           // make network request
-          return fetch(event.request).then(newreq => {
-            if (newreq.ok) cache.put(event.request, newreq.clone())
-
-            return newreq
-          }).catch(e => console.log(e))
-
+          return this.fetchRequestFromNetWork(event, cache)
         });
       }));
     });
+  }
+
+  fetchRequestFromNetWork (event, cache) {
+    return fetch(event.request).then(newreq => {
+      if (newreq.ok) cache.put(event.request, newreq.clone())
+
+      return newreq
+    }).catch(e => console.log(e))
   }
 }
 
