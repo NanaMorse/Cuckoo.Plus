@@ -40,8 +40,8 @@
 
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-  import { State, Action } from 'vuex-class'
-  import { NotificationTypes, ThemeNames } from '@/constant'
+  import { State, Action, Mutation } from 'vuex-class'
+  import { NotificationTypes, ThemeNames, UiWidthCheckConstants } from '@/constant'
   import StatusCard from '@/components/StatusCard'
   import NotificationCard from './Card'
   import { mastodonentities } from '@/interface'
@@ -57,11 +57,19 @@
 
     $progress
 
+    $router
+
+    $routersInfo
+
     @Prop() hideHeader: boolean
 
     @Action('updateNotifications') updateNotifications
 
+    @Mutation('updateNotificationsPanelStatus') updateNotificationsPanelStatus
+
     @State('notifications') notifications: Array<mastodonentities.Notification>
+
+    @State('appStatus') appStatus
 
     isLoadingNotifications: boolean = false
 
@@ -94,6 +102,15 @@
     }
 
     onUpdateCurrentCheckStatus (targetStatus: mastodonentities.Status) {
+
+      if (this.appStatus.documentWidth < UiWidthCheckConstants.NOTIFICATION_DIALOG_TOGGLE_WIDTH) {
+        this.updateNotificationsPanelStatus(false)
+        return this.$router.push({
+          name: this.$routersInfo.statuses.name,
+          params: { statusId: targetStatus.id }
+        })
+      }
+
       this.currentCheckStatus = targetStatus
       this.shouldShowTargetStatus = true
     }
@@ -125,6 +142,7 @@
 
         .status-card-container {
           height: 100%;
+          margin-bottom: 40px;
         }
       }
     }
