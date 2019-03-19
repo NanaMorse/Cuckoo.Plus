@@ -1,4 +1,4 @@
-const version = '0.2.0'
+const version = '0.2.1'
 const CACHE = version + ':CP'
 const offlineURL = ''
 const cacheFilePaths = [
@@ -19,6 +19,11 @@ const cacheFilePaths = [
 ].concat(offlineURL)
 
 const swContext = this
+
+const noCacheRequestList = [
+  '/context',
+
+]
 
 class SW {
 
@@ -64,17 +69,19 @@ class SW {
         return cache.match(event.request).then(response => {
 
           // todo use regex
-          if (url.endsWith('/context')) {
-            return this.fetchRequestFromNetWork(event)
-          }
+          // if (url.endsWith('/context')) {
+          //   return this.fetchRequestFromNetWork(event)
+          // }
 
           if (response) {
             // return cached file
             return response
           }
 
+          return this.fetchRequestFromNetWork(event)
+
           // make network request
-          return this.fetchRequestFromNetWork(event, cache)
+          // return this.fetchRequestFromNetWork(event, cache)
         });
       }));
     });
