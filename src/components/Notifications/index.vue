@@ -137,7 +137,6 @@
       height: 100%;
 
       .notification-status-card-container {
-        height: calc(100% - 56px);
         padding-top: 8px;
 
         .status-card-container {
