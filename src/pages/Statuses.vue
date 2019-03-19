@@ -54,8 +54,7 @@
   .statuses-page-container {
     max-width: 530px;
     padding-top: 8px;
-    margin: 0 auto;
-    height: calc(100vh - 56px);
+    margin: 0 auto 40px;
 
     .status-card-container {
       @media (max-width: 530px) {
