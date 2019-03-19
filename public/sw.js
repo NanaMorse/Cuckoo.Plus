@@ -65,7 +65,7 @@ class SW {
 
           // todo use regex
           if (url.endsWith('/context')) {
-            return this.fetchRequestFromNetWork(event, cache)
+            return this.fetchRequestFromNetWork(event)
           }
 
           if (response) {
@@ -82,7 +82,7 @@ class SW {
 
   fetchRequestFromNetWork (event, cache) {
     return fetch(event.request).then(newreq => {
-      if (newreq.ok) cache.put(event.request, newreq.clone())
+      if (newreq.ok && cache) cache.put(event.request, newreq.clone())
 
       return newreq
     }).catch(e => console.log(e))
