@@ -1,6 +1,5 @@
 const version = '0.2.1'
 const CACHE = version + ':CP'
-const offlineURL = ''
 const cacheFilePaths = [
   '/',
   '/manifest.json',
@@ -16,14 +15,14 @@ const cacheFilePaths = [
   'https://cdnjs.loli.net/ajax/libs/underscore.js/1.9.1/underscore-min.js',
   'https://unpkg.com/muse-ui/dist/muse-ui.css',
   'https://gstatic.loli.net/s/materialicons/v46/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2',
-].concat(offlineURL)
+]
+
+const cacheRequestAPIs = [
+  'api/v1/custom_emojis',
+  'api/v1/accounts/verify_credentials'
+]
 
 const swContext = this
-
-const noCacheRequestList = [
-  '/context',
-
-]
 
 class SW {
 
@@ -63,36 +62,50 @@ class SW {
       // abandon non-GET requests
       if (event.request.method !== 'GET') return
 
-      const url = event.request.url
+      const request = event.request
+      const url = request.url
 
-      event.respondWith(caches.open(CACHE).then(cache => {
-        return cache.match(event.request).then(response => {
+      const isRequestImage = event.request.destination === 'image'
 
-          // todo use regex
-          // if (url.endsWith('/context')) {
-          //   return this.fetchRequestFromNetWork(event)
-          // }
+      // cache first
+      if (isRequestImage || this.isCacheAPI(url) || this.isCacheFilePath(url)) {
+        return event.respondWith(caches.open(CACHE).then(cache => {
+          return cache.match(request).then(response => {
+            if (response) return response
 
-          if (response) {
-            // return cached file
-            return response
+            return fetch(request).then(response => {
+              if (response.ok) cache.put(request, response.clone())
+              return response
+            }).catch()
+          })
+        }))
+      }
+      // network first
+      else {
+        return event.respondWith(fetch(request).then(response => {
+          if (response.ok) {
+            return caches.open(CACHE).then(cache => {
+              return cache.put(request, response.clone())
+            }).then(() => response)
           }
+        }).catch(() => {
+          return caches.open(CACHE).then(cache => {
+            return cache.match(request).then(response => {
+              if (response) return response
+            })
+          })
+        }))
+      }
 
-          return this.fetchRequestFromNetWork(event)
-
-          // make network request
-          // return this.fetchRequestFromNetWork(event, cache)
-        });
-      }));
     });
   }
 
-  fetchRequestFromNetWork (event, cache) {
-    return fetch(event.request).then(newreq => {
-      if (newreq.ok && cache) cache.put(event.request, newreq.clone())
+  isCacheAPI (url) {
+    return cacheRequestAPIs.some(apiURL => url.endsWith(apiURL))
+  }
 
-      return newreq
-    }).catch(e => console.log(e))
+  isCacheFilePath (url) {
+    return cacheFilePaths.some(filePath => url.endsWith(filePath))
   }
 }
 
