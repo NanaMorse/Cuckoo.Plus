@@ -12,7 +12,7 @@
 <script lang="ts">
   import { Vue, Component, Watch } from 'vue-property-decorator'
   import { State, Mutation, Action } from 'vuex-class'
-  import * as animatedScrollTo from 'animated-scrollto'
+  import { animatedScrollTo } from '@/util'
   import { getTimeLineTypeAndHashName, isBaseTimeLine, getTargetStatusesList } from '@/util'
 
   (window as any).animatedScrollTo = animatedScrollTo

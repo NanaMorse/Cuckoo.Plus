@@ -41,7 +41,7 @@
   import { State, Mutation, Action, Getter } from 'vuex-class'
   import { TimeLineTypes, RoutersInfo, UiWidthCheckConstants } from '@/constant'
   import { cuckoostore } from '@/interface'
-  import * as animatedScrollTo from 'animated-scrollto'
+  import { animatedScrollTo } from '@/util'
   import Notifications from '@/components/Notifications/index'
 
   // todo 统一位置管理
