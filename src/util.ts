@@ -178,3 +178,41 @@ function walkTextNodes(node, textNodeHandler) {
     }
   }
 }
+
+function easeInOutQuad (t, b, c, d) {
+  t /= d/2
+  if (t < 1) return c/2*t*t + b
+  t--
+  return -c/2 * (t*(t-2) - 1) + b
+}
+
+const requestAnimFrame = (function(){return window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(callback){window.setTimeout(callback,1000/60);};})()
+
+export function animatedScrollTo (element: HTMLElement, to: number, duration: number, callback?) {
+  const start = element.scrollTop,
+    change = to - start,
+    animationStart = +new Date()
+  let animating = true
+  let lastpos = null
+
+  const animateScroll = function() {
+    if (!animating) return
+
+    requestAnimFrame(animateScroll)
+
+    const now = +new Date()
+    const val = Math.floor(easeInOutQuad(now - animationStart, start, change, duration))
+
+    lastpos = val
+    element.scrollTop = val
+
+    if (now > animationStart + duration) {
+      element.scrollTop = to
+
+      animating = false
+      if (callback) { callback() }
+    }
+  }
+
+  requestAnimFrame(animateScroll)
+}
