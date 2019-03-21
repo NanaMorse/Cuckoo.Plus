@@ -83,7 +83,8 @@
 
     themeOptions = [
       { label: 'Google Plus', value: ThemeNames.GOOGLE_PLUS },
-      { label: 'Dark', value: ThemeNames.DARK }
+      { label: 'Dark', value: ThemeNames.DARK },
+      { label: 'Green Light', value: ThemeNames.GREEN_LIGHT }
     ]
 
     localesOptions = [

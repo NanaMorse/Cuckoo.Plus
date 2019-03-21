@@ -2,6 +2,8 @@
 import * as GooglePlusTheme from '!raw-loader!less-loader!../assets/themes/google-plus.less'
 // @ts-ignore
 import * as DarkTheme from '!raw-loader!less-loader!../assets/themes/dark.less'
+// @ts-ignore
+import * as GreenLightTheme from '!raw-loader!less-loader!../assets/themes/green-light.less'
 
 import { ThemeNames } from '@/constant'
 
@@ -9,17 +11,20 @@ class ThemeManager {
 
   private themeMap = {
     [ThemeNames.GOOGLE_PLUS]: GooglePlusTheme,
-    [ThemeNames.DARK]: DarkTheme
+    [ThemeNames.DARK]: DarkTheme,
+    [ThemeNames.GREEN_LIGHT]: GreenLightTheme
   }
 
   private themeToFavIconSourceMap = {
     [ThemeNames.GOOGLE_PLUS]: 'google_plus',
-    [ThemeNames.DARK]: 'dark'
+    [ThemeNames.DARK]: 'dark',
+    [ThemeNames.GREEN_LIGHT]: 'green_light'
   }
 
   private themeToThemeColor = {
     [ThemeNames.GOOGLE_PLUS]: '#db4437',
-    [ThemeNames.DARK]: '#1976d2'
+    [ThemeNames.DARK]: '#1976d2',
+    [ThemeNames.GREEN_LIGHT]: '#0f9d58'
   }
 
   private getThemeStyleElem (): HTMLStyleElement {

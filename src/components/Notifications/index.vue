@@ -41,7 +41,7 @@
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State, Action, Mutation } from 'vuex-class'
-  import { NotificationTypes, ThemeNames, UiWidthCheckConstants } from '@/constant'
+  import { NotificationTypes, UiWidthCheckConstants } from '@/constant'
   import StatusCard from '@/components/StatusCard'
   import NotificationCard from './Card'
   import { mastodonentities } from '@/interface'

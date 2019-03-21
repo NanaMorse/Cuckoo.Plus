@@ -64,6 +64,9 @@
         [ThemeNames.GOOGLE_PLUS]: {
           backgroundColor: '#fff'
         },
+        [ThemeNames.GREEN_LIGHT]: {
+          backgroundColor: '#fff'
+        },
         [ThemeNames.DARK]: {
 
         }
