@@ -400,7 +400,7 @@
 
     section {
       @media (max-width: 530px) {
-        height: calc(100vh - 56px - 72px);
+        height: calc(100% - 56px - 72px);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
