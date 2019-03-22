@@ -57,8 +57,9 @@ export namespace cuckoostore {
         }
       }
       settings: {
-        multiLineMode: boolean,
-        showSensitiveContentMode: boolean,
+        multiLineMode: boolean
+        showSensitiveContentMode: boolean
+        postMediaAsSensitiveMode: boolean
         realTimeLoadStatusMode: boolean
         theme: string,
         tags: Array<string>

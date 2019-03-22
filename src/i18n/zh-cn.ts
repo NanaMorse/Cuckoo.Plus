@@ -61,10 +61,13 @@ const settings = {
   [I18nTags.settings.show_sensitive_media_files]: '总是显示标记为敏感的媒体文件：',
   [I18nTags.settings.auto_load_new_status]: '总是自动加载新的嘟文：',
   [I18nTags.settings.post_privacy]: '嘟文默认可见范围：',
+  [I18nTags.settings.post_media_as_sensitive]: '总是将我发送的媒体文件标记为敏感内容：',
+
   [I18nTags.settings.stream_label]: '信息流',
   [I18nTags.settings.media_label]: '媒体内容',
   [I18nTags.settings.personality_label]: '个性化',
-  [I18nTags.settings.publishing_label]: '发布'
+  [I18nTags.settings.publishing_label]: '发布',
+  [I18nTags.settings.web_label]: '站内'
 }
 
 const timeLines = {

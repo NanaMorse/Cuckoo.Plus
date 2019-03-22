@@ -1,4 +1,4 @@
-const version = '0.2.7'
+const version = '0.2.8'
 const CACHE = version + ':CP'
 const cacheFilePaths = [
   '/',
@@ -25,7 +25,8 @@ const cacheRequestAPIs = [
 const corsScriptsSiteList = [
   'https://www.google-analytics.com',
   'https://www.googletagmanager.com',
-  'https://hm.baidu.com'
+  'https://hm.baidu.com',
+  'chrome-extension://'
 ]
 
 const swContext = this

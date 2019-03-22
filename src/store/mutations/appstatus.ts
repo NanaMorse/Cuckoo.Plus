@@ -72,5 +72,10 @@ export default {
   updatePostPrivacy (state: cuckoostore.stateInfo, newPostPrivacy: string) {
     state.appStatus.settings.postPrivacy = newPostPrivacy
     localStorage.setItem('postPrivacy', newPostPrivacy)
+  },
+
+  updatePostMediaAsSensitiveMode (state: cuckoostore.stateInfo, newMode: boolean) {
+    state.appStatus.settings.postMediaAsSensitiveMode = newMode
+    localStorage.setItem('postMediaAsSensitiveMode', JSON.stringify(newMode))
   }
 }
