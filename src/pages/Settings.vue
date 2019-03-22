@@ -32,12 +32,7 @@
           <mu-switch class="setting-switch" v-model="multiLineMode" />
         </div>
 
-        <p class="card-label">{{$t($i18nTags.settings.media_label)}}</p>
-
-        <div class="setting-row">
-          <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.show_sensitive_media_files)}}</span>
-          <mu-switch class="setting-switch" v-model="showSensitiveContentMode" />
-        </div>
+        <!--<p class="card-label">{{$t($i18nTags.settings.media_label)}}</p>-->
 
         <p class="card-label">{{$t($i18nTags.settings.publishing_label)}}</p>
 
@@ -47,6 +42,18 @@
             <mu-option v-for="(visibilityInfo, index) in postPrivacyOptions" :key="index"
                        :label="visibilityInfo.label" :value="visibilityInfo.value" />
           </mu-select>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.post_media_as_sensitive)}}</span>
+          <mu-switch class="setting-switch" v-model="postMediaAsSensitiveMode" />
+        </div>
+
+        <p class="card-label">{{$t($i18nTags.settings.web_label)}}</p>
+
+        <div class="setting-row">
+          <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.show_sensitive_media_files)}}</span>
+          <mu-switch class="setting-switch" v-model="showSensitiveContentMode" />
         </div>
 
       </mu-card-actions>
@@ -80,6 +87,8 @@
     @Mutation('updateLocale') updateLocale
 
     @Mutation('updatePostPrivacy') updatePostPrivacy
+
+    @Mutation('updatePostMediaAsSensitiveMode') updatePostMediaAsSensitiveMode
 
     themeOptions = [
       { label: 'Google Plus', value: ThemeNames.GOOGLE_PLUS },
@@ -149,6 +158,14 @@
 
     set postPrivacy (val) {
       this.updatePostPrivacy(val)
+    }
+
+    get postMediaAsSensitiveMode () {
+      return this.appStatus.settings.postMediaAsSensitiveMode
+    }
+
+    set postMediaAsSensitiveMode (val) {
+      this.updatePostMediaAsSensitiveMode(val)
     }
   }
 

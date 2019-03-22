@@ -26,6 +26,12 @@
         <mu-button ref="visibilityTriggerBtn" @click="shouldOpenVisibilitySelectPopOver = true" class="operate-btn change-visibility secondary-read-text-color" icon>
           <mu-icon class="reply-action-icon" :value="getVisibilityDescInfo(visibility).icon" />
         </mu-button>
+
+        <mu-button v-if="uploadProcesses.length" @click="markMediaAsSensitive = !markMediaAsSensitive"
+                   class="operate-btn secondary-read-text-color" icon>
+          <mu-icon class="reply-action-icon" :value="markMediaAsSensitive ? 'visibility_off' : 'visibility'" />
+        </mu-button>
+
       </div>
       <div class="right-area">
         <mu-button flat class="operate-btn cancel"
@@ -85,12 +91,23 @@
 
     postPrivacy = null
 
+    postMediaAsSensitiveMode: boolean = null
+
     get visibility () {
       return this.postPrivacy || this.appStatus.settings.postPrivacy
     }
 
     set visibility (val) {
       this.postPrivacy = val
+    }
+
+    get markMediaAsSensitive () {
+      return typeof this.postMediaAsSensitiveMode === 'boolean' ? this.postMediaAsSensitiveMode :
+        this.appStatus.settings.postMediaAsSensitiveMode
+    }
+
+    set markMediaAsSensitive (val) {
+      this.postMediaAsSensitiveMode = val
     }
 
     shouldOpenVisibilitySelectPopOver = false
@@ -162,6 +179,7 @@
           status: this.value,
           inReplyToId: currentReplyToStatus.id,
           visibility: this.visibility,
+          sensitive: this.postMediaAsSensitiveMode,
           mediaIds: this.uploadProcesses.map(info => info.uploadResult.id)
         }
       })

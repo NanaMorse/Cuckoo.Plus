@@ -75,10 +75,12 @@ declare module "vue/types/vue" {
         show_sensitive_media_files: string
         auto_load_new_status: string
         post_privacy: string
+        post_media_as_sensitive: string
         stream_label: string
         media_label: string
         publishing_label: string
         personality_label: string
+        web_label: string
       },
       home: {
 

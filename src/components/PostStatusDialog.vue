@@ -62,8 +62,12 @@
                    accept=".jpg,.jpeg,.png,.gif,.webm,.mp4,.m4v,.mov,image/jpeg,image/png,image/gif,video/webm,video/mp4,video/quicktime"
                    style="display: none" multiple/>
           </mu-button>
-          <mu-button icon>
-            <mu-icon class="secondary-read-text-color" value="link" />
+          <!--<mu-button icon>-->
+            <!--<mu-icon class="secondary-read-text-color" value="link" />-->
+          <!--</mu-button>-->
+          <mu-button v-if="uploadProcesses.length" @click="markMediaAsSensitive = !markMediaAsSensitive"
+                     class="secondary-read-text-color" icon>
+            <mu-icon :value="markMediaAsSensitive ? 'visibility_off' : 'visibility'" />
           </mu-button>
         </div>
 
@@ -188,6 +192,7 @@
 
     getVisibilityDescInfo = getVisibilityDescInfo
 
+
     postPrivacy = null
 
     get visibility () {
@@ -197,6 +202,19 @@
     set visibility (val) {
       this.postPrivacy = val
     }
+
+
+    postMediaAsSensitiveMode: boolean = null
+
+    get markMediaAsSensitive () {
+      return typeof this.postMediaAsSensitiveMode === 'boolean' ? this.postMediaAsSensitiveMode :
+        this.appStatus.settings.postMediaAsSensitiveMode
+    }
+
+    set markMediaAsSensitive (val) {
+      this.postMediaAsSensitiveMode = val
+    }
+
 
     visibilityTriggerBtn: HTMLDivElement = null
 
@@ -285,6 +303,7 @@
       const formData = {
         status: this.textContentValue,
         visibility: this.visibility,
+        sensitive: this.postMediaAsSensitiveMode,
         mediaIds: this.uploadProcesses.map(info => info.uploadResult.id)
       }
 
