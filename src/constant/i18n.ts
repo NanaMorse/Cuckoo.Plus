@@ -33,7 +33,9 @@ export const I18nTags = {
     do_delete_status_btn: 'status_card_do_delete_status_btn',
     cancel_delete_status_btn: 'status_card_cancel_delete_status_btn',
     originally_shared_by: 'status_card_originally_shared_by',
-    sensitive_media_alert: 'status_card_sensitive_media_alert'
+    sensitive_media_alert: 'status_card_sensitive_media_alert',
+    change_visibility: 'status_card_change_visibility',
+    add_photos: 'status_card_add_photos'
   },
 
   timeLines: {

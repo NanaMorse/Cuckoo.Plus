@@ -17,13 +17,13 @@
     <div class="reply-action-area">
       <div class="left-area">
         <mu-button @click="onSelectMediaFiles" :disabled="uploadProcesses.length === 4"
-                   class="operate-btn add-image secondary-read-text-color" icon>
+                   class="operate-btn add-image secondary-read-text-color" icon :title="$t($i18nTags.statusCard.add_photos)">
           <mu-icon class="reply-action-icon" value="camera_alt" />
           <input ref="fileInput" type="file" @change="onUploadMediaFiles"
                  accept=".jpg,.jpeg,.png,.gif,.webm,.mp4,.m4v,.mov,image/jpeg,image/png,image/gif,video/webm,video/mp4,video/quicktime"
                  style="display: none" multiple/>
         </mu-button>
-        <mu-button ref="visibilityTriggerBtn" @click="shouldOpenVisibilitySelectPopOver = true" class="operate-btn change-visibility secondary-read-text-color" icon>
+        <mu-button ref="visibilityTriggerBtn" @click="shouldOpenVisibilitySelectPopOver = true" class="operate-btn change-visibility secondary-read-text-color" icon :title="$t($i18nTags.statusCard.change_visibility)">
           <mu-icon class="reply-action-icon" :value="getVisibilityDescInfo(visibility).icon" />
         </mu-button>
 
