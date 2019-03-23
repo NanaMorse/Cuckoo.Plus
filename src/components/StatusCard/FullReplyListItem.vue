@@ -260,6 +260,7 @@
 
       .reply-from-now {
         font-size: 13px;
+        white-space: nowrap;
       }
     }
   }
