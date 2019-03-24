@@ -72,6 +72,8 @@
 
     $i18n
 
+    $i18nTags
+
     $t
 
     $toast
@@ -104,6 +106,10 @@
       { label: '繁體中文（香港）', value: I18nLocales.ZH_HK },
       { label: '繁體中文（台灣）', value: I18nLocales.ZH_TW }
     ]
+
+    showSuccessChangedToast () {
+      this.$toast.success(this.$t(this.$i18nTags.settings.changes_successfully_saved))
+    }
 
     get postPrivacyOptions () {
       return [VisibilityTypes.PUBLIC, VisibilityTypes.UNLISTED, VisibilityTypes.PRIVATE].map(visibilityType => {
@@ -167,7 +173,7 @@
       this.isLoading = true
       await this.actionUpdatePostPrivacy(val)
       this.isLoading = false
-      this.$toast.success('success')
+      this.showSuccessChangedToast()
     }
 
     get postMediaAsSensitiveMode () {
@@ -182,6 +188,7 @@
       this.isLoading = true
       await this.updatePostMediaAsSensitiveMode(val)
       this.isLoading = false
+      this.showSuccessChangedToast()
     }
   }
 

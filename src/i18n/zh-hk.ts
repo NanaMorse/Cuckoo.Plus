@@ -69,7 +69,7 @@ const settings = {
   [I18nTags.settings.publishing_label]: '發佈',
   [I18nTags.settings.web_label]: '站内',
 
-  [I18nTags.settings.changes_successfully_saved]: 'Changes successfully saved!'
+  [I18nTags.settings.changes_successfully_saved]: '已成功儲存修改'
 
 }
 

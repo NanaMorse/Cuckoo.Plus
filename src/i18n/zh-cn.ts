@@ -69,7 +69,7 @@ const settings = {
   [I18nTags.settings.publishing_label]: '发布',
   [I18nTags.settings.web_label]: '站内',
 
-  [I18nTags.settings.changes_successfully_saved]: 'Changes successfully saved!'
+  [I18nTags.settings.changes_successfully_saved]: '更改保存成功！'
 }
 
 const timeLines = {
