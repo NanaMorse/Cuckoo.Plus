@@ -18,7 +18,13 @@ const actions = {
   async updateCurrentUserAccount ({ commit }) {
     try {
       const result = await Api.accounts.fetchCurrentUserAccountInfo()
-      commit('updateCurrentUserAccount', result.data)
+
+      const accountInfo: mastodonentities.AuthenticatedAccount = result.data
+
+      commit('updateCurrentUserAccount', accountInfo)
+      // sync settings
+      commit('updatePostPrivacy', accountInfo.source.privacy)
+      commit('updatePostMediaAsSensitiveMode', accountInfo.source.sensitive)
     } catch (e) {
 
     }

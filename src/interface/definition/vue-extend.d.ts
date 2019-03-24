@@ -36,6 +36,8 @@ declare module "vue/types/vue" {
         cancel_delete_status_btn: string
         originally_shared_by: string
         sensitive_media_alert: string
+        change_visibility: string
+        add_photos: string
       },
       common: {
         status_visibility_public: string
@@ -81,6 +83,7 @@ declare module "vue/types/vue" {
         publishing_label: string
         personality_label: string
         web_label: string
+        changes_successfully_saved: string
       },
       home: {
 

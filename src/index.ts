@@ -13,7 +13,7 @@ import router from './router'
 import App from './App.vue'
 import * as moment from 'moment'
 import i18nMessages from './i18n'
-import { I18nTags, RoutersInfo } from '@/constant'
+import { I18nTags, RoutersInfo, I18nLocales } from '@/constant'
 import ThemeManager from '@/themes'
 import './directives'
 
@@ -27,7 +27,9 @@ Vue.use({
 Vue.use(MuseUI)
 Vue.use(VueResource)
 Vue.use(VueI18n)
-Vue.use(Toast)
+Vue.use(Toast, {
+  position: 'bottom-start'
+})
 Vue.use(Message)
 Vue.use(NProgress, {
   color: 'primary',
@@ -43,7 +45,8 @@ const currentLocale = store.state.appStatus.settings.locale
 
 const i18n = new VueI18n({
   locale: currentLocale,
-  messages: i18nMessages
+  messages: i18nMessages,
+  fallbackLocale: I18nLocales.EN
 });
 
 moment.locale(currentLocale)
@@ -61,9 +64,9 @@ if (window.Notification) {
 
 ThemeManager.setTheme(store.state.appStatus.settings.theme)
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js')
-}
+// if ('serviceWorker' in navigator) {
+//   navigator.serviceWorker.register('/sw.js')
+// }
 
 new Vue({
   el: '#app',

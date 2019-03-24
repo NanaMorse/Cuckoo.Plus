@@ -1,6 +1,6 @@
 <template>
   <div class="setting-page-container">
-    <mu-card>
+    <mu-card v-loading="isLoading">
       <mu-card-actions class="setting-card">
         <p class="card-label">{{$t($i18nTags.settings.general_label)}}</p>
 
@@ -63,7 +63,7 @@
 
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
-  import { State, Mutation } from 'vuex-class'
+  import { State, Mutation, Action } from 'vuex-class'
   import { ThemeNames, I18nLocales, VisibilityTypes } from '@/constant'
   import * as moment from 'moment'
 
@@ -74,21 +74,22 @@
 
     $t
 
+    $toast
+
     @State('appStatus') appStatus
 
     @Mutation('updateTheme') updateTheme
-
     @Mutation('updateMultiLineMode') updateMultiLineMode
-
     @Mutation('updateShowSensitiveContentMode') updateShowSensitiveContentMode
-
     @Mutation('updateRealTimeLoadStatusMode') updateRealTimeLoadStatusMode
-
     @Mutation('updateLocale') updateLocale
 
-    @Mutation('updatePostPrivacy') updatePostPrivacy
+    @Mutation('updatePostPrivacy') mutationUpdatePostPrivacy
 
-    @Mutation('updatePostMediaAsSensitiveMode') updatePostMediaAsSensitiveMode
+    @Action('updatePostPrivacy') actionUpdatePostPrivacy
+    @Action('updatePostMediaAsSensitiveMode') updatePostMediaAsSensitiveMode
+
+    isLoading: boolean = false
 
     themeOptions = [
       { label: 'Google Plus', value: ThemeNames.GOOGLE_PLUS },
@@ -157,7 +158,16 @@
     }
 
     set postPrivacy (val) {
-      this.updatePostPrivacy(val)
+      // todo muse-select has a bug, if only use updatePostPrivacy action here, select component will re-open after action complete
+      this.mutationUpdatePostPrivacy(val)
+      this._updatePostPrivacy(val)
+    }
+
+    async _updatePostPrivacy (val) {
+      this.isLoading = true
+      await this.actionUpdatePostPrivacy(val)
+      this.isLoading = false
+      this.$toast.success('success')
     }
 
     get postMediaAsSensitiveMode () {
@@ -165,7 +175,13 @@
     }
 
     set postMediaAsSensitiveMode (val) {
-      this.updatePostMediaAsSensitiveMode(val)
+      this._updatePostMediaAsSensitiveMode(val)
+    }
+
+    async _updatePostMediaAsSensitiveMode (val) {
+      this.isLoading = true
+      await this.updatePostMediaAsSensitiveMode(val)
+      this.isLoading = false
     }
   }
 

@@ -67,7 +67,10 @@ const settings = {
   [I18nTags.settings.media_label]: '媒體內容',
   [I18nTags.settings.personality_label]: '個人化',
   [I18nTags.settings.publishing_label]: '發佈',
-  [I18nTags.settings.web_label]: '站内'
+  [I18nTags.settings.web_label]: '站内',
+
+  [I18nTags.settings.changes_successfully_saved]: 'Changes successfully saved!'
+
 }
 
 const timeLines = {

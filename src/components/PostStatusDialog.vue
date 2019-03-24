@@ -203,7 +203,6 @@
       this.postPrivacy = val
     }
 
-
     postMediaAsSensitiveMode: boolean = null
 
     get markMediaAsSensitive () {
