@@ -103,6 +103,9 @@ export const I18nTags = {
   },
 
   notifications: {
-    someone_followed_you: 'notifications_someone_followed_you'
+    someone_followed_you: 'notifications_someone_followed_you',
+    mentioned_you: 'notifications_mentioned_you',
+    boosted_your_status: 'notifications_boosted_your_status',
+    favourited_your_status: 'notifications_favourited_your_status'
   }
 }

@@ -88,7 +88,10 @@ const postStatusDialog = {
 }
 
 const notifications = {
-  [I18nTags.notifications.someone_followed_you]: '{displayName} followed you'
+  [I18nTags.notifications.someone_followed_you]: 'followed you',
+  [I18nTags.notifications.mentioned_you]: 'mentioned you',
+  [I18nTags.notifications.favourited_your_status]:'favourited your status',
+  [I18nTags.notifications.boosted_your_status]: 'boosted your status'
 }
 
 export default {

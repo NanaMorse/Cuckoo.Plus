@@ -86,7 +86,10 @@ const postStatusDialog = {
 }
 
 const notifications = {
-  [I18nTags.notifications.someone_followed_you]: '{displayName} 關注了你'
+  [I18nTags.notifications.someone_followed_you]: '關注了你',
+  [I18nTags.notifications.mentioned_you]: '提及了你',
+  [I18nTags.notifications.favourited_your_status]:'收藏了你的文章',
+  [I18nTags.notifications.boosted_your_status]: '轉推你的文章'
 }
 
 export default {

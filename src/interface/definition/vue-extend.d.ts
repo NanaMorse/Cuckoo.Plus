@@ -105,6 +105,9 @@ declare module "vue/types/vue" {
       },
       notifications: {
         someone_followed_you: string
+        mentioned_you: string
+        boosted_your_status: string
+        favourited_your_status: string
       }
     }
 

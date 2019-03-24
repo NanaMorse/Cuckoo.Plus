@@ -7,12 +7,11 @@ import MuseUI from 'muse-ui'
 import 'muse-ui-loading/dist/muse-ui-loading.css'
 import 'muse-ui-progress/dist/muse-ui-progress.css'
 import VueResource from 'vue-resource'
-import VueI18n from 'vue-i18n'
+import i18n from './i18n'
 import store from './store'
 import router from './router'
 import App from './App.vue'
 import * as moment from 'moment'
-import i18nMessages from './i18n'
 import { I18nTags, RoutersInfo, I18nLocales } from '@/constant'
 import ThemeManager from '@/themes'
 import './directives'
@@ -26,7 +25,6 @@ Vue.use({
 
 Vue.use(MuseUI)
 Vue.use(VueResource)
-Vue.use(VueI18n)
 Vue.use(Toast, {
   position: 'bottom-start'
 })
@@ -42,12 +40,6 @@ Vue.use(Loading, {
 })
 
 const currentLocale = store.state.appStatus.settings.locale
-
-const i18n = new VueI18n({
-  locale: currentLocale,
-  messages: i18nMessages,
-  fallbackLocale: I18nLocales.EN
-});
 
 moment.locale(currentLocale)
 

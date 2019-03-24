@@ -1,25 +1,32 @@
 import store from '@/store'
-import { StreamingEventTypes, TimeLineTypes, NotificationTypes, RoutersInfo } from '@/constant'
+import { StreamingEventTypes, TimeLineTypes, NotificationTypes, RoutersInfo, I18nTags } from '@/constant'
 import { mastodonentities } from "@/interface"
 import router from '@/router'
 import { extractText, prepareRootStatus } from "@/util"
+import i18n from '@/i18n'
 
 class NotificationHandler {
   public emit (newNotification: mastodonentities.Notification) {
     switch (newNotification.type) {
       case NotificationTypes.MENTION : {
-        return this.emitStatusOperateNotification(newNotification, '提及你')
+        return this.emitStatusOperateNotification(newNotification, i18n.t(I18nTags.notifications.mentioned_you))
       }
 
       case NotificationTypes.REBLOG : {
-        return this.emitStatusOperateNotification(newNotification, '转发了你的嘟文')
+        return this.emitStatusOperateNotification(newNotification, i18n.t(I18nTags.notifications.boosted_your_status))
       }
 
       case NotificationTypes.FAVOURITE : {
         // update status info
         store.dispatch('fetchStatusById', newNotification.status.id)
 
-        return this.emitStatusOperateNotification(newNotification, '喜欢了你的嘟文')
+        return this.emitStatusOperateNotification(newNotification, i18n.t(I18nTags.notifications.favourited_your_status))
+      }
+
+      case NotificationTypes.FOLLOW : {
+        store.dispatch('updateRelationships', { idList: [newNotification.account.id] })
+
+        return this.emitStatusOperateNotification(newNotification, i18n.t(I18nTags.notifications.someone_followed_you))
       }
     }
   }
@@ -164,10 +171,6 @@ class Streaming {
   private emitNotification (newNotification: mastodonentities.Notification) {
     // update notification list
     store.commit('unShiftNotification', [newNotification])
-
-    if (newNotification.type === NotificationTypes.FOLLOW) {
-      store.dispatch('updateRelationships', { idList: [newNotification.account.id] })
-    }
 
     // set notification icon unread
     store.commit('updateUnreadNotificationCount', store.state.appStatus.unreadNotificationCount + 1)

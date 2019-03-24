@@ -86,7 +86,10 @@ const postStatusDialog = {
 }
 
 const notifications = {
-  [I18nTags.notifications.someone_followed_you]: '{displayName} さんがあなたをフォローしています'
+  [I18nTags.notifications.someone_followed_you]: 'さんがあなたをフォローしています',
+  [I18nTags.notifications.mentioned_you]: '返信',
+  [I18nTags.notifications.favourited_your_status]:'お気に入り',
+  [I18nTags.notifications.boosted_your_status]: 'ブースト'
 }
 
 export default {

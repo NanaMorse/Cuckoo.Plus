@@ -26,9 +26,14 @@
 <script lang="ts">
   import { Vue, Component, Prop } from 'vue-property-decorator'
   import { State, Getter, Action } from 'vuex-class'
-  import { NotificationTypes, ThemeNames } from '@/constant'
+  import { NotificationTypes, ThemeNames, I18nTags } from '@/constant'
   import { mastodonentities } from '@/interface'
   import { prepareRootStatus, formatHtml } from "@/util"
+
+  const notificationTypeToI18nTagsMap = {
+    [NotificationTypes.FAVOURITE]: I18nTags.notifications.favourited_your_status,
+    [NotificationTypes.REBLOG]: I18nTags.notifications.boosted_your_status
+  }
 
   @Component({})
   class Card extends Vue {
@@ -84,14 +89,12 @@
     getNotificationSubTitle (notification) {
       switch (notification.type) {
         case NotificationTypes.FOLLOW: {
-          return this.$t(this.$i18nTags.notifications.someone_followed_you, {
-            displayName: this.getAccountDisplayName(notification.account)
-          })
+          return `${this.getAccountDisplayName(notification.account)} ${this.$t(this.$i18nTags.notifications.someone_followed_you)}`
         }
 
         case NotificationTypes.FAVOURITE:
         case NotificationTypes.REBLOG: {
-          return notification.type + ": " + formatHtml(notification.status.content)
+          return this.$t(notificationTypeToI18nTagsMap[notification.type]) + ": " + formatHtml(notification.status.content)
         }
 
         case NotificationTypes.MENTION: {
