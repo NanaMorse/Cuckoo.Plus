@@ -67,7 +67,9 @@ const settings = {
   [I18nTags.settings.media_label]: 'メディア',
   [I18nTags.settings.personality_label]: 'パーソナリティ',
   [I18nTags.settings.publishing_label]: '投稿',
-  [I18nTags.settings.web_label]: 'ウェブ'
+  [I18nTags.settings.web_label]: 'ウェブ',
+
+  [I18nTags.settings.changes_successfully_saved]: '正常に変更されました！'
 }
 
 const timeLines = {

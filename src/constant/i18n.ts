@@ -72,7 +72,9 @@ export const I18nTags = {
     media_label: 'settings_media_label',
     publishing_label: 'settings_publishing_label',
     personality_label: 'settings_personality_label',
-    web_label: 'settings_web_label'
+    web_label: 'settings_web_label',
+
+    changes_successfully_saved: 'settings_changes_successfully_saved'
   },
 
   header: {

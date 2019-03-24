@@ -1,6 +1,6 @@
 <template>
   <div class="setting-page-container">
-    <mu-card>
+    <mu-card v-loading="isLoading">
       <mu-card-actions class="setting-card">
         <p class="card-label">{{$t($i18nTags.settings.general_label)}}</p>
 
@@ -63,7 +63,7 @@
 
 <script lang="ts">
   import { Vue, Component } from 'vue-property-decorator'
-  import { State, Mutation } from 'vuex-class'
+  import { State, Mutation, Action } from 'vuex-class'
   import { ThemeNames, I18nLocales, VisibilityTypes } from '@/constant'
   import * as moment from 'moment'
 
@@ -72,23 +72,26 @@
 
     $i18n
 
+    $i18nTags
+
     $t
+
+    $toast
 
     @State('appStatus') appStatus
 
     @Mutation('updateTheme') updateTheme
-
     @Mutation('updateMultiLineMode') updateMultiLineMode
-
     @Mutation('updateShowSensitiveContentMode') updateShowSensitiveContentMode
-
     @Mutation('updateRealTimeLoadStatusMode') updateRealTimeLoadStatusMode
-
     @Mutation('updateLocale') updateLocale
 
-    @Mutation('updatePostPrivacy') updatePostPrivacy
+    @Mutation('updatePostPrivacy') mutationUpdatePostPrivacy
 
-    @Mutation('updatePostMediaAsSensitiveMode') updatePostMediaAsSensitiveMode
+    @Action('updatePostPrivacy') actionUpdatePostPrivacy
+    @Action('updatePostMediaAsSensitiveMode') updatePostMediaAsSensitiveMode
+
+    isLoading: boolean = false
 
     themeOptions = [
       { label: 'Google Plus', value: ThemeNames.GOOGLE_PLUS },
@@ -103,6 +106,10 @@
       { label: '繁體中文（香港）', value: I18nLocales.ZH_HK },
       { label: '繁體中文（台灣）', value: I18nLocales.ZH_TW }
     ]
+
+    showSuccessChangedToast () {
+      this.$toast.success(this.$t(this.$i18nTags.settings.changes_successfully_saved))
+    }
 
     get postPrivacyOptions () {
       return [VisibilityTypes.PUBLIC, VisibilityTypes.UNLISTED, VisibilityTypes.PRIVATE].map(visibilityType => {
@@ -157,7 +164,16 @@
     }
 
     set postPrivacy (val) {
-      this.updatePostPrivacy(val)
+      // todo muse-select has a bug, if only use updatePostPrivacy action here, select component will re-open after action complete
+      this.mutationUpdatePostPrivacy(val)
+      this._updatePostPrivacy(val)
+    }
+
+    async _updatePostPrivacy (val) {
+      this.isLoading = true
+      await this.actionUpdatePostPrivacy(val)
+      this.isLoading = false
+      this.showSuccessChangedToast()
     }
 
     get postMediaAsSensitiveMode () {
@@ -165,7 +181,14 @@
     }
 
     set postMediaAsSensitiveMode (val) {
-      this.updatePostMediaAsSensitiveMode(val)
+      this._updatePostMediaAsSensitiveMode(val)
+    }
+
+    async _updatePostMediaAsSensitiveMode (val) {
+      this.isLoading = true
+      await this.updatePostMediaAsSensitiveMode(val)
+      this.isLoading = false
+      this.showSuccessChangedToast()
     }
   }
 

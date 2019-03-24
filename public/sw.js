@@ -19,7 +19,6 @@ const cacheFilePaths = [
 
 const cacheRequestAPIs = [
   'api/v1/custom_emojis',
-  'api/v1/accounts/verify_credentials'
 ]
 
 const corsScriptsSiteList = [

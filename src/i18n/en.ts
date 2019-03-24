@@ -69,7 +69,9 @@ const settings = {
   [I18nTags.settings.media_label]: 'Media',
   [I18nTags.settings.personality_label]: 'Personality',
   [I18nTags.settings.publishing_label]: 'Publishing',
-  [I18nTags.settings.web_label]: 'Web'
+  [I18nTags.settings.web_label]: 'Web',
+
+  [I18nTags.settings.changes_successfully_saved]: 'Changes successfully saved!'
 }
 
 const timeLines = {
