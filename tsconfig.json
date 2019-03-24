@@ -11,14 +11,11 @@
     "target": "es5",
     "allowJs": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]
     },
-    "lib": ["ES2015", "dom"]
+    "lib": ["es2015", "dom"]
   },
   "exclude": [
     "node_modules"
-  ],
-  "include": [
-    "src/interface"
   ]
 }
