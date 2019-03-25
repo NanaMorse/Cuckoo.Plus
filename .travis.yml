@@ -6,6 +6,8 @@ addons:
 install:
   - git clone --branch=deploy https://github.com/NanaMorse/Cuckoo.Plus NanaMorse/Cuckoo.Plus
   - cd NanaMorse/Cuckoo.Plus
+  - git rebase origin/master
+  - npm install
 script:
 - npm test
 before_deploy:
