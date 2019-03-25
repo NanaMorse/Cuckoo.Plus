@@ -60,8 +60,6 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js')
 }
 
-console.log('hello ci!')
-
 new Vue({
   el: '#app',
   store,

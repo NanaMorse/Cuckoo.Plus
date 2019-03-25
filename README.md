@@ -1,5 +1,4 @@
-# Cuckoo.Plus [![Build Status](https://travis-ci.org/NanaMorse/Cuckoo.Plus.svg?branch=master)](https://travis-ci.org/NanaMorse/Cuckoo.Plus)
-A GooglePlus-Like third-party web client for mastodon.
+# Cuckoo.Plus [![Build Status](https://travis-ci.com/NanaMorse/Cuckoo.Plus.svg?branch=master)](https://travis-ci.com/NanaMorse/Cuckoo.Plus)
 
 alpha view link: [Cuckoo.Social](http://www.cuckoo.social)
 
