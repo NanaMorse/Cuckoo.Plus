@@ -3,14 +3,6 @@ node_js:
 - 10.15.3
 addons:
   ssh_known_hosts: 52.76.67.104
-script:
-- git config --global user.name "$GIT_NAME"
-- git config --global user.email "$GIT_EMAIL"
-- git config --global push.default simple
-- git clone --branch=deploy https://github.com/NanaMorse/Cuckoo.Plus NanaMorse/Cuckoo.Plus
-- cd NanaMorse/Cuckoo.Plus
-- git rebase origin/master
-- npm install
 before_deploy:
 - openssl aes-256-cbc -K $encrypted_7892896c2e12_key -iv $encrypted_7892896c2e12_iv
   -in light-sail-cuckoo-plus.pem.enc -out light-sail-cuckoo-plus.pem -d
@@ -24,6 +16,3 @@ deploy:
 branches:
   only:
   - master
-env:
-  global:
-    secure: WI/r7rCl/j3d4P9N6I56MwfkIbzbgNlNUiAqiJBcZD1gOF5LceeCEjyh2DkN7WnDbbPAyAiN+nvZsKGFM95v3yCHdtMTIQhp4jFJSCLUVHqGLDnek2XiaJJPUe9W90mMgnl77Z1OXoGx3nAzue1XOwjvQglRJyHVo0zY9DRtIiweLB1GWkHBhk8VPQp1bGeAmHrY5mIqdqRzJt4+wNm34se018pZBKLvrSmhqR3+fh/df+SMEbadmjyYr+qo3uyFWy64MtZK9Vbeclgub8QNkm/d4e8z0OuNt3Dpd03x19uXvBWdtbswvu3VrV+60krnZb0RSl4XVDesxdr4sx07G9r0umN2iEVByxo0GQSjm5R0YXK190kBsm2s1FCrnigi9HoUz4rTxNZT1RCbaeJIsUz9eps0rC8k4ToXi0X5QNi8wJkXPGc7YX2VBM4hlrz1Tuv8Wa7xmoFdS1qbuAHa+1nSTkWCykyLV0X1RPHEcJVd3maIu1mXAm/U7Pcgy1qffeELyl9oU+MedIdDOVsuRi1MgNXdiBuxi/dhRhlHX35kz07cIxgzkqxbZgra3ck4junLOXvQRDY1ApJt03cN4eCeRG6JAwz4kCd8BfarU9qnIwMFkprp4G6wyvpl8UrneskqPEOWJfxDdcI9nIvitCs88Awy4TK+ztlN3o27+0o=
