@@ -3,6 +3,7 @@ const path = require('path')
 const yargs = require('yargs')
 const fs = require('fs')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const MinifyPlugin = require("babel-minify-webpack-plugin");
 
 let { env } = yargs.argv
 if (!env) env = 'develop'
@@ -17,6 +18,7 @@ const plugins = [
 if (isEnvProduction) {
   // remove source map data
   fs.unlink(path.join(__dirname, './public/dist/bundle.js.map'), (err) => {})
+  plugins.push(new MinifyPlugin())
 } else {
   plugins.push(new BundleAnalyzerPlugin())
 }

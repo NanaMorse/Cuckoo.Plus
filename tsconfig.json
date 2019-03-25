@@ -8,7 +8,7 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
-    "target": "es5",
+    "target": "es2015",
     "allowJs": true,
     "paths": {
       "@/*": ["src/*"]
