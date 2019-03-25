@@ -1,7 +1,3 @@
-git fetch
-git checkout -b deploy --track origin/deploy
-git pull
-npm install
 npm run build
 git add .
 git commit -m "build"
