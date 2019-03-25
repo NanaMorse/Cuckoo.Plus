@@ -10,7 +10,7 @@ before_deploy:
 - chmod 600 light-sail-cuckoo-plus.pem
 - ssh-add light-sail-cuckoo-plus.pem
 deploy:
-provider: script
+  provider: script
   script: bash ./deploy.sh
   skip_cleanup: true
   on:
