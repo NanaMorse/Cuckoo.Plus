@@ -1,6 +1,8 @@
 language: node_js
 node_js:
 - 10.15.3
+addons:
+  ssh_known_hosts: 52.76.67.104
 script:
 - npm test
 before_deploy:
