@@ -1,6 +1,17 @@
 language: node_js
 node_js:
-  - "10.15.3"
+- 10.15.3
+addons:
+  ssh_known_hosts: 52.76.67.104
 script:
 - npm test
-- npm run build
+before_deploy:
+- openssl aes-256-cbc -K $encrypted_7892896c2e12_key -iv $encrypted_7892896c2e12_iv
+  -in light-sail-cuckoo-plus.pem.enc -out light-sail-cuckoo-plus.pem -d
+- eval "$(ssh-agent -s)"
+- chmod 600 light-sail-cuckoo-plus.pem
+- ssh-add light-sail-cuckoo-plus.pem
+deploy:
+provider: script
+  script: bash ./deploy.sh
+  skip_cleanup: true
