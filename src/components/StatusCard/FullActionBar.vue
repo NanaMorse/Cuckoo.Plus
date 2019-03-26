@@ -171,20 +171,12 @@
       this.visibilityTriggerBtn = this.$refs.visibilityTriggerBtn.$el
       this.$refs.cuckooInput.focus()
       this.$refs.cuckooInput.updateSize()
+      this.prepareDroppedFiles()
     }
 
     @Watch('droppedFiles')
-    onDropFiles (val: Array<File>) {
-      const filesToUpload = [...val].splice(0, maxUploadLength - this.uploadProcesses.length)
-
-      // todo show notification toast
-      if (!filesToUpload.length) return
-
-      filesToUpload.forEach(file => {
-        this.uploadProcesses.push({
-          file, hasStartedUpload: false, uploadResult: null
-        })
-      })
+    onDropFiles () {
+      this.prepareDroppedFiles()
     }
 
     async onSubmitReplyContent () {
@@ -227,6 +219,21 @@
         })
 
       this.$refs.fileInput.value = ''
+    }
+
+    prepareDroppedFiles () {
+      if (!this.droppedFiles || !this.droppedFiles.length) return
+
+      const filesToUpload = [...this.droppedFiles].splice(0, maxUploadLength - this.uploadProcesses.length)
+
+      // todo show notification toast
+      if (!filesToUpload.length) return
+
+      filesToUpload.forEach(file => {
+        this.uploadProcesses.push({
+          file, hasStartedUpload: false, uploadResult: null
+        })
+      })
     }
 
     hideFullReplyActionArea () {

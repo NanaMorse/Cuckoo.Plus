@@ -1,6 +1,10 @@
 <template>
-  <div class="status-card-container" @dragover="onDragFileOver" @dragleave="isFileDragOver = false" @drop="onDropFile">
-    <mu-card class="status-card status-card-bg-color" :style="statusCardStyle" v-loading="isCardLoading" v-drag-over="isFileDragOver">
+  <div class="status-card-container" @dragenter="onDragFileOver">
+    <mu-card class="status-card status-card-bg-color" :style="statusCardStyle" v-loading="isCardLoading"
+             v-drag-over="isFileDragOver"
+             @cuckooDragOver="onDragFileOver"
+             @cuckooDragleave="isFileDragOver = false"
+             @cuckooDrop="onDropFile">
 
       <card-header :status="status" @deleteStatus="isCardLoading = true"/>
 
