@@ -10,7 +10,7 @@ a {
 
 // class for mixin
 .primary-theme-bg-color {
-  background-color: @primaryColor;
+  background-color: @primaryColor !important;
 
   > * {
     color: @alternateTextColor;
@@ -38,7 +38,7 @@ a {
 }
 
 .base-theme-bg-color {
-  background-color: @backgroundColor;
+  background-color: @backgroundColor !important;
 }
 
 .dialog-theme-bg-color {
@@ -127,9 +127,8 @@ a {
   color: @textColor;
 
   &::placeholder {
-    color: @secondaryTextColor;
-    font-size: 14px;
-    font-weight: 300;
+    color: @textColor;
+    font-weight: 400;
   }
 }
 

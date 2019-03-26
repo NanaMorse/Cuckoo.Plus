@@ -1,5 +1,10 @@
 <template>
   <div class="cuckoo-input-container">
+
+    <textarea v-show="shouldShowSpoilerTextInputArea" ref="spoilerTextArea"
+              class="auto-size-text-area spoiler-text-area base-theme-bg-color"
+              v-model="spoilerTextValue" :placeholder="$t($i18nTags.common.write_your_warning_here)"/>
+
     <textarea ref="textArea" class="auto-size-text-area" v-model="textValue"
               @keydown.ctrl.enter="onQuickSubmit" @input="onInput"
               @keydown.38="onMinisSelectedResultIndex" @keydown.40="onPlusSelectedResultIndex"
@@ -63,6 +68,7 @@
 
     $refs: {
       textArea: HTMLTextAreaElement
+      spoilerTextArea: HTMLTextAreaElement
     }
 
     $toast
@@ -74,6 +80,10 @@
       hasStartedUpload: boolean,
       uploadResult: mastodonentities.Attachment
     }>
+
+    @Prop() shouldShowSpoilerTextInputArea: boolean
+
+    @Prop() spoilerText: string
 
     @Prop() placeholder: string
 
@@ -97,6 +107,14 @@
 
     set textValue (val) {
       this.$emit('update:text', val)
+    }
+
+    get spoilerTextValue () {
+      return this.spoilerText
+    }
+
+    set spoilerTextValue (val) {
+      this.$emit('update:spoilerText', val)
     }
 
     get shouldShowAccountSearchResultList () {
@@ -156,6 +174,7 @@
     public updateSize () {
       this.$nextTick(() => {
         this.$refs.textArea.dispatchEvent(new Event('autosize:update'))
+        this.$refs.spoilerTextArea.dispatchEvent(new Event('autosize:update'))
       })
     }
 
@@ -163,6 +182,7 @@
       this.startUploadProcess()
       this.insertedAcctList = this.presetAtAccounts.map(accounts => accounts.acct)
       autosize(this.$refs.textArea)
+      autosize(this.$refs.spoilerTextArea)
     }
 
     onQuickSubmit () {
@@ -309,6 +329,7 @@
 
     beforeDestroy () {
       this.$refs.textArea.dispatchEvent(new Event('autosize:destroy'))
+      this.$refs.spoilerTextArea.dispatchEvent(new Event('autosize:destroy'))
     }
   }
 
@@ -319,6 +340,12 @@
   .cuckoo-input-container {
     width: 100%;
     position: relative;
+
+    .spoiler-text-area {
+      height: 38px;
+      padding: 10px;
+      border-radius: 4px;
+    }
 
     .media-area {
       padding-left: 16px;

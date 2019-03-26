@@ -50,6 +50,8 @@
     <section>
 
       <cuckoo-input ref="cuckooInput" @submit="onSubmitNewStatus"
+                    :shouldShowSpoilerTextInputArea="shouldShowSpoilerTextInputArea"
+                    :spoilerText.sync="spoilerTextValue"
                     :text.sync="textContentValue" :uploadProcesses.sync="uploadProcesses"
                     :placeholder="$t($i18nTags.statusCard.post_new_status_placeholder)"/>
 
@@ -68,6 +70,12 @@
           <mu-button v-if="uploadProcesses.length" @click="markMediaAsSensitive = !markMediaAsSensitive"
                      class="secondary-read-text-color" icon>
             <mu-icon :value="markMediaAsSensitive ? 'visibility_off' : 'visibility'" />
+          </mu-button>
+
+          <mu-button @click="shouldShowSpoilerTextInputArea = !shouldShowSpoilerTextInputArea"
+                     class="operate-btn" icon
+                     :class="shouldShowSpoilerTextInputArea ? 'secondary-theme-text-color' : 'secondary-read-text-color'">
+            <mu-icon class="reply-action-icon" value="add_alert" />
           </mu-button>
         </div>
 
@@ -229,6 +237,10 @@
 
     textContentValue: string = ''
 
+    shouldShowSpoilerTextInputArea: boolean = null
+
+    spoilerTextValue: string = ''
+
     @Prop() open: boolean
 
     @Prop() close: Function
@@ -302,6 +314,7 @@
       const formData = {
         status: this.textContentValue,
         visibility: this.visibility,
+        spoilerText: this.shouldShowSpoilerTextInputArea ? this.spoilerTextValue : '',
         sensitive: this.postMediaAsSensitiveMode,
         mediaIds: this.uploadProcesses.map(info => info.uploadResult.id)
       }
@@ -339,6 +352,8 @@
     closeDialog () {
       this.textContentValue = ''
       this.$refs.fileInput.value = ''
+      this.spoilerTextValue = ''
+      this.shouldShowSpoilerTextInputArea = false
       this.uploadProcesses = []
       this.$emit('update:open', false)
     }
@@ -470,6 +485,12 @@
     }
 
     section {
+
+      .cuckoo-input-container {
+        margin: 0 16px;
+        width: auto;
+      }
+
       @media (max-width: 530px) {
         .auto-size-text-area {
           max-height: unset !important;
@@ -479,7 +500,6 @@
 
       .auto-size-text-area {
         height: 187px;
-        padding: 0 16px;
         max-height: 373px;
       }
     }
