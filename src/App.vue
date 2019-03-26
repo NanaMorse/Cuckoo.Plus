@@ -16,7 +16,7 @@
   import { Vue, Component } from 'vue-property-decorator'
   import { Mutation, State, Getter } from 'vuex-class'
   import * as _ from 'underscore'
-  import { UiWidthCheckConstants } from '@/constant'
+  import { UiWidthCheckConstants, TimeLineTypes } from '@/constant'
   import Header from '@/components/Header.vue'
   import Drawer from '@/components/Drawer'
 
@@ -31,6 +31,9 @@
     $route
 
     @State('appStatus') appStatus
+    @State('timelines') timelines
+    @State('contextMap') contextMap
+    @State('statusMap') statusMap
 
     @Mutation('updateDocumentWidth') updateDocumentWidth
 
@@ -39,6 +42,7 @@
 
     mounted () {
       window.addEventListener('resize', _.debounce(() => this.updateDocumentWidth(), 200))
+      this.listenToWindowUnload()
     }
 
     get appContentStyle () {
@@ -49,6 +53,22 @@
           paddingLeft: `${UiWidthCheckConstants.DRAWER_DESKTOP_WIDTH}px`
         }
       }
+    }
+
+    listenToWindowUnload () {
+      window.addEventListener('unload', () => {
+        // save timelines
+        [TimeLineTypes.HOME, TimeLineTypes.PUBLIC, TimeLineTypes.DIRECT, TimeLineTypes.LOCAL].forEach(timeLineType => {
+          localStorage.setItem(timeLineType, JSON.stringify(this.timelines[timeLineType]))
+        });
+
+        // save contextMap
+        localStorage.setItem('contextMap', JSON.stringify(this.contextMap))
+
+        // save statusMap
+        localStorage.setItem('statusMap', JSON.stringify(this.statusMap))
+
+      })
     }
 
   }

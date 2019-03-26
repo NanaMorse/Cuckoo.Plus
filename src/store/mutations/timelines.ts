@@ -7,7 +7,6 @@ export default {
   setTimeLineStatuses (state: cuckoostore.stateInfo, { newStatusIdList, timeLineType, hashName }) {
     if (isBaseTimeLine(timeLineType)) {
       Vue.set(state.timelines, timeLineType, newStatusIdList)
-      localStorage.setItem(timeLineType, JSON.stringify(newStatusIdList))
     } else {
       if (!hashName) throw new Error('need a hash name!')
 
@@ -45,10 +44,6 @@ export default {
     })
 
     targetTimeLines.unshift(...newStatusIdList)
-
-    if (isBaseTimeLine(timeLineType)) {
-      localStorage.setItem(timeLineType, JSON.stringify(targetTimeLines))
-    }
   },
 
   deleteStatusFromTimeLine (state: cuckoostore.stateInfo, statusId: string) {
