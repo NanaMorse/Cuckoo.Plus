@@ -22,7 +22,7 @@ const timelines = {
       if (!targetStatusIdList) return []
 
       return targetStatusIdList
-        .map(statusId => state.statusMap[statusId])
+        .map(statusId => state.statusMap[statusId]).filter(status => status)
         .filter((status: mastodonentities.Status) => !status.in_reply_to_id)
     }
   }

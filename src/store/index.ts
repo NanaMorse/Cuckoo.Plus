@@ -27,17 +27,17 @@ const state: cuckoostore.stateInfo = {
   currentUserAccount: getLocalSetting('currentUserAccount', null),
 
   timelines: {
-    home: [],
-    public: [],
-    direct: [],
-    local: [],
+    home: getLocalSetting('home', []),
+    public: getLocalSetting('public', []),
+    direct: getLocalSetting('direct', []),
+    local: getLocalSetting('local', []),
     tag: {},
     list: {}
   },
 
-  contextMap: {},
+  contextMap: getLocalSetting('contextMap', {}),
 
-  statusMap: {},
+  statusMap: getLocalSetting('statusMap', {}),
 
   customEmojis: getLocalSetting('customEmojis', []),
 

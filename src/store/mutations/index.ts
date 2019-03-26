@@ -63,6 +63,7 @@ const statusesMutations = {
       if (checkTarget.reblogged && checkTarget.reblogs_count === 0) checkTarget.reblogs_count = 1
 
       Vue.set(state.statusMap, statusId, newStatusMap[statusId])
+      localStorage.setItem('statusMap', JSON.stringify(state.statusMap))
     })
   },
 
@@ -132,6 +133,8 @@ const mutations = {
     Object.keys(newContextMap).forEach(statusId => {
       Vue.set(state.contextMap, statusId, newContextMap[statusId])
     })
+
+    localStorage.setItem('contextMap', JSON.stringify(state.contextMap))
   },
 
   ...oAuthInfoMutations,

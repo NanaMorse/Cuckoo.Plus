@@ -55,6 +55,22 @@
 
   const waterFallMaxLineCount = 3
 
+  const timelineInitStatusMap = {}
+
+  function hasCurrentTimeLineInit ($route) {
+    const { timeLineType, hashName } = getTimeLineTypeAndHashName($route)
+
+    const key = hashName ? `${timeLineType}/${hashName}` : timeLineType
+    return timelineInitStatusMap[key]
+  }
+
+  function setCurrentTimeLineHasInit ($route) {
+    const { timeLineType, hashName } = getTimeLineTypeAndHashName($route)
+
+    const key = hashName ? `${timeLineType}/${hashName}` : timeLineType
+    timelineInitStatusMap[key] = true
+  }
+
   function getFitStatusWidth (containerWidth, lineCount): number {
     return (containerWidth - (lineCount - 1) * UiWidthCheckConstants.TIMELINE_WATER_FALL_GUTTER) / lineCount
   }
@@ -161,10 +177,12 @@
     async onRouteChanged () {
       if (!this.isCurrentTimeLineRoute) return
 
-      if (!this.currentRootStatuses.length) {
-        this.isInitLoading = true
+      if (!hasCurrentTimeLineInit(this.$route)) {
+        this.currentRootStatuses.length ? this.$progress.start() : this.isInitLoading = true
         await this.loadStatuses()
+        this.$progress.done()
         this.isInitLoading = false
+        setCurrentTimeLineHasInit(this.$route)
       } else {
         this.loadStreamStatusesPool({...getTimeLineTypeAndHashName(this.$route)})
         this.loadStatuses(false, true)
