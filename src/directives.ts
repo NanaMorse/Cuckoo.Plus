@@ -13,6 +13,16 @@ import { UiWidthCheckConstants } from '@/constant'
     const component = vNode.componentInstance
     layer.innerText = component.$t(component.$i18nTags.common.drag_and_drop_to_upload)
 
+    layer.addEventListener('dragover', e => e.preventDefault())
+    layer.addEventListener('dragleave', e => {
+      e.preventDefault()
+      component.$emit('cuckooDragleave', e)
+    })
+    layer.addEventListener('drop', e => {
+      e.preventDefault()
+      component.$emit('cuckooDrop', e)
+    })
+
     return layer
   }
 
