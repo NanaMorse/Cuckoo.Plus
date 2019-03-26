@@ -1,4 +1,4 @@
-const version = '0.2.10'
+const version = '0.2.11'
 const CACHE = version + ':CP'
 const cacheFilePaths = [
   '/',
@@ -72,6 +72,9 @@ class SW {
       const url = request.url
 
       if (this.isCORSSiteScript(url)) return
+
+      // todo why? why service worker can't fetch media content?
+      if (url.endsWith('.mp4')) return
 
       const isRequestImage = event.request.destination === 'image'
       // cache first
