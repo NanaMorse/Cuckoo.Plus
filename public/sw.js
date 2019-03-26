@@ -1,4 +1,4 @@
-const version = '0.2.12'
+const version = '0.2.13'
 const CACHE = version + ':CP'
 const cacheFilePaths = [
   '/',
@@ -15,17 +15,6 @@ const cacheFilePaths = [
   'https://cdnjs.loli.net/ajax/libs/underscore.js/1.9.1/underscore-min.js',
   'https://unpkg.com/muse-ui/dist/muse-ui.css',
   'https://gstatic.loli.net/s/materialicons/v46/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2',
-]
-
-const cacheRequestAPIs = [
-  'api/v1/custom_emojis',
-]
-
-const corsScriptsSiteList = [
-  'https://www.google-analytics.com',
-  'https://www.googletagmanager.com',
-  'https://hm.baidu.com',
-  'chrome-extension://'
 ]
 
 const swContext = this
@@ -71,55 +60,26 @@ class SW {
       const request = event.request
       const url = request.url
 
-      if (this.isCORSSiteScript(url)) return
-
-      // todo why? why service worker can't fetch media content?
-      if (url.endsWith('.mp4')) return
-
       const isRequestImage = event.request.destination === 'image'
-      // cache first
-      if (isRequestImage || this.isCacheAPI(url) || this.isCacheFilePath(url)) {
-        return event.respondWith(caches.open(CACHE).then(cache => {
-          return cache.match(request).then(response => {
-            if (response) return response
 
-            return fetch(request).then(response => {
-              if (response.ok) cache.put(request, response.clone())
-              return response
-            }).catch()
-          })
-        }))
-      }
-      // network first
-      else {
-        return event.respondWith(fetch(request).then(response => {
-          if (response.ok) {
-            return caches.open(CACHE).then(cache => {
-              return cache.put(request, response.clone())
-            }).then(() => response)
-          }
-        }).catch(() => {
-          return caches.open(CACHE).then(cache => {
-            return cache.match(request).then(response => {
-              if (response) return response
-            })
-          })
-        }))
-      }
+      if (!this.isCacheFilePath(url) && !isRequestImage) return
 
-    });
-  }
+      return event.respondWith(caches.open(CACHE).then(cache => {
+        return cache.match(request).then(response => {
+          if (response) return response
 
-  isCacheAPI (url) {
-    return cacheRequestAPIs.some(apiURL => url.endsWith(apiURL))
+          return fetch(request).then(response => {
+            if (response.ok) cache.put(request, response.clone())
+            return response
+          }).catch()
+        })
+      }))
+
+    })
   }
 
   isCacheFilePath (url) {
     return cacheFilePaths.some(filePath => url.endsWith(filePath))
-  }
-
-  isCORSSiteScript (url) {
-    return corsScriptsSiteList.some(site => url.startsWith(site))
   }
 }
 
