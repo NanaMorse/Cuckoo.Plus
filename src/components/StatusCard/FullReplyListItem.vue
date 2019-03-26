@@ -19,7 +19,17 @@
                 </span>
       </div>
 
-      <mu-card-text class="status-content full-reply-status-content" v-html="status.content"></mu-card-text>
+      <div class="spoiler-text-area secondary-read-text-color" v-if="status.spoiler_text">
+        <span v-html="status.spoiler_text"/>
+        <mu-button flat small class="secondary-theme-text-color" :style="{ minWidth: 'unset' }"
+                   @click="shouldShowContentWhileSpoilerExists = !shouldShowContentWhileSpoilerExists">
+          {{ $t(shouldShowContentWhileSpoilerExists ? $i18nTags.statusCard.hide_content : $i18nTags.statusCard.show_content) }}
+        </mu-button>
+      </div>
+
+      <mu-card-text class="status-content full-reply-status-content"
+                    v-show="(status.spoiler_text ? shouldShowContentWhileSpoilerExists : true)"
+                    v-html="status.content"></mu-card-text>
 
       <div class="full-reply-attachment-area">
         <media-panel :mediaList="status.media_attachments" :pixivCards="status.pixiv_cards" :sensitive="status.sensitive"/>
@@ -105,6 +115,8 @@
     shouldShowMoreOperationTriggerBtn: boolean = false
     shouldOpenMoreOperationPopOver: boolean = false
     moreOperationTriggerBtn = null
+
+    shouldShowContentWhileSpoilerExists: boolean = false
 
     rightAreaStyle = null
 

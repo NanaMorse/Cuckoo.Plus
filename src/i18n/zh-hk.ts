@@ -19,7 +19,8 @@ const common = {
   [I18nTags.common.status_visibility_unlisted_desc]: '公開，但不在公共時間軸顯示',
   [I18nTags.common.status_visibility_private_desc]: '只有關注你用戶能看到',
   [I18nTags.common.status_visibility_direct_desc]: '只有提及的用戶能看到',
-  [I18nTags.common.drag_and_drop_to_upload]: '將檔案拖放至此上載'
+  [I18nTags.common.drag_and_drop_to_upload]: '將檔案拖放至此上載',
+  [I18nTags.common.write_your_warning_here]: '敏感警告訊息'
 }
 
 const statusCard = {

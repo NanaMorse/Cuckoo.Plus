@@ -7,6 +7,8 @@
 
       <div class="input-container">
         <cuckoo-input ref="cuckooInput" @submit="onSubmitReplyContent"
+                      :shouldShowSpoilerTextInputArea="shouldShowSpoilerTextInputArea"
+                      :spoilerText.sync="replySpoilerTextValue"
                       :text.sync="inputValue" :uploadProcesses.sync="uploadProcesses"
                       :presetAtAccounts="presetAtAccounts"
                       :placeholder="$t($i18nTags.statusCard.reply_to_main_status)"/>
@@ -23,6 +25,7 @@
                  accept=".jpg,.jpeg,.png,.gif,.webm,.mp4,.m4v,.mov,image/jpeg,image/png,image/gif,video/webm,video/mp4,video/quicktime"
                  style="display: none" multiple/>
         </mu-button>
+
         <mu-button ref="visibilityTriggerBtn" @click="shouldOpenVisibilitySelectPopOver = true" class="operate-btn change-visibility secondary-read-text-color" icon :title="$t($i18nTags.statusCard.change_visibility)">
           <mu-icon class="reply-action-icon" :value="getVisibilityDescInfo(visibility).icon" />
         </mu-button>
@@ -30,6 +33,12 @@
         <mu-button v-if="uploadProcesses.length" @click="markMediaAsSensitive = !markMediaAsSensitive"
                    class="operate-btn secondary-read-text-color" icon>
           <mu-icon class="reply-action-icon" :value="markMediaAsSensitive ? 'visibility_off' : 'visibility'" />
+        </mu-button>
+
+        <mu-button @click="shouldShowSpoilerTextInputArea = !shouldShowSpoilerTextInputArea"
+                   class="operate-btn" icon
+                   :class="shouldShowSpoilerTextInputArea ? 'secondary-theme-text-color' : 'secondary-read-text-color'">
+          <mu-icon class="reply-action-icon" value="add_alert" />
         </mu-button>
 
       </div>
@@ -77,6 +86,8 @@
 
     @Prop() value
 
+    @Prop() replySpoilerText
+
     @Prop() currentReplyToStatus
 
     @Prop() descendantStatusList: Array<mastodonentities.Status>
@@ -92,6 +103,8 @@
     postPrivacy = null
 
     postMediaAsSensitiveMode: boolean = null
+
+    shouldShowSpoilerTextInputArea: boolean = null
 
     get visibility () {
       return this.postPrivacy || this.appStatus.settings.postPrivacy
@@ -136,6 +149,14 @@
       this.$emit('update:value', val)
     }
 
+    get replySpoilerTextValue () {
+      return this.replySpoilerText
+    }
+
+    set replySpoilerTextValue (val) {
+      this.$emit('update:replySpoilerText', val)
+    }
+
     get presetAtAccounts (): Array<mastodonentities.Account> {
       const result: Array<mastodonentities.Account> = [];
       [this.status, ...this.descendantStatusList].forEach(status => {
@@ -177,6 +198,7 @@
         mainStatusId: this.status.id,
         formData: {
           status: this.value,
+          spoilerText: this.shouldShowSpoilerTextInputArea ? this.replySpoilerText : '',
           inReplyToId: currentReplyToStatus.id,
           visibility: this.visibility,
           sensitive: this.postMediaAsSensitiveMode,
@@ -209,6 +231,7 @@
 
     hideFullReplyActionArea () {
       this.uploadProcesses = []
+      this.shouldShowSpoilerTextInputArea = false
       this.$emit('hide')
     }
   }

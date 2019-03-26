@@ -16,7 +16,8 @@ export const I18nTags = {
     status_visibility_private_desc: 'private_desc',
     status_visibility_unlisted_desc: 'unlisted_desc',
     status_visibility_direct_desc: 'direct_desc',
-    drag_and_drop_to_upload: 'drag_and_drop_to_upload'
+    drag_and_drop_to_upload: 'drag_and_drop_to_upload',
+    write_your_warning_here: 'write_your_warning_here'
   },
 
   statusCard: {

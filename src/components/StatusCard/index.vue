@@ -59,7 +59,7 @@
         <full-action-bar v-if="isOAuthUser && shouldShowFullReplyActionArea"
                          :currentReplyToStatus="currentReplyToStatus"
                          :descendantStatusList="descendantStatusList"
-                         :droppedFiles="droppedFiles"
+                         :droppedFiles="droppedFiles" :replySpoilerText.sync="replySpoilerText"
                          :status="status" :value.sync="replyInputValue" @hide="hideFullReplyActionArea"
                          @loadingStart="isCardLoading = true" @loadingEnd="isCardLoading = false" @replySuccess="onReplySuccess"/>
       </mu-card-actions>
@@ -117,6 +117,8 @@
 
     replyInputValue: string = ''
 
+    replySpoilerText: string = ''
+
     isCardLoading = false
 
     isFileDragOver = false
@@ -147,6 +149,7 @@
       this.shouldShowFullReplyActionArea = false
       this.currentReplyToStatus = null
       this.replyInputValue = ''
+      this.replySpoilerText = ''
     }
 
     onCheckSharedOriginalPost () {

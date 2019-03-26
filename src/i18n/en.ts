@@ -19,7 +19,8 @@ const common = {
   [I18nTags.common.status_visibility_unlisted_desc]: 'Do not post to public timelines',
   [I18nTags.common.status_visibility_private_desc]: 'Post to followers only',
   [I18nTags.common.status_visibility_direct_desc]: 'Post to mentioned users only',
-  [I18nTags.common.drag_and_drop_to_upload]: 'Drag & Drop to upload'
+  [I18nTags.common.drag_and_drop_to_upload]: 'Drag & Drop to upload',
+  [I18nTags.common.write_your_warning_here]: 'Write your warning here'
 }
 
 const statusCard = {
