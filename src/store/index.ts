@@ -28,9 +28,9 @@ const state: cuckoostore.stateInfo = {
 
   timelines: {
     home: getLocalSetting('home', []),
-    public: getLocalSetting('public', []),
-    direct: getLocalSetting('direct', []),
-    local: getLocalSetting('local', []),
+    public: [],
+    direct: [],
+    local: [],
     tag: {},
     list: {}
   },

@@ -192,6 +192,8 @@
     async onRouteChanged () {
       if (!this.isCurrentTimeLineRoute) return
 
+      this.currentFocusCardId = noneCardFocusId
+
       if (!hasCurrentTimeLineInit(this.$route)) {
         this.currentRootStatuses.length ? this.$progress.start() : this.isInitLoading = true
         await this.loadStatuses()

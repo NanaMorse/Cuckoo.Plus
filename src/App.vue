@@ -58,9 +58,7 @@
     listenToWindowUnload () {
       window.addEventListener('unload', () => {
         // save timelines
-        [TimeLineTypes.HOME, TimeLineTypes.PUBLIC, TimeLineTypes.DIRECT, TimeLineTypes.LOCAL].forEach(timeLineType => {
-          localStorage.setItem(timeLineType, JSON.stringify(this.timelines[timeLineType]))
-        });
+        localStorage.setItem(TimeLineTypes.HOME, JSON.stringify(this.timelines[TimeLineTypes.HOME]))
 
         // save contextMap
         localStorage.setItem('contextMap', JSON.stringify(this.contextMap))
