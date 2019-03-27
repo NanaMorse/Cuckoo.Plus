@@ -310,6 +310,9 @@
     onTimeLinePageKeyDown (e: KeyboardEvent) {
       if (!this.isCurrentTimeLineRoute || this.isPostStatusDialogOpening) return
 
+      const knownKeyList = ['j', 'k', 'Enter']
+      if (knownKeyList.indexOf(e.key) === -1) return
+
       e.stopPropagation()
       e.preventDefault()
 
