@@ -8,7 +8,7 @@
              :src="media.url" :key="index"/>
 
         <div class="gifv-container" v-if="media.type === mediaTypes.GIFV || media.type === mediaTypes.VIDEO">
-          <video width="100%" loop :src="media.url" :key="index" />
+          <video width="100%" controls :loop="media.type === mediaTypes.GIFV" :src="media.url" :key="index" />
         </div>
 
         <mu-button class="hide-sensitive-btn" @click.stop="shouldShowSensitiveCover = true">
@@ -30,7 +30,8 @@
         <mu-carousel-item v-for="(mediaInfo, index) in combinedMediaList" :key="index">
           <div class="light-box-item" @click.stop="onLightBoxMediaItemClick">
             <img v-if="mediaInfo.type === mediaTypes.IMAGE" :src="mediaInfo.url"/>
-            <video v-if="mediaInfo.type === mediaTypes.GIFV" autoplay loop :src="mediaInfo.url"/>
+            <video v-if="mediaInfo.type === mediaTypes.GIFV || mediaInfo.type === mediaTypes.VIDEO"
+                   controls :loop="mediaInfo.type === mediaTypes.GIFV" :src="mediaInfo.url"/>
           </div>
         </mu-carousel-item>
       </mu-carousel>
