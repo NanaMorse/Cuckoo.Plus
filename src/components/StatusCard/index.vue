@@ -1,6 +1,6 @@
 <template>
   <div class="status-card-container" @dragenter="onDragFileOver">
-    <mu-card class="status-card status-card-bg-color" :style="statusCardStyle" v-loading="isCardLoading"
+    <mu-card class="status-card status-card-bg-color" v-loading="isCardLoading"
              v-drag-over="isFileDragOver"
              @cuckooDragOver="onDragFileOver"
              @cuckooDragleave="isFileDragOver = false"
@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts">
-  import { Vue, Component, Prop } from 'vue-property-decorator'
+  import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State, Getter } from 'vuex-class'
   import { mastodonentities } from '@/interface'
 
@@ -131,14 +131,6 @@
 
     @Prop() status: mastodonentities.Status
 
-    get statusCardStyle () {
-      if (!this.shouldShowFullReplyActionArea) return null
-
-      return {
-        'box-shadow': '0 0 20px rgba(0,0,0,0.3)'
-      }
-    }
-
     get descendantStatusList (): Array<mastodonentities.Status> {
       if (!this.contextMap[this.status.id] || !this.contextMap[this.status.id].descendants) return []
 
@@ -147,6 +139,11 @@
       }).filter(s => s).sort((a, b) => {
         return new Date(a.created_at) >= new Date(b.created_at) ? 1 : -1
       })
+    }
+
+    @Watch('shouldShowFullReplyActionArea')
+    onFullReplyActionAreaDisplayToggled (val) {
+      if (val) this.$emit('statusCardFocus')
     }
 
     hideFullReplyActionArea () {

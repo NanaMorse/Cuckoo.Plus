@@ -7,12 +7,15 @@
         <div v-masonry-container :style="statusCardsContainerStyle" class="status-cards-container">
 
           <post-status-stamp-card @click="showNewPostDialogPanel"
-            class="status-card-container" :style="statusCardStyle" />
+            class="status-card-container" :style="[statusCardStyle,
+             isTimeLineNameEqualCurrentRoute(timeLineName) && currentFocusCardId === '-1' && cardFocusStyle]" />
 
           <template v-for="status in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
-            <status-card v-masonry-item :style="statusCardStyle"
-                         class="status-card-container"
-                         :key="status.id" :status="status"/>
+            <status-card v-masonry-item class="status-card-container" :ref="`${timeLineName}_statusCard_${status.id}`"
+                         @statusCardFocus="onStatusCardFocus(status.id)"
+                         :key="status.id" :status="status" :style="[statusCardStyle,
+                         isTimeLineNameEqualCurrentRoute(timeLineName) &&
+                         currentFocusCardId === status.id && cardFocusStyle]"/>
           </template>
 
           <p class="no-more-status-notice secondary-read-text-color"
@@ -47,13 +50,19 @@
   import { Action, State, Getter } from 'vuex-class'
   import { TimeLineTypes, UiWidthCheckConstants } from '@/constant'
   import { cuckoostore, mastodonentities } from '@/interface'
-  import { getTimeLineTypeAndHashName, isBaseTimeLine } from '@/util'
+  import { getTimeLineTypeAndHashName, isBaseTimeLine, animatedScrollTo } from '@/util'
   import StatusCard from '@/components/StatusCard'
   import PostStatusDialog from '@/components/PostStatusDialog'
   import NewStatusNoticeButton from './NewStatusNoticeButton'
   import PostStatusStampCard from './PostStatusStampCard'
 
   const waterFallMaxLineCount = 3
+
+  const noneCardFocusId = '-2'
+  const stampCardFocusId = '-1'
+
+  const autoFocusScrollPadding = 24
+  const headerHeight = 64
 
   const timelineInitStatusMap = {}
 
@@ -133,6 +142,12 @@
 
     isPostStatusDialogOpening: boolean = false
 
+    currentFocusCardId: string = noneCardFocusId
+
+    cardFocusStyle = {
+      'box-shadow': '0 0 20px rgba(0,0,0,0.3)'
+    }
+
     get allTimeLineNameList (): Array<string> {
       const result = [
         TimeLineTypes.HOME, TimeLineTypes.PUBLIC, TimeLineTypes.LOCAL
@@ -206,6 +221,7 @@
 
     async mounted () {
       this.onRouteChanged()
+      document.addEventListener('keydown', e => this.onTimeLinePageKeyDown(e))
     }
 
     async loadStatuses (isLoadMore: boolean = false, isFetchMore: boolean = false) {
@@ -287,6 +303,119 @@
       return {
         width: `${this.statusCardMultiLineFinalWidth}px`
       }
+    }
+
+    onTimeLinePageKeyDown (e: KeyboardEvent) {
+      if (!this.isCurrentTimeLineRoute || this.isPostStatusDialogOpening) return
+
+      e.stopPropagation()
+      e.preventDefault()
+
+      switch (e.key) {
+        case 'j': {
+          return this.onFocusNextCard()
+        }
+
+        case 'k': {
+          return this.onFocusPreviousCard()
+        }
+
+        case 'Enter': {
+          return this.activeCard()
+        }
+      }
+    }
+
+    onFocusNextCard () {
+      if (this.currentFocusCardId === this.currentRootStatuses[this.currentRootStatuses.length - 1].id) return
+
+      if (this.currentFocusCardId === noneCardFocusId) {
+        this.currentFocusCardId = stampCardFocusId
+      } else if (this.currentFocusCardId === stampCardFocusId) {
+        this.currentFocusCardId = this.currentRootStatuses[0].id
+      } else {
+        const currentIndex = this.currentRootStatuses
+          .findIndex(status => status.id === this.currentFocusCardId)
+
+        if (currentIndex === -1) return console.error('what the f?')
+
+        this.currentFocusCardId = this.currentRootStatuses[currentIndex + 1].id
+      }
+
+      this.showTargetCardInViewPort(true)
+    }
+
+    onFocusPreviousCard () {
+      if (this.currentFocusCardId === noneCardFocusId) return
+
+      if (this.currentFocusCardId === stampCardFocusId) {
+        this.currentFocusCardId = noneCardFocusId
+      } else {
+        const currentIndex = this.currentRootStatuses
+          .findIndex(status => status.id === this.currentFocusCardId)
+
+        if (currentIndex === -1) return console.error('what the f?')
+
+        if (currentIndex === 0) {
+          this.currentFocusCardId = stampCardFocusId
+        } else {
+          this.currentFocusCardId = this.currentRootStatuses[currentIndex - 1].id
+        }
+      }
+
+      this.showTargetCardInViewPort(false)
+    }
+
+    activeCard () {
+      if (this.currentFocusCardId === noneCardFocusId) return
+
+      if (this.currentFocusCardId === stampCardFocusId) {
+        return this.isPostStatusDialogOpening = true
+      }
+
+      const { timeLineType } = getTimeLineTypeAndHashName(this.$route)
+      const targetStatusCard = this.$refs[`${timeLineType}_statusCard_${this.currentFocusCardId}`][0]
+      targetStatusCard.onReplyToStatus(targetStatusCard.status)
+    }
+
+    onStatusCardFocus (statusId: string) {
+      this.currentFocusCardId = statusId
+    }
+
+    showTargetCardInViewPort (toNext: boolean) {
+      let scrollToTarget = null
+      const $html = document.querySelector('html')
+
+      if (this.currentFocusCardId === stampCardFocusId || this.currentFocusCardId === noneCardFocusId) {
+        scrollToTarget = 0
+      } else {
+
+        const { timeLineType } = getTimeLineTypeAndHashName(this.$route)
+        const $targetStatusCardRef: HTMLDivElement = this.$refs[`${timeLineType}_statusCard_${this.currentFocusCardId}`][0].$el
+
+        const bounding = $targetStatusCardRef.getBoundingClientRect()
+
+        const topDistance = bounding.top - autoFocusScrollPadding - headerHeight
+        const bottomDistance = bounding.bottom + autoFocusScrollPadding - window.innerHeight
+
+        if (topDistance < 0) {
+          scrollToTarget = $html.scrollTop + topDistance
+        } else if (toNext && (bottomDistance > 0)) {
+          if (bottomDistance > 0) {
+            scrollToTarget = $html.scrollTop + bottomDistance
+          }
+
+          if (this.currentFocusCardId === this.currentRootStatuses[this.currentRootStatuses.length - 1].id) {
+            scrollToTarget = $html.scrollHeight
+          }
+        }
+
+      }
+
+      if (scrollToTarget !== null) {
+        animatedScrollTo($html, scrollToTarget, 400)
+      }
+
     }
   }
 

@@ -49,6 +49,7 @@
     <section>
 
       <cuckoo-input ref="cuckooInput" @submit="onSubmitNewStatus"
+                    @esc="onTryCloseDialog"
                     :shouldShowSpoilerTextInputArea="shouldShowSpoilerTextInputArea"
                     :spoilerText.sync="spoilerTextValue"
                     :text.sync="textContentValue" :uploadProcesses.sync="uploadProcesses"
@@ -290,13 +291,15 @@
     }
 
     async onTryCloseDialog () {
-      if (this.textContentValue || this.uploadProcesses.length) {
+      if (this.textContentValue || this.spoilerTextValue || this.uploadProcesses.length) {
         const doCloseDialog = (await this.$confirm(this.$t(this.$i18nTags.postStatusDialog.do_discard_message_confirm), {
           okLabel: this.$t(this.$i18nTags.postStatusDialog.do_discard_message),
           cancelLabel: this.$t(this.$i18nTags.postStatusDialog.do_keep_message),
         })).result
         if (doCloseDialog) {
           this.closeDialog()
+        } else {
+          this.$refs.cuckooInput.focus()
         }
       } else {
         this.closeDialog()

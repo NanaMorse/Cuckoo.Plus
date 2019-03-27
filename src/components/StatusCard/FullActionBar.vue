@@ -7,6 +7,7 @@
 
       <div class="input-container">
         <cuckoo-input ref="cuckooInput" @submit="onSubmitReplyContent"
+                      @esc="onTryHideFullReplyActionArea"
                       :shouldShowSpoilerTextInputArea="shouldShowSpoilerTextInputArea"
                       :spoilerText.sync="replySpoilerTextValue"
                       :text.sync="inputValue" :uploadProcesses.sync="uploadProcesses"
@@ -44,7 +45,7 @@
       </div>
       <div class="right-area">
         <mu-button flat class="operate-btn cancel"
-                   color="secondary" @click="hideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_post)}}</mu-button>
+                   color="secondary" @click="onTryHideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_post)}}</mu-button>
         <mu-button flat class="operate-btn submit secondary-theme-text-color" @click="onSubmitReplyContent"
                    :disabled="!shouldEnableSubmitButton">{{$t($i18nTags.statusCard.submit_post)}}</mu-button>
       </div>
@@ -74,6 +75,12 @@
     }
   })
   class FullActionBar extends Vue {
+
+    $confirm
+
+    $t
+
+    $i18nTags
 
     $refs: {
       cuckooInput: Input
@@ -240,6 +247,22 @@
       this.uploadProcesses = []
       this.shouldShowSpoilerTextInputArea = false
       this.$emit('hide')
+    }
+
+    async onTryHideFullReplyActionArea () {
+      if (this.inputValue || this.replySpoilerTextValue || this.uploadProcesses.length) {
+        const doHideFullReplyActionArea = (await this.$confirm(this.$t(this.$i18nTags.postStatusDialog.do_discard_message_confirm), {
+          okLabel: this.$t(this.$i18nTags.postStatusDialog.do_discard_message),
+          cancelLabel: this.$t(this.$i18nTags.postStatusDialog.do_keep_message),
+        })).result
+        if (doHideFullReplyActionArea) {
+          this.hideFullReplyActionArea()
+        } else {
+          this.$refs.cuckooInput.focus()
+        }
+      } else {
+        this.hideFullReplyActionArea()
+      }
     }
   }
 

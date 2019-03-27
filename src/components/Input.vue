@@ -6,6 +6,7 @@
               v-model="spoilerTextValue" :placeholder="$t($i18nTags.common.write_your_warning_here)"/>
 
     <textarea ref="textArea" class="auto-size-text-area" v-model="textValue"
+              @keydown.stop="onKeyDown"
               @keydown.ctrl.enter="onQuickSubmit" @input="onInput"
               @keydown.38="onMinisSelectedResultIndex" @keydown.40="onPlusSelectedResultIndex"
               @keydown.enter="onSelectedSearchResult" @click="onTextAreaClick"
@@ -183,6 +184,12 @@
       this.insertedAcctList = this.presetAtAccounts.map(accounts => accounts.acct)
       autosize(this.$refs.textArea)
       autosize(this.$refs.spoilerTextArea)
+    }
+
+    onKeyDown (e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        this.$emit('esc')
+      }
     }
 
     onQuickSubmit () {
