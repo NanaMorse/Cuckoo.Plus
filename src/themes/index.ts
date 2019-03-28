@@ -4,27 +4,34 @@ import * as GooglePlusTheme from '!raw-loader!less-loader!../assets/themes/googl
 import * as DarkTheme from '!raw-loader!less-loader!../assets/themes/dark.less'
 // @ts-ignore
 import * as GreenLightTheme from '!raw-loader!less-loader!../assets/themes/green-light.less'
+// @ts-ignore
+import * as CuckooHubTheme from '!raw-loader!less-loader!../assets/themes/cuckoo-hub.less'
 
 import { ThemeNames } from '@/constant'
 
 class ThemeManager {
 
-  private themeMap = {
-    [ThemeNames.GOOGLE_PLUS]: GooglePlusTheme,
-    [ThemeNames.DARK]: DarkTheme,
-    [ThemeNames.GREEN_LIGHT]: GreenLightTheme
-  }
-
-  private themeToFavIconSourceMap = {
-    [ThemeNames.GOOGLE_PLUS]: 'google_plus',
-    [ThemeNames.DARK]: 'dark',
-    [ThemeNames.GREEN_LIGHT]: 'green_light'
-  }
-
-  private themeToThemeColor = {
-    [ThemeNames.GOOGLE_PLUS]: '#db4437',
-    [ThemeNames.DARK]: '#1976d2',
-    [ThemeNames.GREEN_LIGHT]: '#0f9d58'
+  private themeInfo = {
+    [ThemeNames.GOOGLE_PLUS]: {
+      source: GooglePlusTheme,
+      toFavIconPath: 'google_plus',
+      color: '#db4437'
+    },
+    [ThemeNames.DARK]: {
+      source: DarkTheme,
+      toFavIconPath: 'dark',
+      color: '#1976d2'
+    },
+    [ThemeNames.GREEN_LIGHT]: {
+      source: GreenLightTheme,
+      toFavIconPath: 'green_light',
+      color: '#0f9d58'
+    },
+    [ThemeNames.CUCKOO_HUB]: {
+      source: CuckooHubTheme,
+      toFavIconPath: 'cuckoo_hub',
+      color: '#FF9900'
+    }
   }
 
   private getThemeStyleElem (): HTMLStyleElement {
@@ -45,7 +52,7 @@ class ThemeManager {
       if (el.getAttribute('rel') === 'icon') {
         const size = el.getAttribute('sizes')
         if (size) {
-          el.setAttribute('href', `favicon/${this.themeToFavIconSourceMap[themeName]}/favicon-${size}.png`)
+          el.setAttribute('href', `favicon/${this.themeInfo[themeName].toFavIconPath}/${size}.png`)
         }
       }
     })
@@ -54,11 +61,11 @@ class ThemeManager {
   private setThemeColorByThemeName (themeName: string) {
     Array.from(document.head.querySelectorAll('meta')).find(el => {
       return el.getAttribute('name') === 'theme-color'
-    }).setAttribute('content', this.themeToThemeColor[themeName])
+    }).setAttribute('content', this.themeInfo[themeName].color)
   }
 
   public setTheme (themeName: string) {
-    this.getThemeStyleElem().innerHTML = this.themeMap[themeName] || ''
+    this.getThemeStyleElem().innerHTML = this.themeInfo[themeName].source || ''
 
     this.setFavIconByThemeName(themeName)
     this.setThemeColorByThemeName(themeName)

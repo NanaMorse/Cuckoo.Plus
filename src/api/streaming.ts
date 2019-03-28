@@ -33,7 +33,7 @@ class NotificationHandler {
 
   private emitStatusOperateNotification (newNotification: mastodonentities.Notification, operateTypeString) {
     const title = `${this.getFromName(newNotification)} ${operateTypeString}`
-    const bodyText = extractText(newNotification.status.content)
+    const bodyText =  newNotification.status ? extractText(newNotification.status.content) : ''
 
     const nativeNotification = new Notification(title, { body: bodyText, icon: this.getImageUrl(newNotification) })
 

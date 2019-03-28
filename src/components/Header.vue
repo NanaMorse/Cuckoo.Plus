@@ -1,10 +1,13 @@
 <template>
   <div class="cuckoo-header-container">
-    <mu-appbar class="header" color="primary" ref="header">
+    <mu-appbar class="header" :class="shouldUseSecondaryThemeHeader && 'dialog-theme-bg-color'" color="primary" ref="header">
       <mu-button v-if="isOAuthUser" icon @click.stop="onMenuBtnClick" slot="left">
         <mu-icon value="menu"></mu-icon>
       </mu-button>
-      <span class="host-mastodon-url" @click="onHostMastodonUrlClick">{{parsedMastodonServerUri}}</span>
+      <div class="host-mastodon-url cuckoo-hub-logo" v-if="isCuckooHubTheme">
+        <span>Cuck</span><span>Hub</span>
+      </div>
+      <span v-if="!isCuckooHubTheme" class="host-mastodon-url" @click="onHostMastodonUrlClick">{{parsedMastodonServerUri}}</span>
       <mu-button v-if="isOAuthUser" ref="notificationBtn" icon @click.stop="onOpenNotificationPanel" slot="right">
         <mu-icon v-if="appStatus.unreadNotificationCount === 0" value="notifications"></mu-icon>
         <mu-badge class="notification-badge" v-if="appStatus.unreadNotificationCount > 0" :content="String(appStatus.unreadNotificationCount)" circle color="primary" />
@@ -39,7 +42,7 @@
 <script lang="ts">
   import { Vue, Component, Watch } from 'vue-property-decorator'
   import { State, Mutation, Action, Getter } from 'vuex-class'
-  import { TimeLineTypes, RoutersInfo, UiWidthCheckConstants } from '@/constant'
+  import { TimeLineTypes, RoutersInfo, UiWidthCheckConstants, ThemeNames } from '@/constant'
   import { cuckoostore } from '@/interface'
   import { animatedScrollTo } from '@/util'
   import Notifications from '@/components/Notifications/index'
@@ -125,6 +128,14 @@
       }
     }
 
+    get shouldUseSecondaryThemeHeader () {
+      return this.isCuckooHubTheme
+    }
+
+    get isCuckooHubTheme () {
+      return this.appStatus.settings.theme === ThemeNames.CUCKOO_HUB
+    }
+
     mounted () {
       if (this.isOAuthUser) {
         this.notificationBtnTrigger = this.$refs.notificationBtn.$el
@@ -181,12 +192,26 @@
       cursor: pointer;
     }
 
+    .cuckoo-hub-logo {
+
+      span:first-child {
+        padding: 5px 5px;
+        font-weight: 600;
+      }
+
+      span:last-child {
+        padding: 5px 10px;
+        background-color: #FF9900;
+        border-radius: 7px;
+        font-weight: 700;
+      }
+    }
+
     .route-info {
       height: 32px;
       line-height: 32px;
-      padding-left: 24px;
-      margin-left: 24px;
-      border-left: 1px solid;
+      padding-left: 10px;
+      margin-left: 20px;
     }
 
     .search-input-area {
@@ -213,6 +238,7 @@
     .mu-appbar-title {
       display: flex;
       align-items: center;
+      padding-left: 0;
 
       .search-input-area {
         .mu-text-field-input {

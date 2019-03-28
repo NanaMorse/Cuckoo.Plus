@@ -7,7 +7,7 @@
       </mu-avatar>
 
       <div v-if="isOAuthUser" :style="activeReplyEntryStyle"
-           class="active-reply-entry secondary-read-text-color"
+           class="active-reply-entry placeholder-read-text-color"
            @click="onReplyToStatus">
         {{$t($i18nTags.statusCard.reply_to_main_status)}}
       </div>

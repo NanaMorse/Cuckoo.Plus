@@ -96,7 +96,8 @@
     themeOptions = [
       { label: 'Google Plus', value: ThemeNames.GOOGLE_PLUS },
       { label: 'Dark', value: ThemeNames.DARK },
-      { label: 'Green Light', value: ThemeNames.GREEN_LIGHT }
+      { label: 'Green Light', value: ThemeNames.GREEN_LIGHT },
+      { label: 'Cuckoo Hub', value: ThemeNames.CUCKOO_HUB }
     ]
 
     localesOptions = [

@@ -5,7 +5,7 @@
         <img :src="currentUserAccount.avatar_static">
       </mu-avatar>
 
-      <div class="post-new-status-hint secondary-read-text-color">
+      <div class="post-new-status-hint placeholder-read-text-color">
         {{$t($i18nTags.timeLines.whats_new_with_you)}}
       </div>
     </div>
@@ -62,7 +62,6 @@
 
       .post-new-status-hint {
         font-size: 16px;
-        font-weight: 300;
         cursor: text;
         margin-left: 8px;
         flex-grow: 1;

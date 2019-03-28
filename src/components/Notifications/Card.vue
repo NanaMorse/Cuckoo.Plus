@@ -71,11 +71,10 @@
         },
         [ThemeNames.GREEN_LIGHT]: {
           backgroundColor: '#fff'
-        },
-        [ThemeNames.DARK]: {
-
         }
       }
+
+      themeToStyle[this.appStatus.settings.theme] = themeToStyle[this.appStatus.settings.theme] || {}
 
       themeToStyle[this.appStatus.settings.theme].position = this.isLoadingSingleCard ? 'relative' : ''
 
