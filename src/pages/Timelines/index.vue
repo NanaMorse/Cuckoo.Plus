@@ -48,7 +48,7 @@
 <script lang="ts">
   import { Vue, Component, Watch } from 'vue-property-decorator'
   import { Action, State, Getter } from 'vuex-class'
-  import { TimeLineTypes, UiWidthCheckConstants } from '@/constant'
+  import { TimeLineTypes, UiWidthCheckConstants, ThemeNames } from '@/constant'
   import { cuckoostore, mastodonentities } from '@/interface'
   import { getTimeLineTypeAndHashName, isBaseTimeLine, animatedScrollTo } from '@/util'
   import StatusCard from '@/components/StatusCard'
@@ -144,8 +144,12 @@
 
     currentFocusCardId: string = noneCardFocusId
 
-    cardFocusStyle = {
-      'box-shadow': '0 0 20px rgba(0,0,0,0.3)'
+    get cardFocusStyle () {
+      const darkThemeList = [ ThemeNames.DARK, ThemeNames.CUCKOO_HUB ]
+      const shadowBaseColor = darkThemeList.indexOf(this.appStatus.settings.theme) !== -1 ? 255 : 0
+      return {
+        'box-shadow': `0 0 20px rgba(${shadowBaseColor}, ${shadowBaseColor}, ${shadowBaseColor},0.3)`
+      }
     }
 
     get allTimeLineNameList (): Array<string> {

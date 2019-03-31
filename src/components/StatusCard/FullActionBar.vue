@@ -45,7 +45,7 @@
       </div>
       <div class="right-area">
         <mu-button flat class="operate-btn cancel"
-                   color="secondary" @click="onTryHideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_post)}}</mu-button>
+                   color="secondary" @click="hideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_post)}}</mu-button>
         <mu-button flat class="operate-btn submit secondary-theme-text-color" @click="onSubmitReplyContent"
                    :disabled="!shouldEnableSubmitButton">{{$t($i18nTags.statusCard.submit_post)}}</mu-button>
       </div>

@@ -26,12 +26,12 @@
 
     <div v-if="shouldShowTargetStatus" class="notification-status-check-area">
       <mu-appbar color="secondary">
-        <mu-button slot="left" icon @click="shouldShowTargetStatus = false">
+        <mu-button slot="left" icon @click.stop="shouldShowTargetStatus = false">
           <mu-icon value="arrow_back" />
         </mu-button>
       </mu-appbar>
       <div class="notification-status-card-container">
-        <status-card class="status-card-container" v-if="currentCheckStatus" :status="currentCheckStatus"/>
+        <status-card class="status-card-container no-limit-reply-area-height" v-if="currentCheckStatus" :status="currentCheckStatus"/>
       </div>
     </div>
 
@@ -122,15 +122,16 @@
 <style lang="less" scoped>
   .notification-panel-container {
     width: 100%;
-    height: 100%;
-    overflow: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
+    height: calc(100vh - 56px);
+    max-height: 1200px;
     position: relative;
 
     .notification-list {
       padding: 8px;
-      height: calc(100vh - 56px);
+      height: 100%;
+      overflow: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
     }
 
     .notification-status-check-area {

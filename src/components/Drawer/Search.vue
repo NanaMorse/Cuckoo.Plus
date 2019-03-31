@@ -3,7 +3,8 @@
     <div class="search-bar">
       <mu-icon value="search" style="margin-right: 10px"/>
       <mu-text-field class="search-input" v-model="searchKey"
-                     @keydown.enter="onSearch" :placeholder="$t($i18nTags.drawer.search_input_placeholder)"
+                     @keydown.stop="onKeyDown"
+                     @keydown.enter.stop="onSearch" :placeholder="$t($i18nTags.drawer.search_input_placeholder)"
                      :action-icon="shouldShowSearchActionIcon ? 'search' : 'cancel'"
                      :action-click="onSearchInputActionClick"/>
     </div>
@@ -143,6 +144,8 @@
     onSaveHashTag (hashTagName: string) {
       this.updateTags([...this.appStatus.settings.tags, hashTagName])
     }
+
+    onKeyDown () {}
   }
 
   export default Search

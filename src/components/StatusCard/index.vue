@@ -315,4 +315,10 @@
       resize: none;
     }
   }
+
+  .no-limit-reply-area-height.status-card-container {
+    .full-reply-list {
+      max-height: unset;
+    }
+  }
 </style>
