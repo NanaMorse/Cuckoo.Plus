@@ -2,3 +2,4 @@
 package-lock.json
 node_modules
 public/dist
+.DS_store
