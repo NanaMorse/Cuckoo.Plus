@@ -297,8 +297,12 @@
     // https://stackoverflow.com/questions/5241369/word-wrap-a-link-so-it-doesnt-overflow-its-parent-div-width
     word-wrap: break-word;
     > p {
-      margin: 0;
+      margin: 0 0 10px 0;
       padding: 0;
+    }
+
+    > P:last-child {
+      margin-bottom: 0;
     }
   }
 

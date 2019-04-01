@@ -68,6 +68,7 @@ export const I18nTags = {
     auto_load_new_status: 'settings_auto_load_new_status',
     post_privacy: 'settings_post_privacy',
     post_media_as_sensitive: 'settings_post_media_as_sensitive',
+    only_mention_target_user: 'settings_only_mention_target_user',
 
     stream_label: 'settings_stream_label',
     media_label: 'settings_media_label',
