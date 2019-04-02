@@ -2,7 +2,7 @@
   <mu-card @click="onStampCardClick" class="post-status-stamp-card">
     <div class="left-area">
       <mu-avatar @click.stop="onCheckUserAccountPage" size="36">
-        <img :src="currentUserAccount.avatar_static">
+        <img :src="currentUserAccount.avatar">
       </mu-avatar>
 
       <div class="post-new-status-hint placeholder-read-text-color">

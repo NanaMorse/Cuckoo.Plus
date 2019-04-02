@@ -2,7 +2,7 @@
   <mu-list-item class="people-result-card" avatar :ripple="false" v-loading="isLoading" data-mu-loading-size="36">
     <mu-list-item-action>
       <mu-avatar class="people-result-card-avatar" @click="onCheckUserAccountPage(account)">
-        <img :src="account.avatar_static" />
+        <img :src="account.avatar" />
       </mu-avatar>
     </mu-list-item-action>
     <mu-list-item-content class="people-result-card-content ellipsis-text" @click="onCheckUserAccountPage(account)">

@@ -2,7 +2,7 @@
   <div class="full-reply-list-item" v-loading="isListItemLoading" @mouseover="onItemMouseOver" @mouseout="onItemMouseOut">
     <div class="left-area">
       <mu-avatar @click="onCheckUserAccountPage" class="status-replier-avatar" slot="avatar" size="34">
-        <img :src="status.account.avatar_static">
+        <img :src="status.account.avatar">
       </mu-avatar>
     </div>
     <div class="center-area">

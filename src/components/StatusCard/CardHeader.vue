@@ -4,7 +4,7 @@
                   @mouseout="shouldShowHeaderActionButtonGroup = false">
     <div class="left-area" :style="leftAreaStyle">
       <mu-avatar @click="onCheckUserAccountPage" class="status-account-avatar" slot="avatar" size="34">
-        <img :src="status.account.avatar_static">
+        <img :src="status.account.avatar">
       </mu-avatar>
       <div class="user-and-status-info">
         <a @click="onCheckUserAccountPage" class="user-name primary-read-text-color">

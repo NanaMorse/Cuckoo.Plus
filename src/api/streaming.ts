@@ -53,7 +53,7 @@ class NotificationHandler {
   }
 
   private getImageUrl (newNotification: mastodonentities.Notification): string {
-    return newNotification.account.avatar_static
+    return newNotification.account.avatar
   }
 
   private async routeToTargetStatus (newNotification: mastodonentities.Notification) {

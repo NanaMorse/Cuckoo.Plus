@@ -155,12 +155,11 @@
 
       .mu-item-wrapper.hover {
         background-color: inherit !important;
-        cursor: default;
+        cursor: pointer;
       }
 
       .notification-content {
         > p { display: inline }
-        .h-card:hover { text-decoration: underline }
       }
 
       .mu-item-sub-title {

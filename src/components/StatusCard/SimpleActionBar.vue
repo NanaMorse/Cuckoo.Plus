@@ -3,7 +3,7 @@
 
     <div class="left-area">
       <mu-avatar v-if="isOAuthUser" class="current-user-avatar" slot="avatar" size="24">
-        <img :src="currentUserAccount.avatar_static">
+        <img :src="currentUserAccount.avatar">
       </mu-avatar>
 
       <div v-if="isOAuthUser" :style="activeReplyEntryStyle"

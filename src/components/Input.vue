@@ -38,7 +38,7 @@
                     v-for="(account, index) in atAccountSearchResultList">
         <mu-list-item-action>
           <mu-avatar>
-            <img :src="account.avatar_static">
+            <img :src="account.avatar">
           </mu-avatar>
         </mu-list-item-action>
         <mu-list-item-title v-html="getSearchUserFullName(account)" />

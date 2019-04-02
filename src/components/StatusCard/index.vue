@@ -50,7 +50,7 @@
       <div class="current-reply-to-info-area" v-if="currentReplyToStatus">
         <mu-chip class="reply-to-account-info" color="primary" @delete="hideFullReplyActionArea" delete>
           <mu-avatar :size="32">
-            <img :src="currentReplyToStatus.account.avatar_static">
+            <img :src="currentReplyToStatus.account.avatar">
           </mu-avatar>
           <span v-html="currentReplyToStatus.account.display_name"/> @{{currentReplyToStatus.account.username}}
         </mu-chip>

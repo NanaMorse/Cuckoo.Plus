@@ -17,7 +17,7 @@
     <div class="dialog-header">
       <div class="left-area">
         <mu-avatar class="current-user-avatar" slot="avatar" size="40">
-          <img :src="currentUserAccount.avatar_static">
+          <img :src="currentUserAccount.avatar">
         </mu-avatar>
         <div class="user-and-status-info">
           <a class="user-name primary-read-text-color" v-html="currentUserAccount.display_name"></a>

@@ -1,24 +1,24 @@
 <template>
   <mu-list-item :style="notificationCardStyle" v-loading="isLoading"
-                class="notification-card dialog-theme-bg-color" avatar>
-    <mu-list-item-action>
-      <mu-avatar class="user-avatar" @click="onCheckUserAccountPage(notification.account)">
-        <img :src="notification.account.avatar_static" />
+                @click="onNotificationCardClick(notification)"
+                class="notification-card dialog-theme-bg-color" avatar button :ripple="false">
+    <mu-list-item-action class="user-avatar-area">
+      <mu-avatar class="user-avatar" @click.stop="onCheckUserAccountPage(notification.account)">
+        <img :src="notification.account.avatar" />
       </mu-avatar>
     </mu-list-item-action>
     <mu-list-item-content>
       <mu-list-item-title class="user-display-name primary-read-text-color"
                           v-html="getAccountDisplayName(notification.account)"
-                          @click="onCheckUserAccountPage(notification.account)" />
+                          @click.stop="onCheckUserAccountPage(notification.account)" />
       <mu-list-item-sub-title class="notification-content primary-read-text-color"
-                              v-html="getNotificationSubTitle(notification)"
-                              @click="onNotificationCardClick(notification)" />
+                              v-html="getNotificationSubTitle(notification)" @click.prevent="onNotificationContentClick"/>
     </mu-list-item-content>
     <mu-list-item-action v-if="shouldShowFollowOperateBtn(notification, followOperateBtnTypes.FOLLOW)">
-      <mu-icon @click="onFollowingAccount(notification.account.id)" class="follow-action" value="person_add" />
+      <mu-icon @click.stop="onFollowingAccount(notification.account.id)" class="follow-action" value="person_add" />
     </mu-list-item-action>
     <mu-list-item-action v-if="shouldShowFollowOperateBtn(notification, followOperateBtnTypes.UN_FOLLOW)">
-      <mu-icon @click="onUnFollowingAccount(notification.account.id)" class="follow-action secondary-theme-text-color" value="person_add_disabled" />
+      <mu-icon @click.stop="onUnFollowingAccount(notification.account.id)" class="follow-action secondary-theme-text-color" value="person_add_disabled" />
     </mu-list-item-action>
   </mu-list-item>
 </template>
@@ -63,6 +63,8 @@
     }
 
     @Getter('getAccountDisplayName') getAccountDisplayName
+
+    onNotificationContentClick () {}
 
     get notificationCardStyle () {
       const themeToStyle: any = {
@@ -155,6 +157,7 @@
     margin: 2px 0;
     box-shadow: 0 1px 2px rgba(0,0,0,.2);
     border-radius: 3px;
+    cursor: pointer;
 
     .user-avatar {
       cursor: pointer;

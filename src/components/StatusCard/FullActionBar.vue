@@ -2,7 +2,7 @@
   <div class="full-action-bar">
     <div class="reply-input-area">
       <mu-avatar class="current-user-avatar" slot="avatar" size="24">
-        <img :src="currentUserAccount.avatar_static">
+        <img :src="currentUserAccount.avatar">
       </mu-avatar>
 
       <div class="input-container">
