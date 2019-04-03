@@ -79,6 +79,8 @@ declare module "vue/types/vue" {
         auto_load_new_status: string
         post_privacy: string
         post_media_as_sensitive: string
+        only_mention_target_user: string
+
         stream_label: string
         media_label: string
         publishing_label: string

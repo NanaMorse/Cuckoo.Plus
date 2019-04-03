@@ -65,6 +65,7 @@ const settings = {
   [I18nTags.settings.auto_load_new_status]: 'Always auto load new post:',
   [I18nTags.settings.post_privacy]: 'Post privacy:',
   [I18nTags.settings.post_media_as_sensitive]: 'Always mark media as sensitive:',
+  [I18nTags.settings.only_mention_target_user]: 'Only mention target user',
 
   [I18nTags.settings.stream_label]: 'Stream',
   [I18nTags.settings.media_label]: 'Media',

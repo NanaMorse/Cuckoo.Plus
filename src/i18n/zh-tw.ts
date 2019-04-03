@@ -63,6 +63,7 @@ const settings = {
   [I18nTags.settings.auto_load_new_status]: '總是自動加載最新嘟文：',
   [I18nTags.settings.post_privacy]: '文章預設為：',
   [I18nTags.settings.post_media_as_sensitive]: '預設我的內容為敏感內容：',
+  [I18nTags.settings.only_mention_target_user]: '回覆時僅提及目標使用者',
 
   [I18nTags.settings.stream_label]: '訊息串',
   [I18nTags.settings.media_label]: '媒體內容',

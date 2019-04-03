@@ -77,5 +77,10 @@ export default {
   updatePostMediaAsSensitiveMode (state: cuckoostore.stateInfo, newMode: boolean) {
     state.appStatus.settings.postMediaAsSensitiveMode = newMode
     localStorage.setItem('postMediaAsSensitiveMode', JSON.stringify(newMode))
+  },
+
+  updateOnlyMentionTargetUserMode (state: cuckoostore.stateInfo, newMode: boolean) {
+    state.appStatus.settings.onlyMentionTargetUserMode = newMode
+    localStorage.setItem('onlyMentionTargetUserMode', JSON.stringify(newMode))
   }
 }

@@ -49,6 +49,11 @@
           <mu-switch class="setting-switch" v-model="postMediaAsSensitiveMode" />
         </div>
 
+        <div class="setting-row">
+          <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.only_mention_target_user)}}</span>
+          <mu-switch class="setting-switch" v-model="onlyMentionTargetUserMode" />
+        </div>
+
         <p class="card-label">{{$t($i18nTags.settings.web_label)}}</p>
 
         <div class="setting-row">
@@ -85,6 +90,7 @@
     @Mutation('updateShowSensitiveContentMode') updateShowSensitiveContentMode
     @Mutation('updateRealTimeLoadStatusMode') updateRealTimeLoadStatusMode
     @Mutation('updateLocale') updateLocale
+    @Mutation('updateOnlyMentionTargetUserMode') updateOnlyMentionTargetUserMode
 
     @Mutation('updatePostPrivacy') mutationUpdatePostPrivacy
 
@@ -190,6 +196,14 @@
       await this.updatePostMediaAsSensitiveMode(val)
       this.isLoading = false
       this.showSuccessChangedToast()
+    }
+
+    get onlyMentionTargetUserMode () {
+      return this.appStatus.settings.onlyMentionTargetUserMode
+    }
+
+    set onlyMentionTargetUserMode (val) {
+      this.updateOnlyMentionTargetUserMode(val)
     }
   }
 
