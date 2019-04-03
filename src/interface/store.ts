@@ -61,6 +61,7 @@ export namespace cuckoostore {
         showSensitiveContentMode: boolean
         postMediaAsSensitiveMode: boolean
         realTimeLoadStatusMode: boolean
+        onlyMentionTargetUserMode: boolean
         theme: string,
         tags: Array<string>
         locale: string,

@@ -63,6 +63,7 @@ const settings = {
   [I18nTags.settings.auto_load_new_status]: '总是自动加载新的嘟文：',
   [I18nTags.settings.post_privacy]: '嘟文默认可见范围：',
   [I18nTags.settings.post_media_as_sensitive]: '总是将我发送的媒体文件标记为敏感内容：',
+  [I18nTags.settings.only_mention_target_user]: '回复时仅提及目标使用者',
 
   [I18nTags.settings.stream_label]: '信息流',
   [I18nTags.settings.media_label]: '媒体内容',

@@ -71,7 +71,8 @@ const state: cuckoostore.stateInfo = {
       theme: localStorage.getItem('theme') || ThemeNames.GOOGLE_PLUS,
       tags: getLocalSetting('tags', ['hello']),
       locale: localStorage.getItem('locale') || I18nLocales.EN,
-      postPrivacy: localStorage.getItem('postPrivacy') || VisibilityTypes.PUBLIC
+      postPrivacy: localStorage.getItem('postPrivacy') || VisibilityTypes.PUBLIC,
+      onlyMentionTargetUserMode: getLocalSetting('onlyMentionTargetUserMode', false)
     },
 
   }

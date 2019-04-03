@@ -109,6 +109,7 @@
     @State('contextMap') contextMap
     @State('statusMap') statusMap
     @State('currentUserAccount') currentUserAccount: mastodonentities.AuthenticatedAccount
+    @State('appStatus') appStatus
 
     @Getter('getAccountAtName') getAccountAtName
     @Getter('isOAuthUser') isOAuthUser
@@ -165,15 +166,21 @@
     onReplyToStatus (status: mastodonentities.Status) {
       this.currentReplyToStatus = status
 
-      const preSetMentions = status.mentions.filter(mention => {
-        return (mention.id !== this.currentUserAccount.id) && (mention.id !== status.account.id)
-      })
+      let preSetMentions
 
-      if (status.account.id !== this.currentUserAccount.id || preSetMentions.length === 0) {
-        preSetMentions.push({
-          acct: status.account.acct,
-          id: status.account.id
-        } as mastodonentities.Mention)
+      if (this.appStatus.settings.onlyMentionTargetUserMode) {
+        preSetMentions = [{ acct: status.account.acct }]
+      } else {
+        preSetMentions = status.mentions.filter(mention => {
+          return (mention.id !== this.currentUserAccount.id) && (mention.id !== status.account.id)
+        })
+
+        if (status.account.id !== this.currentUserAccount.id || preSetMentions.length === 0) {
+          preSetMentions.unshift({
+            acct: status.account.acct,
+            id: status.account.id
+          } as mastodonentities.Mention)
+        }
       }
 
       this.replyInputValue = preSetMentions.reduce((pre, cur) => pre + `@${cur.acct} `, '')

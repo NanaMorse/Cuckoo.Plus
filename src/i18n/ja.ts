@@ -63,6 +63,7 @@ const settings = {
   [I18nTags.settings.auto_load_new_status]: '新しい投稿を常に自動的に読み込む:',
   [I18nTags.settings.post_privacy]: '投稿の公開範囲:',
   [I18nTags.settings.post_media_as_sensitive]: '自分が投稿するメディアを常に閲覧注意(NSFW)に設定する:',
+  [I18nTags.settings.only_mention_target_user]: 'ターゲットユーザーのみをメンションする:',
 
   [I18nTags.settings.stream_label]: 'ストリーム',
   [I18nTags.settings.media_label]: 'メディア',
