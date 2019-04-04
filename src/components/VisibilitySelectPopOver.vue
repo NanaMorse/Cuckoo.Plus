@@ -4,7 +4,7 @@
     <mu-list textline="two-line">
       <mu-list-item button v-for="(visibilityType, index) in VisibilityTypeList"
                     :class="{ 'selected-item': visibilityType === visibility }"
-                    :key="index" @click="onChangeVisibility(visibilityType)">
+                    :key="index" @click.stop="onChangeVisibility(visibilityType)">
         <mu-list-item-action>
           <mu-icon :value="getVisibilityDescInfo(visibilityType).icon"></mu-icon>
         </mu-list-item-action>

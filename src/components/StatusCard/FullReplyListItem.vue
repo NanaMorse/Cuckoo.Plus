@@ -67,7 +67,7 @@
                 :trigger="moreOperationTriggerBtn">
       <mu-list>
         <mu-list-item button v-if="currentUserAccount.id === status.account.id"
-                      @click="onDeleteStatus">
+                      @click.stop="onDeleteStatus">
           <mu-list-item-title>Delete</mu-list-item-title>
         </mu-list-item>
       </mu-list>
