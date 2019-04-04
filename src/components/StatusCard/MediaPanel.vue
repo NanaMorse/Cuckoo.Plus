@@ -21,7 +21,7 @@
       </div>
     </div>
 
-    <mu-dialog class="light-box" transition="fade"
+    <mu-dialog class="light-box" transition="fade" ref="lightBox"
                :open.sync="shouldShowLightBox" :overlay-opacity="0.7">
       <mu-icon class="close-icon" value="close" @click="shouldShowLightBox = false"/>
       <mu-carousel :cycle="false" :active="lightBoxActiveIndex" transition="fade"
@@ -51,6 +51,9 @@
 
     $refs: {
       mediaArea: HTMLDivElement
+      lightBox: {
+        $el: HTMLDivElement
+      }
     }
 
     @Prop() mediaList?: Array<mastodonentities.Attachment>
@@ -63,9 +66,7 @@
 
     manuallyShowSensitiveCover: boolean = null
 
-    isImageType (type: string) {
-      return type === AttachmentTypes.IMAGE || type === AttachmentTypes.UNKNOWN
-    }
+    onLightBoxClick (e: MouseEvent) { e.stopPropagation() }
 
     get mediaAreaScrollStyle () {
       if (this.shouldShowSensitiveCover) {
@@ -133,22 +134,24 @@
       this.shouldShowLightBox = false
     }
 
+    @Watch('shouldShowLightBox')
+    onLightBoxDisplayChanged (val) {
+      if (val) {
+        this.$nextTick(() => {
+          this.$refs.lightBox.$el.addEventListener('click', this.onLightBoxClick)
+        })
+      } else {
+        this.$refs.lightBox.$el.removeEventListener('click', this.onLightBoxClick)
+      }
+    }
+
     onMediaItemClick (mediaItemIndex: number) {
       this.shouldShowLightBox = true
       this.lightBoxActiveIndex = mediaItemIndex
-      // vue会帮忙处理this指向？
-      document.addEventListener('click', this.onLightBoxClick)
     }
 
     onLightBoxMediaItemClick () {
       this.shouldShowLightBoxControlBtn = !this.shouldShowLightBoxControlBtn
-    }
-
-    onLightBoxClick (e) {
-      if (e.target && (e.target.className === 'mu-carousel-item')) {
-        this.shouldShowLightBox = false
-        document.removeEventListener('click', this.onLightBoxClick)
-      }
     }
   }
 
