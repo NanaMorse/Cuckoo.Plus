@@ -1,21 +1,24 @@
 <template>
   <div class="account-header">
-
+    <div class="user-info-area">
+      <div class="left-area"></div>
+      <div></div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-  import { Vue, Component } from 'vue-property-decorator'
+  import { Vue, Component, Prop } from 'vue-property-decorator'
   import {  } from 'vuex-class'
+  import { mastodonentities } from "@/interface"
+
 
   @Component({})
   class AccountHeader extends Vue {
 
     $route
 
-    mounted () {
-      const accountId = this.$route.params.accountId
-    }
+    @Prop() account: mastodonentities.Account
 
   }
 

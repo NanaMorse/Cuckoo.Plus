@@ -144,7 +144,7 @@ class Streaming {
     if (store.state.statusMap[newStatus.id]) return
 
     // update status map
-    store.commit('updateStatusMap', { [newStatus.id]: newStatus })
+    store.dispatch('updateStatusMap', { [newStatus.id]: newStatus })
     if (timeLineType === TimeLineTypes.HOME) {
       prepareRootStatus(newStatus)
     }

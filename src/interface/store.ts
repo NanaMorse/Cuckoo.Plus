@@ -31,6 +31,10 @@ export namespace cuckoostore {
       [statusId: string]: mastodonentities.Status
     }
 
+    accountMap: {
+      [accountId: string]: mastodonentities.Account
+    }
+
     notifications: Array<mastodonentities.Notification>
 
     relationships: {

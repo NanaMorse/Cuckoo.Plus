@@ -22,6 +22,8 @@ const actions = {
       const accountInfo: mastodonentities.AuthenticatedAccount = result.data
 
       commit('updateCurrentUserAccount', accountInfo)
+      commit('updateAccountMap', { [accountInfo.id]: accountInfo })
+
       // sync settings
       commit('updatePostPrivacy', accountInfo.source.privacy)
       commit('updatePostMediaAsSensitiveMode', accountInfo.source.sensitive)
