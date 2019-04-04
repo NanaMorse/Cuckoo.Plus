@@ -58,6 +58,7 @@ export namespace cuckoostore {
       }
       settings: {
         multiLineMode: boolean
+        maximumNumberOfColumnsInMultiLineMode: number
         showSensitiveContentMode: boolean
         postMediaAsSensitiveMode: boolean
         realTimeLoadStatusMode: boolean

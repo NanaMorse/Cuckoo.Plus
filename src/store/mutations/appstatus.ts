@@ -82,5 +82,10 @@ export default {
   updateOnlyMentionTargetUserMode (state: cuckoostore.stateInfo, newMode: boolean) {
     state.appStatus.settings.onlyMentionTargetUserMode = newMode
     localStorage.setItem('onlyMentionTargetUserMode', JSON.stringify(newMode))
+  },
+
+  updateMaximumNumberOfColumnsInMultiLineMode (state: cuckoostore.stateInfo, newNumber: number) {
+    state.appStatus.settings.maximumNumberOfColumnsInMultiLineMode = newNumber
+    localStorage.setItem('maximumNumberOfColumnsInMultiLineMode', JSON.stringify(newNumber))
   }
 }

@@ -80,6 +80,7 @@ declare module "vue/types/vue" {
         post_privacy: string
         post_media_as_sensitive: string
         only_mention_target_user: string
+        maximum_number_of_columns_in_multi_line_mode: string
 
         stream_label: string
         media_label: string

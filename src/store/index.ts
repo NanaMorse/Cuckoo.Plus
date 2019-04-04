@@ -65,6 +65,7 @@ const state: cuckoostore.stateInfo = {
 
     settings: {
       multiLineMode: getLocalSetting('multiLineMode', true),
+      maximumNumberOfColumnsInMultiLineMode: getLocalSetting('maximumNumberOfColumnsInMultiLineMode', 3),
       showSensitiveContentMode: getLocalSetting('showSensitiveContentMode', false),
       realTimeLoadStatusMode: getLocalSetting('realTimeLoadStatusMode', false),
       postMediaAsSensitiveMode: getLocalSetting('postMediaAsSensitiveMode', false),

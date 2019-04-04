@@ -64,6 +64,7 @@ export const I18nTags = {
     choose_theme: 'settings_choose_theme',
     choose_language: 'settings_choose_language',
     use_multi_line_mode: 'settings_use_multi_line_mode',
+    maximum_number_of_columns_in_multi_line_mode: 'settings_maximum_number_of_columns_in_multi_line_mode',
     show_sensitive_media_files: 'settings_show_sensitive_media_files',
     auto_load_new_status: 'settings_auto_load_new_status',
     post_privacy: 'settings_post_privacy',

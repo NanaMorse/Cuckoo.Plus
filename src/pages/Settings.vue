@@ -32,6 +32,14 @@
           <mu-switch class="setting-switch" v-model="multiLineMode" />
         </div>
 
+        <div class="setting-row select-row">
+          <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.maximum_number_of_columns_in_multi_line_mode)}}</span>
+          <mu-select class="setting-select" v-model="maximumNumberOfColumnsInMultiLineMode">
+            <mu-option v-for="(info, index) in maximumColumnsOptions" :key="index"
+                       :label="info.label" :value="info.value" />
+          </mu-select>
+        </div>
+
         <!--<p class="card-label">{{$t($i18nTags.settings.media_label)}}</p>-->
 
         <p class="card-label">{{$t($i18nTags.settings.publishing_label)}}</p>
@@ -87,6 +95,7 @@
 
     @Mutation('updateTheme') updateTheme
     @Mutation('updateMultiLineMode') updateMultiLineMode
+    @Mutation('updateMaximumNumberOfColumnsInMultiLineMode') updateMaximumNumberOfColumnsInMultiLineMode
     @Mutation('updateShowSensitiveContentMode') updateShowSensitiveContentMode
     @Mutation('updateRealTimeLoadStatusMode') updateRealTimeLoadStatusMode
     @Mutation('updateLocale') updateLocale
@@ -112,6 +121,14 @@
       { label: '简体中文', value: I18nLocales.ZH_CN },
       { label: '繁體中文（香港）', value: I18nLocales.ZH_HK },
       { label: '繁體中文（台灣）', value: I18nLocales.ZH_TW }
+    ]
+
+    maximumColumnsOptions = [
+      { label: '2', value: 2 },
+      { label: '3', value: 3 },
+      { label: '4', value: 4 },
+      { label: '5', value: 5 },
+      { label: '6', value: 6 }
     ]
 
     showSuccessChangedToast () {
@@ -148,6 +165,14 @@
 
     set multiLineMode (val) {
       this.updateMultiLineMode(val)
+    }
+
+    get maximumNumberOfColumnsInMultiLineMode () {
+      return this.appStatus.settings.maximumNumberOfColumnsInMultiLineMode
+    }
+
+    set maximumNumberOfColumnsInMultiLineMode (val) {
+      this.updateMaximumNumberOfColumnsInMultiLineMode(val)
     }
 
     get showSensitiveContentMode () {

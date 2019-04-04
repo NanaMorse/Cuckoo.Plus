@@ -56,8 +56,6 @@
   import NewStatusNoticeButton from './NewStatusNoticeButton'
   import PostStatusStampCard from './PostStatusStampCard'
 
-  const waterFallMaxLineCount = 3
-
   const noneCardFocusId = '-2'
   const stampCardFocusId = '-1'
 
@@ -84,7 +82,7 @@
     return (containerWidth - (lineCount - 1) * UiWidthCheckConstants.TIMELINE_WATER_FALL_GUTTER) / lineCount
   }
 
-  function calcFitWaterFallLineCount (containerWidth: number, testLineCount: number = waterFallMaxLineCount) {
+  function calcFitWaterFallLineCount (containerWidth: number, testLineCount: number) {
     if (testLineCount <= 1) return 1
 
     const testStatusCardWidth = getFitStatusWidth(containerWidth, testLineCount)
@@ -279,7 +277,7 @@
     get waterfallLineCount () {
       if (!this.appStatus.settings.multiLineMode) return 1
 
-      return calcFitWaterFallLineCount(this.contentAreaWidth - UiWidthCheckConstants.TIMELINE_WATER_FALL_GUTTER * 2)
+      return calcFitWaterFallLineCount(this.contentAreaWidth - UiWidthCheckConstants.TIMELINE_WATER_FALL_GUTTER * 2, this.appStatus.settings.maximumNumberOfColumnsInMultiLineMode)
     }
 
     get statusCardsContainerStyle () {
