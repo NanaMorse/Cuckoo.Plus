@@ -43,9 +43,6 @@
       <mu-list-item button :to="$routersInfo.settings.path" @click="onSecondaryItemClick">
         <mu-list-item-title class="secondary-read-text-color">{{$t($i18nTags.drawer.settings)}}</mu-list-item-title>
       </mu-list-item>
-      <mu-list-item button @click="onLogoutClick">
-        <mu-list-item-title class="secondary-read-text-color">{{$t($i18nTags.drawer.logout)}}</mu-list-item-title>
-      </mu-list-item>
     </mu-list>
 
     <div class="bottom-info-area secondary-read-text-color">
@@ -55,6 +52,9 @@
         <a class="secondary-read-text-color" href="https://github.com/NanaMorse/Cuckoo.Plus" target="_blank">Github</a>
       </div>
       <a class="secondary-read-text-color" :href="mastodonServerUri" target="_blank">{{$t($i18nTags.drawer.toHostInstance)}}</a>
+      <div style="margin-top: 6px">
+        <a class="secondary-read-text-color logout-btn" @click="onTryLogout">{{$t($i18nTags.drawer.logout)}}</a>
+      </div>
     </div>
 
   </mu-drawer>
@@ -117,6 +117,12 @@
     $progress
 
     $toast
+
+    $confirm
+
+    $t
+
+    $i18nTags
 
     @State('currentUserAccount') currentUserAccount
 
@@ -217,11 +223,15 @@
       window.scrollTo(0, 0)
     }
 
-    onLogoutClick () {
-      localStorage.removeItem('clientId')
-      localStorage.removeItem('clientSecret')
-      localStorage.removeItem('accessToken')
-      location.href="/";
+    async onTryLogout () {
+      const doLogout = (await this.$confirm(this.$t(this.$i18nTags.drawer.do_logout_message_confirm), {
+        okLabel: this.$t(this.$i18nTags.drawer.do_logout_message_yes),
+        cancelLabel: this.$t(this.$i18nTags.drawer.do_logout_message_no),
+      })).result
+      if (doLogout) {
+        localStorage.clear()
+        location.href = '/'
+      }
     }
 
     onDeleteHash (hashName: string) {
@@ -275,6 +285,13 @@
       bottom: 0;
       margin: 0 0 24px 24px;
       font-size: 13px;
+
+      .logout-btn {
+        cursor: pointer;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
     }
   }
 

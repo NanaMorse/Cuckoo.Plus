@@ -69,6 +69,9 @@ declare module "vue/types/vue" {
         search_input_placeholder: string
         search_result_people_label: string
         search_result_hashtag_label: string
+        do_logout_message_confirm: string
+        do_logout_message_yes: string
+        do_logout_message_no: string
       },
       settings: {
         general_label: string
