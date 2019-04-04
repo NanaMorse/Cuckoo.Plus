@@ -1,6 +1,6 @@
 <template>
   <div class="account-container" v-loading="!account">
-    <account-header :account="account"/>
+    <account-header v-if="account" :account="account"/>
   </div>
 </template>
 
@@ -43,5 +43,19 @@
 </script>
 
 <style lang="less" scoped>
+  .account-container {
+    margin: 0 auto;
+  }
 
+  @media (min-width: 0px){
+    .account-container {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .account-container {
+      width: 85%;
+    }
+  }
 </style>
