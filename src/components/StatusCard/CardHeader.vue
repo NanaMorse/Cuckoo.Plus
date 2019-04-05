@@ -36,11 +36,11 @@
                 :open.sync="shouldOpenMoreOperationPopOver"
                 :trigger="moreOperationTriggerBtn">
       <mu-list>
-        <mu-list-item button>
+        <mu-list-item button @click.stop="onMuteStatus">
           <mu-list-item-title>{{$t($i18nTags.statusCard.mute_status)}}</mu-list-item-title>
         </mu-list-item>
         <mu-list-item button v-if="currentUserAccount.id === status.account.id"
-                      @click="onDeleteStatusByOperateList()">
+                      @click.stop="onDeleteStatusByOperateList">
           <mu-list-item-title>{{$t($i18nTags.statusCard.delete_status)}}</mu-list-item-title>
         </mu-list-item>
       </mu-list>
@@ -130,6 +130,8 @@
         await this.deleteStatus({ statusId: targetStatusId })
       }
     }
+
+    onMuteStatus () {}
 
     getFromNowTime (createdAt: string) {
       return moment(createdAt).fromNow(true)

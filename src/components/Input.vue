@@ -33,7 +33,7 @@
              :style="accountSearchResultListStyle">
       <mu-list-item avatar button :ripple="false" :key="index"
                     @hover="currentSelectedResultIndex = index"
-                    @click="onSelectedSearchResult"
+                    @click.stop="onSelectedSearchResult"
                     :class="{ 'active': currentSelectedResultIndex === index }"
                     v-for="(account, index) in atAccountSearchResultList">
         <mu-list-item-action>
