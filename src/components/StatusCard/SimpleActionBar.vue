@@ -35,7 +35,7 @@
 
 <script lang="ts">
   import { Vue, Component, Prop } from 'vue-property-decorator'
-  import { State, Getter, Action } from 'vuex-class'
+  import { State, Getter, Action, Mutation } from 'vuex-class'
   import { I18nLocales, VisibilityTypes } from '@/constant'
   import { mastodonentities, cuckoostore } from '@/interface'
 
@@ -52,6 +52,8 @@
 
     @Action('updateFavouriteStatusById') updateFavouriteStatusById
     @Action('updateReblogStatusById') updateReblogStatusById
+
+    @Mutation('updatePostStatusDialogStatus') updatePostStatusDialogStatus
 
     get shouldShowReblogButton () {
       return this.status.visibility !== VisibilityTypes.DIRECT
@@ -80,13 +82,18 @@
     }
 
     onReBlogButtonClick () {
-      const mainStatusId = this.status.id
-      const targetStatusId = this.operateCheckTargetStatus.id
+      // todo remove experimental direct status
+      if (this.appStatus.settings.emulateGPlusLikeReBlogMode && !this.operateCheckTargetStatus.reblogged) {
+        this.updatePostStatusDialogStatus(true)
+      } else {
+        const mainStatusId = this.status.id
+        const targetStatusId = this.operateCheckTargetStatus.id
 
-      this.updateReblogStatusById({
-        reblogged: !this.operateCheckTargetStatus.reblogged,
-        mainStatusId, targetStatusId
-      })
+        this.updateReblogStatusById({
+          reblogged: !this.operateCheckTargetStatus.reblogged,
+          mainStatusId, targetStatusId
+        })
+      }
     }
 
     onReplyToStatus () {

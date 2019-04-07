@@ -69,6 +69,13 @@
           <mu-switch class="setting-switch" v-model="showSensitiveContentMode" />
         </div>
 
+        <p class="card-label">{{$t($i18nTags.settings.experimental_label)}}</p>
+
+        <div class="setting-row">
+          <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.emulate_GPlus_like_re_blog)}}</span>
+          <mu-switch class="setting-switch" v-model="emulateGPlusLikeReBlogMode"/>
+        </div>
+
       </mu-card-actions>
     </mu-card>
   </div>
@@ -100,6 +107,7 @@
     @Mutation('updateRealTimeLoadStatusMode') updateRealTimeLoadStatusMode
     @Mutation('updateLocale') updateLocale
     @Mutation('updateOnlyMentionTargetUserMode') updateOnlyMentionTargetUserMode
+    @Mutation('updateEmulateGPlusLikeReBlogMode') updateEmulateGPlusLikeReBlogMode
 
     @Mutation('updatePostPrivacy') mutationUpdatePostPrivacy
 
@@ -229,6 +237,14 @@
 
     set onlyMentionTargetUserMode (val) {
       this.updateOnlyMentionTargetUserMode(val)
+    }
+
+    get emulateGPlusLikeReBlogMode () {
+      return this.appStatus.settings.emulateGPlusLikeReBlogMode
+    }
+
+    set emulateGPlusLikeReBlogMode (val) {
+      this.updateEmulateGPlusLikeReBlogMode(val)
     }
   }
 

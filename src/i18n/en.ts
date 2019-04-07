@@ -69,13 +69,15 @@ const settings = {
   [I18nTags.settings.auto_load_new_status]: 'Always auto load new post:',
   [I18nTags.settings.post_privacy]: 'Post privacy:',
   [I18nTags.settings.post_media_as_sensitive]: 'Always mark media as sensitive:',
-  [I18nTags.settings.only_mention_target_user]: 'Only mention target user',
+  [I18nTags.settings.only_mention_target_user]: 'Only mention target user:',
+  [I18nTags.settings.emulate_GPlus_like_re_blog]: 'Emulate Re-Blog like Google Plus:',
 
   [I18nTags.settings.stream_label]: 'Stream',
   [I18nTags.settings.media_label]: 'Media',
   [I18nTags.settings.personality_label]: 'Personality',
   [I18nTags.settings.publishing_label]: 'Publishing',
   [I18nTags.settings.web_label]: 'Web',
+  [I18nTags.settings.experimental_label]: 'Experimental',
 
   [I18nTags.settings.changes_successfully_saved]: 'Changes successfully saved!'
 }

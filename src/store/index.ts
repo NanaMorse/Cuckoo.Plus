@@ -52,6 +52,12 @@ const state: cuckoostore.stateInfo = {
 
     isNotificationsPanelOpened: false,
 
+    isPostStatusDialogOpened: false,
+
+    postStatusDialogExternalInfo: {
+      reblog: null
+    },
+
     unreadNotificationCount: 0,
 
     streamStatusesPool: {
@@ -73,7 +79,8 @@ const state: cuckoostore.stateInfo = {
       tags: getLocalSetting('tags', ['hello']),
       locale: localStorage.getItem('locale') || I18nLocales.EN,
       postPrivacy: localStorage.getItem('postPrivacy') || VisibilityTypes.PUBLIC,
-      onlyMentionTargetUserMode: getLocalSetting('onlyMentionTargetUserMode', false)
+      onlyMentionTargetUserMode: getLocalSetting('onlyMentionTargetUserMode', false),
+      emulateGPlusLikeReBlogMode: getLocalSetting('emulateGPlusLikeReBlogMode', false)
     },
 
   }

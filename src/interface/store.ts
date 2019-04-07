@@ -43,6 +43,10 @@ export namespace cuckoostore {
       documentWidth: number
       isDrawerOpened: boolean
       isNotificationsPanelOpened: boolean
+      isPostStatusDialogOpened: boolean
+      postStatusDialogExternalInfo: {
+        reblog: mastodonentities.Status
+      }
       unreadNotificationCount: number
       streamStatusesPool: {
         home: Array<string>
@@ -63,6 +67,7 @@ export namespace cuckoostore {
         postMediaAsSensitiveMode: boolean
         realTimeLoadStatusMode: boolean
         onlyMentionTargetUserMode: boolean
+        emulateGPlusLikeReBlogMode: boolean
         theme: string,
         tags: Array<string>
         locale: string,

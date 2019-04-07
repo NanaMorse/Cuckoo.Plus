@@ -46,16 +46,25 @@ const statuses = {
 
   async updateReblogStatusById ({ commit }, { reblogged, mainStatusId, targetStatusId }) {
     try {
+      let reblogedResult
+
       if (reblogged) {
-        api.statuses.reblogStatusById(targetStatusId)
+        reblogedResult = await api.statuses.reblogStatusById(targetStatusId)
       } else {
-        api.statuses.unReblogStatusById(targetStatusId)
+        reblogedResult = await api.statuses.unReblogStatusById(targetStatusId)
       }
 
       commit('updateReblogStatusById', { reblogged, mainStatusId, targetStatusId })
+
+      return reblogedResult
     } catch (e) {
       throw new Error(e)
     }
+  },
+
+  async experimentalReblogStatusById ({ commit, dispatch }, { reblogged, mainStatusId, targetStatusId, content }) {
+    const reblogedResult = await dispatch('updateReblogStatusById', { reblogged, mainStatusId, targetStatusId })
+
   },
 
   async updateContextMap ({ commit }, statusId: string) {

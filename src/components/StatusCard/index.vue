@@ -16,9 +16,9 @@
         </mu-button>
       </div>
 
-      <mu-card-text v-if="!status.reblog && status.content" v-show="(status.spoiler_text ? shouldShowContentWhileSpoilerExists : true)"
+      <mu-card-text v-if="shouldRenderMainStatusContent" v-show="(status.spoiler_text ? shouldShowContentWhileSpoilerExists : true)"
                     class="status-content main-status-content"
-                    v-html="status.content" />
+                    v-html="mainStatusContent" />
 
       <mu-divider v-if="!status.media_attachments.length && !(status.pixiv_cards || []).length"/>
 
@@ -42,7 +42,7 @@
 
       <div class="reply-area-full">
         <div class="full-reply-list" ref="replyListContainer">
-          <full-reply-list-item v-for="replierStatus in descendantStatusList"
+          <full-reply-list-item v-for="replierStatus in finalRenderDescendantStatusList"
                                 :key="replierStatus.id" :status="replierStatus" @reply="onReplyToStatus(replierStatus)"/>
         </div>
       </div>
@@ -75,6 +75,7 @@
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State, Getter } from 'vuex-class'
   import { mastodonentities } from '@/interface'
+  import { VisibilityTypes } from '@/constant'
 
   import CardHeader from './CardHeader'
   import MediaPanel from './MediaPanel'
@@ -140,6 +141,38 @@
       }).filter(s => s).sort((a, b) => {
         return new Date(a.created_at) >= new Date(b.created_at) ? 1 : -1
       })
+    }
+
+    get finalRenderDescendantStatusList () {
+      if (this.status.reblog && this.shouldRenderMainStatusContent) {
+        return [...this.descendantStatusList].slice(1)
+      }
+
+      return this.descendantStatusList
+    }
+
+    get shouldRenderMainStatusContent () {
+      if (this.status.reblog) {
+        if (this.appStatus.settings.emulateGPlusLikeReBlogMode) {
+          const firstDescendantStatus = this.descendantStatusList[0]
+
+          return firstDescendantStatus &&
+            firstDescendantStatus.account.id === this.status.account.id &&
+            firstDescendantStatus.visibility === VisibilityTypes.DIRECT
+        }
+
+        return false
+      } else {
+        return this.status.account
+      }
+    }
+
+    get mainStatusContent (): string {
+      if (this.status.reblog && this.shouldRenderMainStatusContent) {
+        return this.descendantStatusList[0].content
+      } else {
+        return this.status.content
+      }
     }
 
     @Watch('shouldShowFullReplyActionArea')

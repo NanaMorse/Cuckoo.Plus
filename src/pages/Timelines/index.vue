@@ -34,12 +34,10 @@
       <mu-button flat slot="action" color="#fff" @click="isSnackBarOpening = false">Close</mu-button>
     </mu-snackbar>
 
-    <mu-button fab class="post-new-status-button" color="primary" v-show="!isPostStatusDialogOpening"
+    <mu-button fab class="post-new-status-button" color="primary" v-show="!appStatus.isPostStatusDialogOpened"
                @click="showNewPostDialogPanel">
       <mu-icon value="edit" />
     </mu-button>
-
-    <post-status-dialog :open.sync="isPostStatusDialogOpening"/>
 
     <new-status-notice-button />
   </div>
@@ -47,7 +45,7 @@
 
 <script lang="ts">
   import { Vue, Component, Watch } from 'vue-property-decorator'
-  import { Action, State, Getter } from 'vuex-class'
+  import { Action, State, Getter, Mutation } from 'vuex-class'
   import { TimeLineTypes, UiWidthCheckConstants, ThemeNames } from '@/constant'
   import { cuckoostore, mastodonentities } from '@/interface'
   import { getTimeLineTypeAndHashName, isBaseTimeLine, animatedScrollTo } from '@/util'
@@ -122,6 +120,8 @@
 
     @Action('loadStreamStatusesPool') loadStreamStatusesPool
 
+    @Mutation('updatePostStatusDialogStatus') updatePostStatusDialogStatus
+
     /**
      * @description 这种loading应该是全屏白色遮罩
      **/
@@ -137,8 +137,6 @@
     isSnackBarOpening: boolean = false
 
     snackBarMessage: string = ''
-
-    isPostStatusDialogOpening: boolean = false
 
     currentFocusCardId: string = noneCardFocusId
 
@@ -261,7 +259,7 @@
     showNewPostDialogPanel () {
       // todo handle history.back() event
       // use vue router?
-      this.isPostStatusDialogOpening = true
+      this.updatePostStatusDialogStatus(true)
     }
 
     isTimeLineNameEqualCurrentRoute (timeLineName: string): boolean {
@@ -310,7 +308,7 @@
     }
 
     onTimeLinePageKeyDown (e: KeyboardEvent) {
-      if (!this.isCurrentTimeLineRoute || this.isPostStatusDialogOpening) return
+      if (!this.isCurrentTimeLineRoute || this.appStatus.isPostStatusDialogOpened) return
 
       const knownKeyList = ['j', 'k', 'Enter']
       if (knownKeyList.indexOf(e.key) === -1) return
@@ -377,7 +375,7 @@
       if (this.currentFocusCardId === noneCardFocusId) return
 
       if (this.currentFocusCardId === stampCardFocusId) {
-        return this.isPostStatusDialogOpening = true
+        return this.updatePostStatusDialogStatus(true)
       }
 
       const { timeLineType } = getTimeLineTypeAndHashName(this.$route)

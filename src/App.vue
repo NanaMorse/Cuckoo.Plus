@@ -2,6 +2,7 @@
   <div id="app">
     <cuckoo-plus-header v-if="!$route.meta.hideHeader"/>
     <cuckoo-plus-drawer v-if="!$route.meta.hideDrawer && isOAuthUser"/>
+    <post-status-dialog :open.sync="isPostStatusDialogOpened"/>
     <mu-container :fluid="true" class="app-content" :style="appContentStyle">
       <keep-alive>
         <router-view v-if="$route.meta.keepAlive" />
@@ -17,13 +18,15 @@
   import { Mutation, State, Getter } from 'vuex-class'
   import * as _ from 'underscore'
   import { UiWidthCheckConstants, TimeLineTypes } from '@/constant'
-  import Header from '@/components/Header.vue'
+  import Header from '@/components/Header'
   import Drawer from '@/components/Drawer'
+  import PostStatusDialog from '@/components/PostStatusDialog'
 
   @Component({
     components: {
       'cuckoo-plus-header': Header,
-      'cuckoo-plus-drawer': Drawer
+      'cuckoo-plus-drawer': Drawer,
+      'post-status-dialog': PostStatusDialog,
     }
   })
   class App extends Vue {
@@ -36,6 +39,7 @@
     @State('statusMap') statusMap
 
     @Mutation('updateDocumentWidth') updateDocumentWidth
+    @Mutation('updatePostStatusDialogStatus') updatePostStatusDialogStatus
 
     @Getter('isOAuthUser') isOAuthUser
     @Getter('isMobileMode') isMobileMode
@@ -53,6 +57,14 @@
           paddingLeft: `${UiWidthCheckConstants.DRAWER_DESKTOP_WIDTH}px`
         }
       }
+    }
+
+    get isPostStatusDialogOpened () {
+      return this.appStatus.isPostStatusDialogOpened
+    }
+
+    set isPostStatusDialogOpened (val) {
+      this.updatePostStatusDialogStatus(val)
     }
 
     listenToWindowUnload () {

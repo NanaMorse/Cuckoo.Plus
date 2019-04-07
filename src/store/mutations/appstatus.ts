@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { getTargetStatusesList } from '@/util'
 import { ThemeNames } from '@/constant'
-import { cuckoostore } from '@/interface'
+import { cuckoostore, mastodonentities } from '@/interface'
 import ThemeManager from '@/themes'
 
 export default {
@@ -11,6 +11,21 @@ export default {
 
   updateNotificationsPanelStatus (state: cuckoostore.stateInfo, isNotificationsPanelOpened: boolean) {
     state.appStatus.isNotificationsPanelOpened = isNotificationsPanelOpened
+  },
+
+  updatePostStatusDialogStatus (state: cuckoostore.stateInfo, isPostStatusDialogOpened: boolean) {
+    state.appStatus.isPostStatusDialogOpened = isPostStatusDialogOpened
+
+    if (!isPostStatusDialogOpened) {
+      Vue.set(state.appStatus.postStatusDialogExternalInfo, 'reblog', null)
+    }
+  },
+
+  updatePostStatusDialogExternalInfo (state: cuckoostore.stateInfo, externalInfo: {
+    reblog: mastodonentities.Status
+  }) {
+    if (!externalInfo) return
+    Vue.set(state.appStatus.postStatusDialogExternalInfo, 'reblog', externalInfo.reblog)
   },
 
   updateUnreadNotificationCount (state: cuckoostore.stateInfo, count: number) {
@@ -87,5 +102,10 @@ export default {
   updateMaximumNumberOfColumnsInMultiLineMode (state: cuckoostore.stateInfo, newNumber: number) {
     state.appStatus.settings.maximumNumberOfColumnsInMultiLineMode = newNumber
     localStorage.setItem('maximumNumberOfColumnsInMultiLineMode', JSON.stringify(newNumber))
+  },
+
+  updateEmulateGPlusLikeReBlogMode (state: cuckoostore.stateInfo, newMode: boolean) {
+    state.appStatus.settings.emulateGPlusLikeReBlogMode = newMode
+    localStorage.setItem('emulateGPlusLikeReBlogMode', JSON.stringify(newMode))
   }
 }

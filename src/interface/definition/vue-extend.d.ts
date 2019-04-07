@@ -84,12 +84,15 @@ declare module "vue/types/vue" {
         post_media_as_sensitive: string
         only_mention_target_user: string
         maximum_number_of_columns_in_multi_line_mode: string
+        emulate_GPlus_like_re_blog: string
 
         stream_label: string
         media_label: string
         publishing_label: string
         personality_label: string
         web_label: string
+        experimental_label: string
+
         changes_successfully_saved: string
       },
       home: {

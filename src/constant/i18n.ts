@@ -73,12 +73,14 @@ export const I18nTags = {
     post_privacy: 'settings_post_privacy',
     post_media_as_sensitive: 'settings_post_media_as_sensitive',
     only_mention_target_user: 'settings_only_mention_target_user',
+    emulate_GPlus_like_re_blog: 'settings_emulate_GPlus_like_re_blog',
 
     stream_label: 'settings_stream_label',
     media_label: 'settings_media_label',
     publishing_label: 'settings_publishing_label',
     personality_label: 'settings_personality_label',
     web_label: 'settings_web_label',
+    experimental_label: 'settings_experimental_label',
 
     changes_successfully_saved: 'settings_changes_successfully_saved'
   },
