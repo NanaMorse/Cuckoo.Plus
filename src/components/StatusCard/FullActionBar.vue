@@ -19,7 +19,7 @@
 
     <div class="reply-action-area">
       <div class="left-area">
-        <mu-button @click="onSelectMediaFiles" :disabled="uploadProcesses.length === 4"
+        <mu-button @click.stop="onSelectMediaFiles" :disabled="uploadProcesses.length === 4"
                    class="operate-btn add-image secondary-read-text-color" icon :title="$t($i18nTags.statusCard.add_photos)">
           <mu-icon class="reply-action-icon" value="camera_alt" />
           <input ref="fileInput" type="file" @change="onUploadMediaFiles"
@@ -27,16 +27,16 @@
                  style="display: none" multiple/>
         </mu-button>
 
-        <mu-button ref="visibilityTriggerBtn" @click="shouldOpenVisibilitySelectPopOver = true" class="operate-btn change-visibility secondary-read-text-color" icon :title="$t($i18nTags.statusCard.change_visibility)">
+        <mu-button ref="visibilityTriggerBtn" @click.stop="shouldOpenVisibilitySelectPopOver = true" class="operate-btn change-visibility secondary-read-text-color" icon :title="$t($i18nTags.statusCard.change_visibility)">
           <mu-icon class="reply-action-icon" :value="getVisibilityDescInfo(visibility).icon" />
         </mu-button>
 
-        <mu-button v-if="uploadProcesses.length" @click="markMediaAsSensitive = !markMediaAsSensitive"
+        <mu-button v-if="uploadProcesses.length" @click.stop="markMediaAsSensitive = !markMediaAsSensitive"
                    class="operate-btn secondary-read-text-color" icon>
           <mu-icon class="reply-action-icon" :value="markMediaAsSensitive ? 'visibility_off' : 'visibility'" />
         </mu-button>
 
-        <mu-button @click="shouldShowSpoilerTextInputArea = !shouldShowSpoilerTextInputArea"
+        <mu-button @click.stop="shouldShowSpoilerTextInputArea = !shouldShowSpoilerTextInputArea"
                    class="operate-btn" icon
                    :class="shouldShowSpoilerTextInputArea ? 'secondary-theme-text-color' : 'secondary-read-text-color'">
           <mu-icon class="reply-action-icon" value="add_alert" />
@@ -45,8 +45,8 @@
       </div>
       <div class="right-area">
         <mu-button flat class="operate-btn cancel"
-                   color="secondary" @click="hideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_post)}}</mu-button>
-        <mu-button flat class="operate-btn submit secondary-theme-text-color" @click="onSubmitReplyContent"
+                   color="secondary" @click.stop="hideFullReplyActionArea">{{$t($i18nTags.statusCard.cancel_post)}}</mu-button>
+        <mu-button flat class="operate-btn submit secondary-theme-text-color" @click.stop="onSubmitReplyContent"
                    :disabled="!shouldEnableSubmitButton">{{$t($i18nTags.statusCard.submit_post)}}</mu-button>
       </div>
     </div>
