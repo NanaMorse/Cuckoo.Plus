@@ -69,6 +69,11 @@
           <mu-switch class="setting-switch" v-model="showSensitiveContentMode" />
         </div>
 
+        <div class="setting-row">
+          <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.auto_expand_spoiler_text)}}</span>
+          <mu-switch class="setting-switch" v-model="autoExpandSpoilerTextMode"/>
+        </div>
+
       </mu-card-actions>
     </mu-card>
   </div>
@@ -100,6 +105,7 @@
     @Mutation('updateRealTimeLoadStatusMode') updateRealTimeLoadStatusMode
     @Mutation('updateLocale') updateLocale
     @Mutation('updateOnlyMentionTargetUserMode') updateOnlyMentionTargetUserMode
+    @Mutation('updateAutoExpandSpoilerTextMode') updateAutoExpandSpoilerTextMode
 
     @Mutation('updatePostPrivacy') mutationUpdatePostPrivacy
 
@@ -229,6 +235,14 @@
 
     set onlyMentionTargetUserMode (val) {
       this.updateOnlyMentionTargetUserMode(val)
+    }
+
+    get autoExpandSpoilerTextMode () {
+      return this.appStatus.settings.autoExpandSpoilerTextMode
+    }
+
+    set autoExpandSpoilerTextMode (val) {
+      this.updateAutoExpandSpoilerTextMode(val)
     }
   }
 

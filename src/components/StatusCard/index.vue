@@ -116,7 +116,7 @@
 
     currentReplyToStatus: mastodonentities.Status = null
 
-    shouldShowContentWhileSpoilerExists: boolean = false
+    shouldShowContentWhileSpoilerExists_ = null
 
     shouldShowFullReplyActionArea: boolean = false
 
@@ -131,6 +131,18 @@
     droppedFiles: Array<File> = null
 
     @Prop() status: mastodonentities.Status
+
+    get shouldShowContentWhileSpoilerExists () {
+      if (typeof this.shouldShowContentWhileSpoilerExists_ === 'boolean') {
+        return this.shouldShowContentWhileSpoilerExists_
+      }
+
+      return this.appStatus.settings.autoExpandSpoilerTextMode
+    }
+
+    set shouldShowContentWhileSpoilerExists (val) {
+      this.shouldShowContentWhileSpoilerExists_ = val
+    }
 
     get descendantStatusList (): Array<mastodonentities.Status> {
       if (!this.contextMap[this.status.id] || !this.contextMap[this.status.id].descendants) return []

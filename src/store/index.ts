@@ -68,6 +68,7 @@ const state: cuckoostore.stateInfo = {
       maximumNumberOfColumnsInMultiLineMode: getLocalSetting('maximumNumberOfColumnsInMultiLineMode', 3),
       showSensitiveContentMode: getLocalSetting('showSensitiveContentMode', false),
       realTimeLoadStatusMode: getLocalSetting('realTimeLoadStatusMode', false),
+      autoExpandSpoilerTextMode: getLocalSetting('autoExpandSpoilerTextMode', false),
       postMediaAsSensitiveMode: getLocalSetting('postMediaAsSensitiveMode', false),
       theme: localStorage.getItem('theme') || ThemeNames.GOOGLE_PLUS,
       tags: getLocalSetting('tags', ['hello']),

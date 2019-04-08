@@ -87,5 +87,10 @@ export default {
   updateMaximumNumberOfColumnsInMultiLineMode (state: cuckoostore.stateInfo, newNumber: number) {
     state.appStatus.settings.maximumNumberOfColumnsInMultiLineMode = newNumber
     localStorage.setItem('maximumNumberOfColumnsInMultiLineMode', JSON.stringify(newNumber))
+  },
+
+  updateAutoExpandSpoilerTextMode (state: cuckoostore.stateInfo, newMode: boolean) {
+    state.appStatus.settings.autoExpandSpoilerTextMode = newMode
+    localStorage.setItem('autoExpandSpoilerTextMode', JSON.stringify(newMode))
   }
 }
