@@ -64,6 +64,7 @@ const settings = {
   [I18nTags.settings.use_multi_line_mode]: 'マルチカラムレイアウトを使う:',
   [I18nTags.settings.maximum_number_of_columns_in_multi_line_mode]: 'マルチカラムレイアウトの最大カラム数:',
   [I18nTags.settings.show_sensitive_media_files]: 'メディアを常に閲覧注意としてマークする:',
+  [I18nTags.settings.auto_expand_spoiler_text]: '警告内容を自動的に表示する:',
   [I18nTags.settings.auto_load_new_status]: '新しい投稿を常に自動的に読み込む:',
   [I18nTags.settings.post_privacy]: '投稿の公開範囲:',
   [I18nTags.settings.post_media_as_sensitive]: '自分が投稿するメディアを常に閲覧注意(NSFW)に設定する:',

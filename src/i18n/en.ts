@@ -66,6 +66,7 @@ const settings = {
   [I18nTags.settings.use_multi_line_mode]: 'Use multi-column layout mode:',
   [I18nTags.settings.maximum_number_of_columns_in_multi_line_mode]: 'Maximum number of columns in multi-column layout mode:',
   [I18nTags.settings.show_sensitive_media_files]: 'Always show media marked as sensitive:',
+  [I18nTags.settings.auto_expand_spoiler_text]: 'Always auto expand spoiler text:',
   [I18nTags.settings.auto_load_new_status]: 'Always auto load new post:',
   [I18nTags.settings.post_privacy]: 'Post privacy:',
   [I18nTags.settings.post_media_as_sensitive]: 'Always mark media as sensitive:',
