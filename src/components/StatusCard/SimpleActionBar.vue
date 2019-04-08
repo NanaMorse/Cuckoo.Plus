@@ -54,6 +54,7 @@
     @Action('updateReblogStatusById') updateReblogStatusById
 
     @Mutation('updatePostStatusDialogStatus') updatePostStatusDialogStatus
+    @Mutation('updatePostStatusDialogExternalInfo') updatePostStatusDialogExternalInfo
 
     get shouldShowReblogButton () {
       return this.status.visibility !== VisibilityTypes.DIRECT
@@ -84,6 +85,8 @@
     onReBlogButtonClick () {
       // todo remove experimental direct status
       if (this.appStatus.settings.emulateGPlusLikeReBlogMode && !this.operateCheckTargetStatus.reblogged) {
+        // update post status dialog external info
+        this.updatePostStatusDialogExternalInfo({ reblog: this.status })
         this.updatePostStatusDialogStatus(true)
       } else {
         const mainStatusId = this.status.id

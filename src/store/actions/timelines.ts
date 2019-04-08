@@ -1,7 +1,7 @@
 import * as api from '@/api'
 import { mastodonentities } from '@/interface'
-import { isBaseTimeLine } from '@/util'
-import { TimeLineTypes } from '@/constant'
+import { isBaseTimeLine, isContentStatusForExperimentalReBlog } from '@/util'
+import { TimeLineTypes, VisibilityTypes } from '@/constant'
 
 export default {
   async updateTimeLineStatuses ({ commit, dispatch, state }, { timeLineType, hashName, isLoadMore, isFetchMore }: {
@@ -35,16 +35,25 @@ export default {
     try {
       const result = await api.timelines.getTimeLineStatuses({ timeLineType, hashName, maxId, sinceId })
 
-      const resultToFetchContext = result.data.filter((status: mastodonentities.Status) => {
+      const reblogMainStatusIdList = []
+
+      const statusIdListToShow = result.data.filter((status: mastodonentities.Status) => {
         // remove for some instance's replies_count has bug
+        if (isContentStatusForExperimentalReBlog(state.currentUserAccount, status)) {
+          reblogMainStatusIdList.push(status.in_reply_to_id)
+          return true
+        }
+
         return !status.in_reply_to_id
-      })
+      }).map(status => status.id)
+
+      const resultToFetchContext = [...statusIdListToShow, ...reblogMainStatusIdList]
 
       // update context map
       // optimize only home time line's result should check context
       if (timeLineType === TimeLineTypes.HOME) {
-        Promise.all(resultToFetchContext.map((status: mastodonentities.Status) => {
-          return api.statuses.getStatusContextById(status.id)
+        Promise.all(resultToFetchContext.map((statusId) => {
+          return api.statuses.getStatusContextById(statusId)
         })).then(results => {
           const newContextMap = {}
           const newStatusMap = {}
@@ -53,7 +62,7 @@ export default {
 
             // only record descendant here
             if (descendantIdList.length) {
-              newContextMap[resultToFetchContext[index].id] = {
+              newContextMap[resultToFetchContext[index]] = {
                 ancestors: contextResult.data.ancestors.map(status => status.id),
                 descendants: descendantIdList
               }
@@ -72,9 +81,13 @@ export default {
       // update status map
       const newStatusMap = {}
       result.data.forEach(status => newStatusMap[status.id] = status)
-      commit('updateStatusMap', newStatusMap)
-
-      commit(mutationName, { newStatusIdList: result.data.map(status => status.id), timeLineType, hashName })
+      Promise.all(reblogMainStatusIdList.map(statusId => {
+        return api.statuses.getStatusById(statusId)
+      })).then(results => {
+        results.forEach(result => newStatusMap[result.data.id] = result.data)
+        commit('updateStatusMap', newStatusMap)
+        commit(mutationName, { newStatusIdList: [...statusIdListToShow], timeLineType, hashName })
+      })
 
       return result
     } catch (e) {

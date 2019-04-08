@@ -17,7 +17,7 @@
               <path class="header-svg-fill" d="M20 14l10 10-10 10z" />
             </svg>
           </div>
-          <div class="visibility-info secondary-read-text-color">{{$t(status.visibility)}}</div>
+          <div class="visibility-info secondary-read-text-color">{{$t(visibility)}}</div>
         </div>
       </div>
     </div>
@@ -54,6 +54,7 @@
   import { Getter, State, Action } from 'vuex-class'
   import * as moment from 'moment'
   import { mastodonentities } from '@/interface'
+  import { isContentStatusForExperimentalReBlog } from '@/util'
 
   @Component({})
   class CardHeader extends Vue {
@@ -82,6 +83,7 @@
     @Getter('isOAuthUser') isOAuthUser
 
     @State('currentUserAccount') currentUserAccount: mastodonentities.AuthenticatedAccount
+    @State('statusMap') statusMap: { [id: string]: mastodonentities.Status }
 
     @Action('deleteStatus') deleteStatus
 
@@ -92,6 +94,14 @@
     moreOperationTriggerBtn: any = null
 
     leftAreaStyle = null
+
+    get visibility () {
+      if (isContentStatusForExperimentalReBlog(this.currentUserAccount, this.status)) {
+        return this.statusMap[this.status.in_reply_to_id].visibility
+      } else {
+        return this.status.visibility
+      }
+    }
 
     mounted () {
       if (this.isOAuthUser) {
@@ -119,6 +129,8 @@
     }
 
     async onDeleteStatusByOperateList () {
+      // todo #180 delete and remove boost
+
       const targetStatusId = this.status.id
 
       const doDeleteStatus = (await this.$confirm(this.$t(this.$i18nTags.statusCard.delete_status_confirm), {

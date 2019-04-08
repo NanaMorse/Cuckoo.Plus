@@ -23,7 +23,6 @@ const timelines = {
 
       return targetStatusIdList
         .map(statusId => state.statusMap[statusId]).filter(status => status)
-        .filter((status: mastodonentities.Status) => !status.in_reply_to_id)
     }
   }
 }

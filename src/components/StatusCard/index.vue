@@ -16,27 +16,27 @@
         </mu-button>
       </div>
 
-      <mu-card-text v-if="shouldRenderMainStatusContent" v-show="(status.spoiler_text ? shouldShowContentWhileSpoilerExists : true)"
+      <mu-card-text v-if="status.content" v-show="(status.spoiler_text ? shouldShowContentWhileSpoilerExists : true)"
                     class="status-content main-status-content"
-                    v-html="mainStatusContent" />
+                    v-html="status.content" />
 
       <mu-divider v-if="!status.media_attachments.length && !(status.pixiv_cards || []).length"/>
 
-      <div v-if="!status.reblog" class="main-attachment-area">
+      <div class="main-attachment-area">
         <media-panel :mediaList="status.media_attachments" :pixivCards="status.pixiv_cards" :sensitive="status.sensitive"/>
       </div>
 
-      <div v-if="status.reblog" class="reblog-area">
+      <div v-if="rebloggedStatus" class="reblog-area">
         <div class="reblog-plain-info-area">
           <a @click="onCheckSharedOriginalPost" class="reblog-source-link" v-html="$t($i18nTags.statusCard.originally_shared_by, {
-              displayName: status.reblog.account.display_name,
-              atName: getAccountAtName(status.reblog.account)
+              displayName: rebloggedStatus.account.display_name,
+              atName: getAccountAtName(rebloggedStatus.account)
             })">
           </a>
-          <mu-card-text v-if="status.reblog.content" class="status-content reblog-status-content" v-html="status.reblog.content" />
+          <mu-card-text v-if="rebloggedStatus.content" class="status-content reblog-status-content" v-html="rebloggedStatus.content" />
         </div>
         <div class="reblog-attachment-area">
-          <media-panel :mediaList="status.reblog.media_attachments" :pixivCards="status.reblog.pixiv_cards" :sensitive="status.reblog.sensitive"/>
+          <media-panel :mediaList="rebloggedStatus.media_attachments" :pixivCards="rebloggedStatus.pixiv_cards" :sensitive="rebloggedStatus.sensitive"/>
         </div>
       </div>
 
@@ -57,14 +57,14 @@
       </div>
 
       <mu-card-actions class="card-action-area">
-        <simple-action-bar v-show="!shouldShowFullReplyActionArea" :status="status"
-                           @reply="onReplyToStatus(status)"/>
+        <simple-action-bar v-show="!shouldShowFullReplyActionArea" :status="operateTargetStatus"
+                           @reply="onReplyToStatus(operateTargetStatus)"/>
 
         <full-action-bar v-if="isOAuthUser && shouldShowFullReplyActionArea"
                          :currentReplyToStatus="currentReplyToStatus"
                          :descendantStatusList="descendantStatusList"
                          :droppedFiles="droppedFiles" :replySpoilerText.sync="replySpoilerText"
-                         :status="status" :value.sync="replyInputValue" @hide="hideFullReplyActionArea"
+                         :status="operateTargetStatus" :value.sync="replyInputValue" @hide="hideFullReplyActionArea"
                          @loadingStart="isCardLoading = true" @loadingEnd="isCardLoading = false" @replySuccess="onReplySuccess"/>
       </mu-card-actions>
     </mu-card>
@@ -73,7 +73,7 @@
 
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-  import { State, Getter } from 'vuex-class'
+  import { State, Getter, Action } from 'vuex-class'
   import { mastodonentities } from '@/interface'
   import { VisibilityTypes } from '@/constant'
 
@@ -84,6 +84,9 @@
   import FullActionBar from './FullActionBar'
 
   import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
+
+  import { isContentStatusForExperimentalReBlog } from '@/util'
+
 
   @Component({
     components: {
@@ -115,6 +118,8 @@
     @Getter('getAccountAtName') getAccountAtName
     @Getter('isOAuthUser') isOAuthUser
 
+    @Action('fetchStatusById') fetchStatusById
+
     currentReplyToStatus: mastodonentities.Status = null
 
     shouldShowContentWhileSpoilerExists: boolean = false
@@ -133,10 +138,38 @@
 
     @Prop() status: mastodonentities.Status
 
-    get descendantStatusList (): Array<mastodonentities.Status> {
-      if (!this.contextMap[this.status.id] || !this.contextMap[this.status.id].descendants) return []
+    mounted () {
+      this.initExperimentalReblogTargetStatus()
+    }
 
-      return this.contextMap[this.status.id].descendants.map(descendantStatusId => {
+    get shouldHideStatusCard () {
+      if (!this.isContentStatusForExperimentalReBlog) return false
+
+      if (!this.statusMap[this.status.in_reply_to_id]) return true
+
+      if (this.descendantStatusList.findIndex(status => status.id === this.status.id) !== 1) return true
+    }
+
+    get isContentStatusForExperimentalReBlog () {
+      return isContentStatusForExperimentalReBlog(this.currentUserAccount, this.status)
+    }
+
+    get rebloggedStatus () {
+      return this.operateTargetStatus.reblog
+    }
+
+    get operateTargetStatus () {
+      if (this.isContentStatusForExperimentalReBlog) {
+        return this.statusMap[this.status.in_reply_to_id]
+      } else {
+        return this.status
+      }
+    }
+
+    get descendantStatusList (): Array<mastodonentities.Status> {
+      if (!this.contextMap[this.operateTargetStatus.id] || !this.contextMap[this.operateTargetStatus.id].descendants) return []
+
+      return this.contextMap[this.operateTargetStatus.id].descendants.map(descendantStatusId => {
         return this.statusMap[descendantStatusId]
       }).filter(s => s).sort((a, b) => {
         return new Date(a.created_at) >= new Date(b.created_at) ? 1 : -1
@@ -144,40 +177,30 @@
     }
 
     get finalRenderDescendantStatusList () {
-      if (this.status.reblog && this.shouldRenderMainStatusContent) {
+      if (this.isContentStatusForExperimentalReBlog) {
         return [...this.descendantStatusList].slice(1)
       }
 
       return this.descendantStatusList
     }
 
-    get shouldRenderMainStatusContent () {
-      if (this.status.reblog) {
-        if (this.appStatus.settings.emulateGPlusLikeReBlogMode) {
-          const firstDescendantStatus = this.descendantStatusList[0]
-
-          return firstDescendantStatus &&
-            firstDescendantStatus.account.id === this.status.account.id &&
-            firstDescendantStatus.visibility === VisibilityTypes.DIRECT
-        }
-
-        return false
-      } else {
-        return this.status.account
-      }
-    }
-
-    get mainStatusContent (): string {
-      if (this.status.reblog && this.shouldRenderMainStatusContent) {
-        return this.descendantStatusList[0].content
-      } else {
-        return this.status.content
-      }
-    }
-
     @Watch('shouldShowFullReplyActionArea')
     onFullReplyActionAreaDisplayToggled (val) {
       if (val) this.$emit('statusCardFocus')
+    }
+
+    async initExperimentalReblogTargetStatus () {
+      // 好像可以算是冗余设计？
+      if (this.isContentStatusForExperimentalReBlog) {
+        try {
+          this.isCardLoading = true
+          await this.fetchStatusById(this.status.in_reply_to_id)
+          this.isCardLoading = false
+
+        } catch (e) {
+          this.isCardLoading = false
+        }
+      }
     }
 
     hideFullReplyActionArea () {
@@ -239,7 +262,7 @@
       this.isFileDragOver = false
 
       if (!this.shouldShowFullReplyActionArea) {
-        this.onReplyToStatus(this.status)
+        this.onReplyToStatus(this.operateTargetStatus)
       }
 
       this.droppedFiles = Array.from(e.dataTransfer.files)

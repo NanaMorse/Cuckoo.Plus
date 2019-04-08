@@ -62,7 +62,7 @@ const statuses = {
     }
   },
 
-  async experimentalReblogStatusById ({ commit, dispatch }, { reblogged, mainStatusId, targetStatusId, content }) {
+  async experimentalReblogStatusById ({ commit, dispatch }, { reblogged, mainStatusId, targetStatusId }) {
     const reblogedResult = await dispatch('updateReblogStatusById', { reblogged, mainStatusId, targetStatusId })
 
   },

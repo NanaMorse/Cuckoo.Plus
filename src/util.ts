@@ -216,3 +216,16 @@ export function animatedScrollTo (element: HTMLElement, to: number, duration: nu
 
   requestAnimFrame(animateScroll)
 }
+
+export function isContentStatusForExperimentalReBlog (currentUserAccount, status: mastodonentities.Status) {
+  // it's private status
+  if (status.visibility !== VisibilityTypes.DIRECT) return false
+
+  // only user self's reblog content should check out
+  if (status.account.id !== currentUserAccount.id) return false
+
+  if (status.in_reply_to_account_id !== currentUserAccount.id) return false
+  // todo in some special situation?
+
+  return true
+}

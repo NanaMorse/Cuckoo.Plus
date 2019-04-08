@@ -27,7 +27,9 @@
                 <path class="header-svg-fill" d="M20 14l10 10-10 10z" />
               </svg>
             </div>
-            <div class="visibility-info secondary-theme-text-color" ref="visibilitySelectBtn"
+            <div class="visibility-info"
+                 :class="externalReBlogInfo ? 'secondary-read-text-color' : 'secondary-theme-text-color'"
+                 ref="visibilitySelectBtn"
                  @click="setVisibilitySelectPopOverDisplay(true)">
               {{$t(visibility)}}
               <mu-icon size="18" class="visibility-icon secondary-read-text-color" :value="getVisibilityDescInfo(visibility).icon"></mu-icon>
@@ -57,31 +59,44 @@
 
       <div class="bottom-area">
 
-        <div class="attachment-select-btn-group">
-          <mu-button icon @click="onSelectMediaFiles" :disabled="uploadProcesses.length === 4">
-            <mu-icon class="secondary-read-text-color" value="camera_alt" />
-            <input ref="fileInput" type="file" @change="onUploadMediaFiles"
-                   accept=".jpg,.jpeg,.png,.gif,.webm,.mp4,.m4v,.mov,image/jpeg,image/png,image/gif,video/webm,video/mp4,video/quicktime"
-                   style="display: none" multiple/>
-          </mu-button>
-          <!--<mu-button icon>-->
+        <div class="operation-area">
+          <div class="attachment-select-btn-group">
+            <mu-button icon @click="onSelectMediaFiles" :disabled="uploadProcesses.length === 4">
+              <mu-icon class="secondary-read-text-color" value="camera_alt" />
+              <input ref="fileInput" type="file" @change="onUploadMediaFiles"
+                     accept=".jpg,.jpeg,.png,.gif,.webm,.mp4,.m4v,.mov,image/jpeg,image/png,image/gif,video/webm,video/mp4,video/quicktime"
+                     style="display: none" multiple/>
+            </mu-button>
+            <!--<mu-button icon>-->
             <!--<mu-icon class="secondary-read-text-color" value="link" />-->
-          <!--</mu-button>-->
-          <mu-button v-if="uploadProcesses.length" @click="markMediaAsSensitive = !markMediaAsSensitive"
-                     class="secondary-read-text-color" icon>
-            <mu-icon :value="markMediaAsSensitive ? 'visibility_off' : 'visibility'" />
-          </mu-button>
+            <!--</mu-button>-->
+            <mu-button v-if="uploadProcesses.length" @click="markMediaAsSensitive = !markMediaAsSensitive"
+                       class="secondary-read-text-color" icon>
+              <mu-icon :value="markMediaAsSensitive ? 'visibility_off' : 'visibility'" />
+            </mu-button>
 
-          <mu-button @click="shouldShowSpoilerTextInputArea = !shouldShowSpoilerTextInputArea"
-                     class="operate-btn" icon
-                     :class="shouldShowSpoilerTextInputArea ? 'secondary-theme-text-color' : 'secondary-read-text-color'">
-            <mu-icon class="reply-action-icon" value="add_alert" />
-          </mu-button>
+            <mu-button @click="shouldShowSpoilerTextInputArea = !shouldShowSpoilerTextInputArea"
+                       class="operate-btn" icon
+                       :class="shouldShowSpoilerTextInputArea ? 'secondary-theme-text-color' : 'secondary-read-text-color'">
+              <mu-icon class="reply-action-icon" value="add_alert" />
+            </mu-button>
+          </div>
+
+          <div class="content-length-indicator secondary-read-text-color">
+            {{textContentValue.length}}/500
+          </div>
         </div>
 
-        <div class="content-length-indicator secondary-read-text-color">
-          {{textContentValue.length}}/500
+        <div class="reblog-info-area" v-if="externalReBlogInfo">
+          <mu-avatar class="reblog-target-account-avatar" slot="avatar" size="24">
+            <img :src="reblogTargetStatus.account.avatar">
+          </mu-avatar>
+          <span class="shared-by-info secondary-read-text-color" v-html="$t($i18nTags.statusCard.originally_shared_by, {
+              displayName: reblogTargetStatus.account.display_name,
+              atName: getAccountAtName(reblogTargetStatus.account)
+            })"></span>
         </div>
+
       </div>
     </section>
 
@@ -105,7 +120,7 @@
   import { getVisibilityDescInfo } from '@/util'
   import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
   import Input from '@/components/Input'
-  import { mastodonentities } from "../interface";
+  import { mastodonentities } from '@/interface'
 
   const maxUploadLength = 4
 
@@ -251,6 +266,10 @@
 
     @Action('postStatus') postStatus
 
+    @Action('updateReblogStatusById') updateReblogStatusById
+
+    @Getter('getAccountAtName') getAccountAtName
+
     get isDialogOpening () {
       return this.open
     }
@@ -260,12 +279,17 @@
     get shouldEnableSubmitButton () {
       const isInUploadProcess = this.uploadProcesses.every(i => !i.uploadResult)
 
-      return this.uploadProcesses.length ? !isInUploadProcess : this.textContentValue
+      return this.uploadProcesses.length ? !isInUploadProcess : this.externalReBlogInfo ? true : this.textContentValue
     }
 
     @Watch('isDialogOpening')
     onDialogOpenChanged (isOpening) {
       if (isOpening) {
+        // if is reblog, set visibility uneditable
+        if (this.externalReBlogInfo) {
+          this.postPrivacy = this.reblogTargetStatus.visibility
+        }
+
         this.$nextTick(() => {
           this.visibilityTriggerBtn = this.$refs.visibilitySelectBtn
           this.$refs.cuckooInput.focus()
@@ -288,6 +312,14 @@
 
     get transition () {
       return this.isFullScreen ? 'slide-bottom' : 'slide-top'
+    }
+
+    get externalReBlogInfo (): mastodonentities.Status {
+      return this.appStatus.postStatusDialogExternalInfo.reblog
+    }
+
+    get reblogTargetStatus () {
+      return this.externalReBlogInfo.reblog ? this.externalReBlogInfo.reblog : this.externalReBlogInfo
     }
 
     async onTryCloseDialog () {
@@ -318,12 +350,39 @@
         visibility: this.visibility,
         spoilerText: this.shouldShowSpoilerTextInputArea ? this.spoilerTextValue : '',
         sensitive: this.postMediaAsSensitiveMode,
-        mediaIds: this.uploadProcesses.map(info => info.uploadResult.id)
+        mediaIds: this.uploadProcesses.map(info => info.uploadResult.id),
+        inReplyToId: undefined
       }
 
       this.isPostLoading = true
 
-      await this.postStatus({ formData })
+      if (this.appStatus.settings.emulateGPlusLikeReBlogMode && this.externalReBlogInfo) {
+
+        // first, reblog this status
+        const rebloggedResult = await this.updateReblogStatusById({
+          reblogged: true,
+          mainStatusId: this.externalReBlogInfo.id,
+          targetStatusId: this.reblogTargetStatus.id
+        })
+
+
+        if (this.textContentValue || this.uploadProcesses.length) {
+          const rebloggedNewStatus: mastodonentities.Status = rebloggedResult.data
+
+          formData.visibility = VisibilityTypes.DIRECT
+          formData.inReplyToId = rebloggedNewStatus.id
+
+          // this is the simulator key status
+          await this.postStatus({
+            mainStatusId: rebloggedNewStatus.id,
+            formData
+          })
+
+        }
+
+      } else {
+        await this.postStatus({ formData })
+      }
 
       this.isPostLoading = false
 
@@ -348,6 +407,7 @@
     }
 
     setVisibilitySelectPopOverDisplay (open: boolean) {
+      if (this.externalReBlogInfo) return
       this.shouldOpenVisibilitySelectPopOver = open
     }
 
@@ -453,14 +513,36 @@
       }
 
       .bottom-area {
-        display: flex;
-        justify-content: space-between;
 
-        .content-length-indicator {
-          line-height: 48px;
-          font-size: 16px;
-          margin-right: 20px;
+        .reblog-info-area {
+          display: flex;
+          align-items: center;
+          margin: 16px 12px 16px 12px;
+
+          .reblog-target-account-avatar {
+            margin-right: 16px;
+          }
+
+          .shared-by-info {
+            font-size: 12px;
+            overflow: hidden;
+            text-transform: uppercase;
+            word-wrap: break-word;
+          }
+
         }
+
+        .operation-area {
+          display: flex;
+          justify-content: space-between;
+
+          .content-length-indicator {
+            line-height: 48px;
+            font-size: 16px;
+            margin-right: 20px;
+          }
+        }
+
       }
 
     }
