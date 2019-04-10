@@ -50,11 +50,11 @@
         <a class="secondary-read-text-color">
           ©{{(new Date().getFullYear()).toString().split('').reverse().join('') }} Cuckoo</a>
         •
-        <a class="secondary-read-text-color" href="https://github.com/NanaMorse/Cuckoo.Plus" target="_blank">Github</a>
+        <a class="secondary-read-text-color link-text" href="https://github.com/NanaMorse/Cuckoo.Plus" target="_blank">Github</a>
       </div>
-      <a class="secondary-read-text-color" :href="mastodonServerUri" target="_blank">{{$t($i18nTags.drawer.toHostInstance)}}</a>
+      <a class="secondary-read-text-color link-text" :href="mastodonServerUri" target="_blank">{{$t($i18nTags.drawer.toHostInstance)}}</a>
       <div style="margin-top: 6px">
-        <a class="secondary-read-text-color logout-btn" @click="onTryLogout">{{$t($i18nTags.drawer.logout)}}</a>
+        <a class="secondary-read-text-color link-text" @click="onTryLogout">{{$t($i18nTags.drawer.logout)}}</a>
       </div>
     </div>
 
@@ -287,7 +287,7 @@
       margin: 0 0 24px 24px;
       font-size: 13px;
 
-      .logout-btn {
+      .link-text {
         cursor: pointer;
         &:hover {
           text-decoration: underline;

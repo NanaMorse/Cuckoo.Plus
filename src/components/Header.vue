@@ -1,6 +1,6 @@
 <template>
   <div class="cuckoo-header-container">
-    <mu-appbar class="header" :class="shouldUseSecondaryThemeHeader && 'dialog-theme-bg-color'" color="primary" ref="header">
+    <mu-appbar class="header" :class="shouldUseSecondaryThemeHeader && 'dialog-theme-bg-color'" color="primary" @click.native="onHeaderBarClick">
       <mu-button v-if="isOAuthUser" icon @click.stop="onMenuBtnClick" slot="left">
         <mu-icon value="menu"></mu-icon>
       </mu-button>
@@ -69,7 +69,6 @@
 
     $refs: {
       notificationBtn: any,
-      header: any
     }
 
     $router
@@ -140,8 +139,6 @@
       if (this.isOAuthUser) {
         this.notificationBtnTrigger = this.$refs.notificationBtn.$el
       }
-
-      this.$refs.header.$el.addEventListener('click', () => this.onHeaderBarClick())
     }
 
     onMenuBtnClick () {

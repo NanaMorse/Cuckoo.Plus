@@ -25,9 +25,11 @@
     </div>
 
     <mu-dialog class="light-box" transition="fade" ref="lightBox"
+               @click.native.stop="onLightBoxClick"
                :open.sync="shouldShowLightBox" :overlay-opacity="0.7">
       <mu-icon class="close-icon" value="close" @click="shouldShowLightBox = false"/>
       <mu-carousel :cycle="false" :active="lightBoxActiveIndex" transition="fade"
+                   @click.native.stop="onCarouselBackgroundClick"
                    :hide-indicators="(combinedMediaList.length === 1) || !shouldShowLightBoxControlBtn"
                    :hide-controls="(combinedMediaList.length === 1) || !shouldShowLightBoxControlBtn">
         <mu-carousel-item v-for="(mediaInfo, index) in combinedMediaList" :key="index">
@@ -69,7 +71,7 @@
 
     manuallyShowSensitiveCover: boolean = null
 
-    onLightBoxClick (e: MouseEvent) { e.stopPropagation() }
+    onLightBoxClick () { }
 
     get mediaAreaScrollStyle () {
       if (this.shouldShowSensitiveCover) {
@@ -137,20 +139,13 @@
       this.shouldShowLightBox = false
     }
 
-    @Watch('shouldShowLightBox')
-    onLightBoxDisplayChanged (val) {
-      if (val) {
-        this.$nextTick(() => {
-          this.$refs.lightBox.$el.addEventListener('click', this.onLightBoxClick)
-        })
-      } else {
-        this.$refs.lightBox.$el.removeEventListener('click', this.onLightBoxClick)
-      }
-    }
-
     onMediaItemClick (mediaItemIndex: number) {
       this.shouldShowLightBox = true
       this.lightBoxActiveIndex = mediaItemIndex
+    }
+
+    onCarouselBackgroundClick () {
+      this.shouldShowLightBox = false
     }
 
     onLightBoxMediaItemClick () {

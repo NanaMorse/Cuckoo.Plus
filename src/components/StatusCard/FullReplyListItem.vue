@@ -19,7 +19,7 @@
                 </span>
       </div>
 
-      <div class="spoiler-text-area secondary-read-text-color" v-if="status.spoiler_text">
+      <div class="spoiler-text-area primary-read-text-color" v-if="status.spoiler_text">
         <span v-html="status.spoiler_text"/>
         <mu-button flat small class="secondary-theme-text-color" :style="{ minWidth: 'unset' }"
                    @click="shouldShowContentWhileSpoilerExists = !shouldShowContentWhileSpoilerExists">
