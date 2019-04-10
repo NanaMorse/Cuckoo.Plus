@@ -47,7 +47,8 @@
 
     <div class="bottom-info-area secondary-read-text-color">
       <div style="margin-bottom: 6px">
-        <a class="secondary-read-text-color">©2018 Cuckoo</a>
+        <a class="secondary-read-text-color">
+          ©{{(new Date().getFullYear()).toString().split('').reverse().join('') }} Cuckoo</a>
         •
         <a class="secondary-read-text-color" href="https://github.com/NanaMorse/Cuckoo.Plus" target="_blank">Github</a>
       </div>

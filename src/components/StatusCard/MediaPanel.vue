@@ -5,13 +5,16 @@
       <div class="media-item" v-for="(media, index) in combinedMediaList"
            @click="onMediaItemClick(index)">
         <img v-if="media.type === mediaTypes.IMAGE"
+             :class="[shouldShowSensitiveCover && 'sensitive-hide']"
              :src="media.url" :key="index"/>
 
         <div class="gifv-container" v-if="media.type === mediaTypes.GIFV || media.type === mediaTypes.VIDEO">
-          <video width="100%" controls :loop="media.type === mediaTypes.GIFV" :src="media.url" :key="index" />
+          <video width="100%" controls :loop="media.type === mediaTypes.GIFV"
+                 :class="[shouldShowSensitiveCover && 'sensitive-hide']"
+                 :src="media.url" :key="index" />
         </div>
 
-        <mu-button class="hide-sensitive-btn" @click.stop="shouldShowSensitiveCover = true">
+        <mu-button class="hide-sensitive-btn" v-show="!shouldShowSensitiveCover" @click.stop="shouldShowSensitiveCover = true">
           <mu-icon value="visibility_off"/>
         </mu-button>
       </div>
@@ -164,6 +167,17 @@
     img, video {
       display: block;
       cursor: zoom-in;
+      filter: blur(0);
+
+      &.sensitive-hide {
+        filter: blur(20px);
+      }
+
+      -webkit-transition: filter 200ms;
+      -moz-transition: filter 200ms;
+      -ms-transition: filter 200ms;
+      -o-transition: filter 200ms;
+      transition: filter 200ms;
     }
 
     .media-area {
@@ -191,8 +205,8 @@
         right: 0;
         bottom: 0;
         display: flex;
-        background-color: #000;
-        color: #606984;
+        background: rgba(0,0,0,0.2);
+        color: #fff;
         font-weight: 700;
         align-items: center;
         justify-content: center;
