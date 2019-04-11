@@ -144,8 +144,10 @@
       this.lightBoxActiveIndex = mediaItemIndex
     }
 
-    onCarouselBackgroundClick () {
-      this.shouldShowLightBox = false
+    onCarouselBackgroundClick (e) {
+      if (e.target.className === 'mu-carousel-item') {
+        this.shouldShowLightBox = false
+      }
     }
 
     onLightBoxMediaItemClick () {
