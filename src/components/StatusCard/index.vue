@@ -164,6 +164,7 @@
       this.currentReplyToStatus = null
       this.replyInputValue = ''
       this.replySpoilerText = ''
+      this.droppedFiles = []
     }
 
     onCheckSharedOriginalPost () {
