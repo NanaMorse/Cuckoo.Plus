@@ -107,7 +107,19 @@
 
     @Action('postStatus') postStatus
 
-    postPrivacy = null
+    postPrivacy_ = null
+
+    get postPrivacy () {
+      if (this.currentReplyToStatus.visibility === VisibilityTypes.DIRECT && !this.postPrivacy_) {
+        return VisibilityTypes.DIRECT
+      }
+
+      return this.postPrivacy_
+    }
+
+    set postPrivacy (val) {
+      this.postPrivacy_ = val
+    }
 
     postMediaAsSensitiveMode: boolean = null
 
