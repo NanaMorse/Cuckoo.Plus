@@ -52,7 +52,8 @@
           <mu-avatar :size="32">
             <img :src="currentReplyToStatus.account.avatar">
           </mu-avatar>
-          <span v-html="currentReplyToStatus.account.display_name"/> @{{currentReplyToStatus.account.username}}
+          <span v-html="currentReplyToStatus.account.display_name"/>
+          <span>&nbsp;@{{currentReplyToStatus.account.username}}</span>
         </mu-chip>
       </div>
 
