@@ -1,5 +1,58 @@
-@import "~muse-ui/lib/styles/theme.less";
+const themeColorLessText = `
+.mu-primary-color {
+  background-color: @primaryColor;
+}
 
+.mu-secondary-color {
+  background-color: @secondaryColor;
+}
+
+.mu-success-color {
+  background-color: @successColor;
+}
+
+.mu-warning-color {
+  background-color: @warningColor;
+}
+
+.mu-info-color {
+  background-color: @infoColor;
+}
+
+.mu-error-color {
+  background-color: @errorColor;
+}
+
+.mu-inverse {
+  color: @alternateTextColor;
+}
+
+.mu-primary-text-color {
+  color: @primaryColor;
+}
+
+.mu-secondary-text-color {
+  color: @secondaryColor;
+}
+
+.mu-success-text-color {
+  color: @successColor;
+}
+
+.mu-warning-text-color {
+  color: @warningColor;
+}
+
+.mu-info-text-color {
+  color: @infoColor;
+}
+
+.mu-error-text-color {
+  color: @errorColor;
+}
+`
+
+const appColorLessText = `
 body {
   background-color: @backgroundColor;
 }
@@ -55,7 +108,6 @@ a {
 }
 
 // class for certain component
-// 复杂的或者通用的会放在这里，其余尽量使用mixin
 .status-card {
   .operate-btn-group {
     .count {
@@ -236,18 +288,6 @@ a {
 
   .mu-list {
     padding: 0;
-
-    li {
-
-      //&.selected-item, .mu-item-wrapper.hover {
-      //  background-color: @secondaryColor;
-      //
-      //  .mu-icon, .mu-item-title, .mu-item-sub-title {
-      //    color: #fff;
-      //  }
-      //
-      //}
-    }
   }
 }
 
@@ -320,4 +360,13 @@ a {
   a {
     color: @textColor;
   }
+}
+`
+
+import baseColor from './basecolor'
+
+export default function (colorSet: Object) {
+  return Object.keys(baseColor).reduce((acc, cur) => {
+    return acc.replace(new RegExp(cur, 'g'), colorSet[cur])
+  }, themeColorLessText + appColorLessText)
 }

@@ -299,8 +299,6 @@
 </style>
 
 <style lang="less">
-  @import "../../assets/variable";
-
   .cuckoo-drawer {
     // todo current size is not fit to every screen
     //background: url("https://i.imgur.com/vKv5bn5.png") no-repeat left bottom;

@@ -18,7 +18,7 @@ export default {
   },
 
   updateDocumentWidth (state: cuckoostore.stateInfo) {
-    state.appStatus.documentWidth = document.body.clientWidth
+    state.appStatus.documentWidth = window.innerWidth
   },
 
   updateTheme (state: cuckoostore.stateInfo, newThemeName: string) {

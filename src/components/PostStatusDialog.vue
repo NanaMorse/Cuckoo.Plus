@@ -365,8 +365,6 @@
 </script>
 
 <style lang="less" scoped>
-  @import "../assets/variable";
-
   .post-status-dialog-container {
 
     .dialog-header {

@@ -1,11 +1,9 @@
 // @ts-ignore
-import * as GooglePlusTheme from '!raw-loader!less-loader!../assets/themes/google-plus.less'
-// @ts-ignore
-import * as DarkTheme from '!raw-loader!less-loader!../assets/themes/dark.less'
-// @ts-ignore
-import * as GreenLightTheme from '!raw-loader!less-loader!../assets/themes/green-light.less'
-// @ts-ignore
-import * as CuckooHubTheme from '!raw-loader!less-loader!../assets/themes/cuckoo-hub.less'
+import cuckooHubTheme from '@/assets/themes/cuckoohub'
+import greenLightTheme from '@/assets/themes/greenlight'
+import darkTheme from '@/assets/themes/dark'
+import googlePlusTheme from '@/assets/themes/googleplus'
+import * as less from 'less'
 
 import { ThemeNames } from '@/constant'
 
@@ -13,24 +11,20 @@ class ThemeManager {
 
   private themeInfo = {
     [ThemeNames.GOOGLE_PLUS]: {
-      source: GooglePlusTheme,
-      toFavIconPath: 'google_plus',
-      color: '#db4437'
+      theme: googlePlusTheme,
+      css: null,
     },
     [ThemeNames.DARK]: {
-      source: DarkTheme,
-      toFavIconPath: 'dark',
-      color: '#1976d2'
+      theme: darkTheme,
+      css: null,
     },
     [ThemeNames.GREEN_LIGHT]: {
-      source: GreenLightTheme,
-      toFavIconPath: 'green_light',
-      color: '#0f9d58'
+      theme: greenLightTheme,
+      css: null
     },
     [ThemeNames.CUCKOO_HUB]: {
-      source: CuckooHubTheme,
-      toFavIconPath: 'cuckoo_hub',
-      color: '#FF9900'
+      theme: cuckooHubTheme,
+      css: null
     }
   }
 
@@ -52,7 +46,7 @@ class ThemeManager {
       if (el.getAttribute('rel') === 'icon') {
         const size = el.getAttribute('sizes')
         if (size) {
-          el.setAttribute('href', `favicon/${this.themeInfo[themeName].toFavIconPath}/${size}.png`)
+          el.setAttribute('href', `favicon/${this.themeInfo[themeName].theme.toFavIconPath}/${size}.png`)
         }
       }
     })
@@ -61,11 +55,18 @@ class ThemeManager {
   private setThemeColorByThemeName (themeName: string) {
     Array.from(document.head.querySelectorAll('meta')).find(el => {
       return el.getAttribute('name') === 'theme-color'
-    }).setAttribute('content', this.themeInfo[themeName].color)
+    }).setAttribute('content', this.themeInfo[themeName].theme.colorSet['@primaryColor'])
   }
 
   public setTheme (themeName: string) {
-    this.getThemeStyleElem().innerHTML = this.themeInfo[themeName].source || ''
+    if (this.themeInfo[themeName].css) {
+      this.getThemeStyleElem().innerHTML = this.themeInfo[themeName].css
+    } else {
+      less.render(this.themeInfo[themeName].theme.source || '').then(output => {
+        this.getThemeStyleElem().innerHTML = output.css
+        this.themeInfo[themeName].css = output.css
+      })
+    }
 
     this.setFavIconByThemeName(themeName)
     this.setThemeColorByThemeName(themeName)

@@ -46,9 +46,9 @@ const state: cuckoostore.stateInfo = {
   relationships: {},
 
   appStatus: {
-    documentWidth: document.body.clientWidth,
+    documentWidth: window.innerWidth,
 
-    isDrawerOpened: document.body.clientWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY,
+    isDrawerOpened: window.innerWidth > UiWidthCheckConstants.DRAWER_DOCKING_BOUNDARY,
 
     isNotificationsPanelOpened: false,
 
