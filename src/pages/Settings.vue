@@ -8,9 +8,27 @@
           <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_theme)}}</span>
           <mu-select class="setting-select" v-model="themeName">
             <mu-option v-for="(themeInfo, index) in themeOptions" :key="index"
-                       :label="themeInfo.label" :value="themeInfo.value" />
+                       :label="themeInfo.label" :value="themeInfo.value">
+            </mu-option>
           </mu-select>
         </div>
+
+        <div class="foot-note secondary-read-text-color" @click="shouldOpenThemeColorSetExportDialog = true">{{$t($i18nTags.settings.export_theme_color_set)}}</div>
+
+        <mu-dialog :title="$t($i18nTags.settings.export_theme_color_set)" :open.sync="shouldOpenThemeColorSetExportDialog">
+          <div class="setting-row select-row dialog-setting-row">
+            <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_theme)}}</span>
+            <mu-select class="setting-select" v-model="themeNameToExport">
+              <mu-option v-for="(themeInfo, index) in exportThemeOptions" :key="index"
+                         :label="themeInfo.label" :value="themeInfo.value">
+              </mu-option>
+            </mu-select>
+          </div>
+
+          <mu-button slot="actions" flat color="secondary" @click="shouldOpenThemeColorSetExportDialog = false">Cancel</mu-button>
+          <mu-button slot="actions" flat class="secondary-theme-text-color"
+                     :disabled="!themeNameToExport" @click="onExportThemeColorSet">Export</mu-button>
+        </mu-dialog>
 
         <div class="setting-row select-row">
           <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_language)}}</span>
@@ -80,10 +98,20 @@
 </template>
 
 <script lang="ts">
-  import { Vue, Component } from 'vue-property-decorator'
+  import { Vue, Component, Watch } from 'vue-property-decorator'
   import { State, Mutation, Action } from 'vuex-class'
   import { ThemeNames, I18nLocales, VisibilityTypes } from '@/constant'
   import * as moment from 'moment'
+  import ThemeManager from '@/themes'
+
+  const ADD_NEW_THEME_OPTION = 'ADD_NEW_THEME_OPTION'
+
+  const presetThemeOptions = [
+    { label: 'Google Plus', value: ThemeNames.GOOGLE_PLUS },
+    { label: 'Dark', value: ThemeNames.DARK },
+    { label: 'Green Light', value: ThemeNames.GREEN_LIGHT },
+    { label: 'Cuckoo Hub', value: ThemeNames.CUCKOO_HUB },
+  ]
 
   @Component({})
   class Setting extends Vue {
@@ -114,11 +142,17 @@
 
     isLoading: boolean = false
 
+    shouldOpenThemeColorSetExportDialog: boolean = false
+
+    exportThemeOptions = [
+      ...presetThemeOptions
+    ]
+
+    themeNameToExport = ''
+
     themeOptions = [
-      { label: 'Google Plus', value: ThemeNames.GOOGLE_PLUS },
-      { label: 'Dark', value: ThemeNames.DARK },
-      { label: 'Green Light', value: ThemeNames.GREEN_LIGHT },
-      { label: 'Cuckoo Hub', value: ThemeNames.CUCKOO_HUB }
+      ...presetThemeOptions,
+      { label: 'Edit New Theme', value: ADD_NEW_THEME_OPTION },
     ]
 
     localesOptions = [
@@ -152,7 +186,12 @@
     }
 
     set themeName (val) {
-      this.updateTheme(val)
+      if (val === ADD_NEW_THEME_OPTION) {
+
+      } else {
+        this.updateTheme(val)
+        ThemeManager.setTheme(val)
+      }
     }
 
     get locale () {
@@ -244,6 +283,18 @@
     set autoExpandSpoilerTextMode (val) {
       this.updateAutoExpandSpoilerTextMode(val)
     }
+
+    @Watch('shouldOpenThemeColorSetExportDialog')
+    onShouldOpenThemeColorSetExportDialogChanged () {
+      if (this.shouldOpenThemeColorSetExportDialog) {
+        this.themeNameToExport = ''
+      }
+    }
+
+    onExportThemeColorSet () {
+      ThemeManager.exportTheme(this.themeNameToExport)
+      this.shouldOpenThemeColorSetExportDialog = false
+    }
   }
 
   export default Setting
@@ -268,35 +319,53 @@
         margin-top: 5px;
       }
 
-      .setting-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin: 10px 0;
+    }
+  }
 
-        .setting-label {
-          font-size: 13px;
-        }
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
 
-        .setting-switch {
-          margin-right: 12px;
-        }
+    .setting-label {
+      font-size: 13px;
+    }
 
-        .setting-input {
-          min-height: unset;
-          margin: 0;
-          padding: 0;
-        }
+    .setting-switch {
+      margin-right: 12px;
+    }
+
+    .setting-input {
+      min-height: unset;
+      margin: 0;
+      padding: 0;
+    }
+
+    &.dialog-setting-row {
+      .setting-label {
+        margin-right: 20px;
       }
+    }
+  }
 
-      .select-row {
-        .setting-select {
-          width: 170px;
-          padding: 0;
-          margin: 0;
-          min-height: unset;
-        }
-      }
+  .foot-note {
+    text-align: right;
+    margin-right: 12px;
+    margin-top: -6px;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .select-row {
+    .setting-select {
+      width: 170px;
+      padding: 0;
+      margin: 0;
+      min-height: unset;
     }
   }
 </style>

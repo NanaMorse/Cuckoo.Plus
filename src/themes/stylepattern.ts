@@ -235,16 +235,6 @@ a {
     height: 100%;
     color: @textColor;
   }
-
-  .mu-dialog-actions {
-    .mu-button {
-      color: @textColor;
-    }
-
-    .mu-primary-text-color {
-      color: @primaryColor;
-    }
-  }
 }
 
 .mu-card {

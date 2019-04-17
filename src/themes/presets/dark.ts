@@ -1,7 +1,6 @@
 import baseColor from '../basecolor'
-import stylePattern from '../stylepattern'
 
-const colorSet = Object.assign(baseColor, {
+const colorSet = Object.assign({}, baseColor, {
   '@primaryColor': '#1976d2',
   '@secondaryColor': '#ff4081',
   '@trackColor': '#444b5d',
@@ -15,7 +14,6 @@ const colorSet = Object.assign(baseColor, {
 })
 
 export default {
-  source: stylePattern(colorSet),
   colorSet,
   toFavIconPath: 'dark'
 }

@@ -1,7 +1,6 @@
 import darkTheme from './dark'
-import stylePattern from '../stylepattern'
 
-const colorSet = Object.assign(darkTheme.colorSet, {
+const colorSet = Object.assign({}, darkTheme.colorSet, {
   '@primaryColor': '#FF9900',
   '@secondaryColor': '#FF9900',
 
@@ -13,7 +12,6 @@ const colorSet = Object.assign(darkTheme.colorSet, {
 })
 
 export default {
-  source: stylePattern(colorSet),
   colorSet,
   toFavIconPath: 'cuckoo_hub'
 }

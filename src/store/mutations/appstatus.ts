@@ -22,11 +22,7 @@ export default {
   },
 
   updateTheme (state: cuckoostore.stateInfo, newThemeName: string) {
-    if (!Object.keys(ThemeNames).some(key => ThemeNames[key] === newThemeName)) return
     state.appStatus.settings.theme = newThemeName
-
-    ThemeManager.setTheme(newThemeName)
-
     localStorage.setItem('theme', newThemeName)
   },
 

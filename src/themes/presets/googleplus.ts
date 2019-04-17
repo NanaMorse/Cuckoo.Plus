@@ -1,7 +1,6 @@
 import baseColor from '../basecolor'
-import stylePattern from '../stylepattern'
 
-const colorSet = Object.assign(baseColor, {
+const colorSet = Object.assign({}, baseColor, {
   '@primaryColor': '#db4437',
   '@secondaryColor': '#2b90d9',
   '@trackColor': '#bdbdbd',
@@ -15,7 +14,6 @@ const colorSet = Object.assign(baseColor, {
 })
 
 export default {
-  source: stylePattern(colorSet),
   colorSet,
   toFavIconPath: 'google_plus'
 }
