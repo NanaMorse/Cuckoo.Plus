@@ -230,6 +230,10 @@ a {
 // for overwrite muse-ui style
 .mu-dialog {
   background-color: @dialogBackgroundColor;
+  
+  .mu-dialog-title {
+    color: @textColor;
+  }
 
   .mu-dialog-body {
     height: 100%;

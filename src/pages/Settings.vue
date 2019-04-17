@@ -8,19 +8,23 @@
           <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_theme)}}</span>
           <mu-select class="setting-select" v-model="themeName">
             <mu-option v-for="(themeInfo, index) in themeOptions" :key="index"
-                       :label="themeInfo.label" :value="themeInfo.value">
+                       :label="themeInfo.value" :value="themeInfo.value">
             </mu-option>
           </mu-select>
         </div>
 
-        <div class="foot-note secondary-read-text-color" @click="shouldOpenThemeColorSetExportDialog = true">{{$t($i18nTags.settings.export_theme_color_set)}}</div>
+        <div class="foot-note secondary-read-text-color">
+          <span @click="onSelectThemeColorSetFile">{{$t($i18nTags.settings.import_theme_color_set)}}</span>
+          /
+          <span @click="shouldOpenThemeColorSetExportDialog = true">{{$t($i18nTags.settings.export_theme_color_set)}}</span>
+        </div>
 
         <mu-dialog :title="$t($i18nTags.settings.export_theme_color_set)" :open.sync="shouldOpenThemeColorSetExportDialog">
           <div class="setting-row select-row dialog-setting-row">
             <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_theme)}}</span>
             <mu-select class="setting-select" v-model="themeNameToExport">
-              <mu-option v-for="(themeInfo, index) in exportThemeOptions" :key="index"
-                         :label="themeInfo.label" :value="themeInfo.value">
+              <mu-option v-for="(themeInfo, index) in themeOptions" :key="index"
+                         :label="themeInfo.value" :value="themeInfo.value">
               </mu-option>
             </mu-select>
           </div>
@@ -94,6 +98,11 @@
 
       </mu-card-actions>
     </mu-card>
+
+    <input ref="importThemeInput" type="file" @change="onImportThemeColorSet"
+           accept=".json"
+           style="display: none"/>
+
   </div>
 </template>
 
@@ -107,10 +116,10 @@
   const ADD_NEW_THEME_OPTION = 'ADD_NEW_THEME_OPTION'
 
   const presetThemeOptions = [
-    { label: 'Google Plus', value: ThemeNames.GOOGLE_PLUS },
-    { label: 'Dark', value: ThemeNames.DARK },
-    { label: 'Green Light', value: ThemeNames.GREEN_LIGHT },
-    { label: 'Cuckoo Hub', value: ThemeNames.CUCKOO_HUB },
+    { value: ThemeNames.GOOGLE_PLUS },
+    { value: ThemeNames.DARK },
+    { value: ThemeNames.GREEN_LIGHT },
+    { value: ThemeNames.CUCKOO_HUB },
   ]
 
   @Component({})
@@ -123,6 +132,10 @@
     $t
 
     $toast
+
+    $refs: {
+      importThemeInput: HTMLInputElement
+    }
 
     @State('appStatus') appStatus
 
@@ -144,16 +157,16 @@
 
     shouldOpenThemeColorSetExportDialog: boolean = false
 
-    exportThemeOptions = [
-      ...presetThemeOptions
-    ]
-
     themeNameToExport = ''
 
-    themeOptions = [
-      ...presetThemeOptions,
-      { label: 'Edit New Theme', value: ADD_NEW_THEME_OPTION },
-    ]
+    get themeOptions () {
+      return [
+        ...presetThemeOptions,
+        ...this.customThemeOptions
+      ]
+    }
+
+    customThemeOptions = []
 
     localesOptions = [
       { label: 'English', value: I18nLocales.EN },
@@ -287,13 +300,48 @@
     @Watch('shouldOpenThemeColorSetExportDialog')
     onShouldOpenThemeColorSetExportDialogChanged () {
       if (this.shouldOpenThemeColorSetExportDialog) {
-        this.themeNameToExport = ''
+        this.themeNameToExport = this.themeName
       }
     }
 
     onExportThemeColorSet () {
       ThemeManager.exportTheme(this.themeNameToExport)
       this.shouldOpenThemeColorSetExportDialog = false
+    }
+
+    onSelectThemeColorSetFile () {
+      this.$refs.importThemeInput.click()
+    }
+
+    onImportThemeColorSet () {
+      const file = this.$refs.importThemeInput.files[0]
+      const fileName = file.name.replace(/.json$/, '')
+
+      if (this.themeOptions.find(opt => opt.value === fileName)) {
+        return this.$toast.warning('Same name theme conflicts')
+      }
+
+      this.customThemeOptions.push({ value: fileName })
+
+      const fileReader = new FileReader()
+      fileReader.readAsText(file)
+
+      fileReader.onload = e => {
+        if(e.target.readyState !== 2) return
+        if(e.target.error) return
+
+        const themeColorSet = JSON.parse(e.target.result)
+        this.customThemeOptions.push()
+        ThemeManager.importTheme(themeColorSet, fileName)
+        this.themeName = fileName
+      }
+
+    }
+
+    mounted () {
+      if (!this.themeOptions.find(opt => opt.value === this.themeName)) {
+        this.themeName = ThemeNames.GOOGLE_PLUS
+      }
     }
   }
 
@@ -353,11 +401,14 @@
     text-align: right;
     margin-right: 12px;
     margin-top: -6px;
-    cursor: pointer;
 
-    &:hover {
-      text-decoration: underline;
+    span {
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
     }
+
   }
 
   .select-row {

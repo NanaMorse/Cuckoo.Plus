@@ -8,30 +8,36 @@ import stylePattern from './stylepattern'
 import { ThemeNames } from '@/constant'
 import * as fileSaver from 'file-saver'
 
+const presetThemeInfo = {
+  [ThemeNames.GOOGLE_PLUS]: {
+    theme: googlePlusTheme,
+    less: stylePattern(googlePlusTheme.colorSet),
+    css: null,
+  },
+  [ThemeNames.DARK]: {
+    theme: darkTheme,
+    less: stylePattern(darkTheme.colorSet),
+    css: null,
+  },
+  [ThemeNames.GREEN_LIGHT]: {
+    theme: greenLightTheme,
+    less: stylePattern(greenLightTheme.colorSet),
+    css: null
+  },
+  [ThemeNames.CUCKOO_HUB]: {
+    theme: cuckooHubTheme,
+    less: stylePattern(cuckooHubTheme.colorSet),
+    css: null
+  }
+}
+
 class ThemeManager {
 
-  private themeInfo = {
-    [ThemeNames.GOOGLE_PLUS]: {
-      theme: googlePlusTheme,
-      less: stylePattern(googlePlusTheme.colorSet),
-      css: null,
-    },
-    [ThemeNames.DARK]: {
-      theme: darkTheme,
-      less: stylePattern(darkTheme.colorSet),
-      css: null,
-    },
-    [ThemeNames.GREEN_LIGHT]: {
-      theme: greenLightTheme,
-      less: stylePattern(greenLightTheme.colorSet),
-      css: null
-    },
-    [ThemeNames.CUCKOO_HUB]: {
-      theme: cuckooHubTheme,
-      less: stylePattern(cuckooHubTheme.colorSet),
-      css: null
-    }
+  private get themeInfo () {
+    return Object.assign({}, presetThemeInfo, this.customThemeInfo)
   }
+
+  private customThemeInfo = { }
 
   private getThemeStyleElem (): HTMLStyleElement {
     const themeElemId = 'cuckoo-plus-theme'
@@ -78,7 +84,18 @@ class ThemeManager {
     }
   }
 
+  private updateCustomThemeInfoList (themeColorSet, themeName) {
+    this.customThemeInfo[themeName] = {
+      theme: { colorSet: themeColorSet, toFavIconPath: 'google_plus' },
+      less: stylePattern(themeColorSet),
+      css: null
+    }
+  }
+
   public setTheme (themeName: string) {
+    if (!this.themeInfo[themeName]) {
+      themeName = ThemeNames.GOOGLE_PLUS
+    }
     this.setThemeCssByThemeName(themeName)
     this.setFavIconByThemeName(themeName)
     this.setThemeColorByThemeName(themeName)
@@ -89,8 +106,8 @@ class ThemeManager {
     fileSaver.saveAs(blob, `${themeName}.json`);
   }
 
-  public importTheme () {
-
+  public importTheme (themeColorSet, themeName: string) {
+    this.updateCustomThemeInfoList(themeColorSet, themeName)
   }
 }
 

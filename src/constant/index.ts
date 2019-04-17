@@ -37,10 +37,10 @@ const UiWidthCheckConstants = {
 }
 
 const ThemeNames = {
-  GOOGLE_PLUS: 'Google-Plus',
+  GOOGLE_PLUS: 'Google Plus',
   DARK: 'Dark',
-  GREEN_LIGHT: 'Green-Light',
-  CUCKOO_HUB: 'Cuckoo-Hub'
+  GREEN_LIGHT: 'Green Light',
+  CUCKOO_HUB: 'Cuckoo Hub'
 }
 
 const NotificationTypes = {

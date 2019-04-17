@@ -77,6 +77,7 @@ declare module "vue/types/vue" {
         general_label: string
         choose_theme: string
         export_theme_color_set: string
+        import_theme_color_set: string
         choose_language: string
         use_multi_line_mode: string
         show_sensitive_media_files: string
