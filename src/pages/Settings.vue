@@ -20,7 +20,7 @@
           /
           <span @click="">{{$t($i18nTags.settings.edit_theme_color_set)}}</span>
           /
-          <span @click="">{{$t($i18nTags.settings.delete_theme_color_set  )}}</span>
+          <span @click="onOpenDeleteThemeColorSetPanel">{{$t($i18nTags.settings.delete_theme_color_set)}}</span>
         </div>
 
         <mu-dialog :title="$t($i18nTags.settings.export_theme_color_set)" :open.sync="shouldOpenThemeColorSetExportDialog">
@@ -37,6 +37,23 @@
           <mu-button slot="actions" flat class="secondary-theme-text-color"
                      :disabled="!themeNameToExport" @click="onExportThemeColorSet">Export</mu-button>
         </mu-dialog>
+
+
+        <mu-dialog :title="$t($i18nTags.settings.delete_theme_color_set)" :open.sync="shouldOpenThemeDeleteDialog">
+          <div class="setting-row select-row dialog-setting-row">
+            <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_theme)}}</span>
+            <mu-select class="setting-select" v-model="themeNameToDelete">
+              <mu-option v-for="(themeInfo, index) in customThemeOptions" :key="index"
+                         :label="themeInfo.value" :value="themeInfo.value">
+              </mu-option>
+            </mu-select>
+          </div>
+
+          <mu-button slot="actions" flat color="secondary" @click="shouldOpenThemeDeleteDialog = false">Cancel</mu-button>
+          <mu-button slot="actions" flat class="secondary-theme-text-color"
+                     :disabled="!themeNameToDelete" @click="onDeleteThemeColorSet">Delete</mu-button>
+        </mu-dialog>
+
 
         <div class="setting-row select-row">
           <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_language)}}</span>
@@ -161,13 +178,22 @@
 
     shouldOpenThemeColorSetExportDialog: boolean = false
 
+    shouldOpenThemeDeleteDialog: boolean = false
+
     themeNameToExport = ''
+
+    themeNameToDelete = ''
 
     shouldUpdateThemeOptions = 1
 
     get themeOptions () {
       this.shouldUpdateThemeOptions
       return ThemeManager.getThemeOptionsList()
+    }
+
+    get customThemeOptions () {
+      this.shouldUpdateThemeOptions
+      return ThemeManager.getCustomThemeOptionsList()
     }
 
     localesOptions = [
@@ -306,9 +332,33 @@
       }
     }
 
+    @Watch('shouldOpenThemeDeleteDialog')
+    onShouldOpenThemeDeleteDialogChanged () {
+      if (this.shouldOpenThemeDeleteDialog) {
+        this.themeNameToDelete = this.customThemeOptions[0].value
+      }
+    }
+
     onExportThemeColorSet () {
       ThemeManager.exportTheme(this.themeNameToExport)
       this.shouldOpenThemeColorSetExportDialog = false
+    }
+
+    onOpenDeleteThemeColorSetPanel () {
+      if (!this.customThemeOptions.length) {
+        return this.$toast.warning('There is no custom theme to delete')
+      }
+
+      this.shouldOpenThemeDeleteDialog = true
+    }
+
+    onDeleteThemeColorSet () {
+      ThemeManager.deleteTheme(this.themeNameToDelete)
+      if (this.themeNameToDelete === this.themeName) {
+        this.themeName = ThemeNames.GOOGLE_PLUS
+      }
+      this.shouldUpdateThemeOptions = this.shouldUpdateThemeOptions + 1
+      this.shouldOpenThemeDeleteDialog = false
     }
 
     onSelectThemeColorSetFile () {

@@ -84,17 +84,33 @@ class ThemeManager {
     }
   }
 
-  private updateCustomThemeInfo (themeColorSet, themeName) {
+  private addCustomThemeInfo (themeColorSet, themeName) {
     this.customThemeInfo[themeName] = {
       theme: { colorSet: themeColorSet, toFavIconPath: 'google_plus' },
       less: stylePattern(themeColorSet),
       css: null
     }
+
+    this.updateLocalStorageData()
+  }
+
+  private deleteCustomThemeInfo (themeName) {
+    delete this.customThemeInfo[themeName]
+    this.updateLocalStorageData()
+  }
+
+  private updateLocalStorageData () {
     localStorage.setItem('customThemeInfo', JSON.stringify(this.customThemeInfo))
   }
 
   public getThemeOptionsList () {
     return Object.keys(this.themeInfo)
+      .filter(themeName => typeof this.themeInfo[themeName] === 'object')
+      .map(themeName => { return { 'value': themeName } })
+  }
+
+  public getCustomThemeOptionsList () {
+    return Object.keys(this.customThemeInfo)
       .filter(themeName => typeof this.themeInfo[themeName] === 'object')
       .map(themeName => { return { 'value': themeName } })
   }
@@ -114,7 +130,11 @@ class ThemeManager {
   }
 
   public importTheme (themeColorSet, themeName: string) {
-    this.updateCustomThemeInfo(themeColorSet, themeName)
+    this.addCustomThemeInfo(themeColorSet, themeName)
+  }
+
+  public deleteTheme (themeName: string) {
+    this.deleteCustomThemeInfo(themeName)
   }
 }
 
