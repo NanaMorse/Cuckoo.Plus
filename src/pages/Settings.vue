@@ -17,6 +17,10 @@
           <span @click="onSelectThemeColorSetFile">{{$t($i18nTags.settings.import_theme_color_set)}}</span>
           /
           <span @click="shouldOpenThemeColorSetExportDialog = true">{{$t($i18nTags.settings.export_theme_color_set)}}</span>
+          /
+          <span @click="">{{$t($i18nTags.settings.edit_theme_color_set)}}</span>
+          /
+          <span @click="">{{$t($i18nTags.settings.delete_theme_color_set  )}}</span>
         </div>
 
         <mu-dialog :title="$t($i18nTags.settings.export_theme_color_set)" :open.sync="shouldOpenThemeColorSetExportDialog">
