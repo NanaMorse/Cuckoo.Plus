@@ -159,14 +159,12 @@
 
     themeNameToExport = ''
 
-    get themeOptions () {
-      return [
-        ...presetThemeOptions,
-        ...this.customThemeOptions
-      ]
-    }
+    shouldUpdateThemeOptions = 1
 
-    customThemeOptions = []
+    get themeOptions () {
+      this.shouldUpdateThemeOptions
+      return ThemeManager.getThemeOptionsList()
+    }
 
     localesOptions = [
       { label: 'English', value: I18nLocales.EN },
@@ -321,8 +319,6 @@
         return this.$toast.warning('Same name theme conflicts')
       }
 
-      this.customThemeOptions.push({ value: fileName })
-
       const fileReader = new FileReader()
       fileReader.readAsText(file)
 
@@ -331,8 +327,8 @@
         if(e.target.error) return
 
         const themeColorSet = JSON.parse(e.target.result)
-        this.customThemeOptions.push()
         ThemeManager.importTheme(themeColorSet, fileName)
+        this.shouldUpdateThemeOptions = this.shouldUpdateThemeOptions + 1
         this.themeName = fileName
       }
 

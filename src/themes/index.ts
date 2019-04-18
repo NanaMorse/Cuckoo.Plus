@@ -37,7 +37,7 @@ class ThemeManager {
     return Object.assign({}, presetThemeInfo, this.customThemeInfo)
   }
 
-  private customThemeInfo = { }
+  private customThemeInfo = localStorage.getItem('customThemeInfo') ? JSON.parse(localStorage.getItem('customThemeInfo')) : {}
 
   private getThemeStyleElem (): HTMLStyleElement {
     const themeElemId = 'cuckoo-plus-theme'
@@ -84,12 +84,19 @@ class ThemeManager {
     }
   }
 
-  private updateCustomThemeInfoList (themeColorSet, themeName) {
+  private updateCustomThemeInfo (themeColorSet, themeName) {
     this.customThemeInfo[themeName] = {
       theme: { colorSet: themeColorSet, toFavIconPath: 'google_plus' },
       less: stylePattern(themeColorSet),
       css: null
     }
+    localStorage.setItem('customThemeInfo', JSON.stringify(this.customThemeInfo))
+  }
+
+  public getThemeOptionsList () {
+    return Object.keys(this.themeInfo)
+      .filter(themeName => typeof this.themeInfo[themeName] === 'object')
+      .map(themeName => { return { 'value': themeName } })
   }
 
   public setTheme (themeName: string) {
@@ -107,7 +114,7 @@ class ThemeManager {
   }
 
   public importTheme (themeColorSet, themeName: string) {
-    this.updateCustomThemeInfoList(themeColorSet, themeName)
+    this.updateCustomThemeInfo(themeColorSet, themeName)
   }
 }
 
