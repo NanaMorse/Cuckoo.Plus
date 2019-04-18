@@ -9,6 +9,7 @@
 
       <router-view v-if="!$route.meta.keepAlive" />
     </mu-container>
+    <theme-edit-panel v-if="appStatus.shouldShowThemeEditPanel"/>
   </div>
 </template>
 
@@ -17,13 +18,15 @@
   import { Mutation, State, Getter } from 'vuex-class'
   import * as _ from 'underscore'
   import { UiWidthCheckConstants, TimeLineTypes } from '@/constant'
-  import Header from '@/components/Header.vue'
+  import Header from '@/components/Header'
   import Drawer from '@/components/Drawer'
+  import ThemeEditPanel from '@/components/ThemeEditPanel'
 
   @Component({
     components: {
       'cuckoo-plus-header': Header,
-      'cuckoo-plus-drawer': Drawer
+      'cuckoo-plus-drawer': Drawer,
+      'theme-edit-panel': ThemeEditPanel
     }
   })
   class App extends Vue {

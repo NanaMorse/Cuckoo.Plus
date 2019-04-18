@@ -18,11 +18,10 @@
           /
           <span @click="shouldOpenThemeColorSetExportDialog = true">{{$t($i18nTags.settings.export_theme_color_set)}}</span>
           /
-          <span @click="">{{$t($i18nTags.settings.edit_theme_color_set)}}</span>
+          <span @click="onShowEditThemePanel">{{$t($i18nTags.settings.edit_theme_color_set)}}</span>
           /
           <span @click="onOpenDeleteThemeColorSetPanel">{{$t($i18nTags.settings.delete_theme_color_set)}}</span>
         </div>
-
         <mu-dialog :title="$t($i18nTags.settings.export_theme_color_set)" :open.sync="shouldOpenThemeColorSetExportDialog">
           <div class="setting-row select-row dialog-setting-row">
             <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_theme)}}</span>
@@ -168,6 +167,7 @@
     @Mutation('updateLocale') updateLocale
     @Mutation('updateOnlyMentionTargetUserMode') updateOnlyMentionTargetUserMode
     @Mutation('updateAutoExpandSpoilerTextMode') updateAutoExpandSpoilerTextMode
+    @Mutation('updateShouldShowThemeEditPanel') updateShouldShowThemeEditPanel
 
     @Mutation('updatePostPrivacy') mutationUpdatePostPrivacy
 
@@ -337,6 +337,10 @@
       if (this.shouldOpenThemeDeleteDialog) {
         this.themeNameToDelete = this.customThemeOptions[0].value
       }
+    }
+
+    onShowEditThemePanel () {
+      this.updateShouldShowThemeEditPanel(true)
     }
 
     onExportThemeColorSet () {

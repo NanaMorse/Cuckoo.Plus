@@ -88,5 +88,9 @@ export default {
   updateAutoExpandSpoilerTextMode (state: cuckoostore.stateInfo, newMode: boolean) {
     state.appStatus.settings.autoExpandSpoilerTextMode = newMode
     localStorage.setItem('autoExpandSpoilerTextMode', JSON.stringify(newMode))
+  },
+
+  updateShouldShowThemeEditPanel (state: cuckoostore.stateInfo, show: boolean) {
+    state.appStatus.shouldShowThemeEditPanel = show
   }
 }
