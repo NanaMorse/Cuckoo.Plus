@@ -57,6 +57,8 @@ const StreamingEventTypes = {
   FILTERS_CHANGED: 'filters_changed'
 }
 
+const TITLE = 'Cuckoo+'
+
 export {
   AttachmentTypes,
   TimeLineTypes,
@@ -64,5 +66,6 @@ export {
   UiWidthCheckConstants,
   ThemeNames,
   NotificationTypes,
-  StreamingEventTypes
+  StreamingEventTypes,
+  TITLE
 }
