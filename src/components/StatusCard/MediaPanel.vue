@@ -100,7 +100,7 @@
 
     get combinedMediaList () {
       const mediaListPart = this.mediaList.map(item => {
-        const url = item.remote_url || item.url
+        const url = item.url || item.remote_url
 
         let type: string = item.type
 

@@ -14,11 +14,11 @@
 </template>
 
 <script lang="ts">
-  import { Vue, Component } from 'vue-property-decorator'
+  import { Vue, Component, Watch } from 'vue-property-decorator'
   import { Mutation, State, Getter } from 'vuex-class'
   import * as _ from 'underscore'
-  import { UiWidthCheckConstants, TimeLineTypes } from '@/constant'
-  import Header from '@/components/Header'
+  import { UiWidthCheckConstants, TimeLineTypes, TITLE } from '@/constant'
+  import Header from '@/components/Header.vue'
   import Drawer from '@/components/Drawer'
   import ThemeEditPanel from '@/components/ThemeEditPanel'
 
@@ -48,6 +48,12 @@
       this.listenToWindowUnload()
     }
 
+    @Watch('appStatus.unreadNotificationCount')
+    onUnreadNotificationCountChanged () {
+      document.querySelector('title').innerText = this.appStatus.unreadNotificationCount > 0 ?
+        `(${this.appStatus.unreadNotificationCount}) ${TITLE}` : `${TITLE}`
+    }
+
     get appContentStyle () {
       if (this.appStatus.isDrawerOpened &&
         !this.$route.meta.hideDrawer &&
@@ -71,7 +77,6 @@
 
       })
     }
-
   }
 
   export default App
