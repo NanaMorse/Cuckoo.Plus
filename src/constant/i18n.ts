@@ -65,6 +65,11 @@ export const I18nTags = {
   settings: {
     general_label: 'settings_general_label',
     choose_theme: 'settings_choose_theme',
+    export_theme_color_set: 'settings_export_theme_color_set',
+    import_theme_color_set: 'settings_import_theme_color_set',
+    edit_theme_color_set: 'settings_edit_theme_color_set',
+    delete_theme_color_set: 'settings_delete_theme_color_set',
+
     choose_language: 'settings_choose_language',
     use_multi_line_mode: 'settings_use_multi_line_mode',
     maximum_number_of_columns_in_multi_line_mode: 'settings_maximum_number_of_columns_in_multi_line_mode',

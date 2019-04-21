@@ -1,5 +1,58 @@
-@import "~muse-ui/lib/styles/theme.less";
+const themeColorLessText = `
+.mu-primary-color {
+  background-color: @primaryColor;
+}
 
+.mu-secondary-color {
+  background-color: @secondaryColor;
+}
+
+.mu-success-color {
+  background-color: @successColor;
+}
+
+.mu-warning-color {
+  background-color: @warningColor;
+}
+
+.mu-info-color {
+  background-color: @infoColor;
+}
+
+.mu-error-color {
+  background-color: @errorColor;
+}
+
+.mu-inverse {
+  color: @alternateTextColor;
+}
+
+.mu-primary-text-color {
+  color: @primaryColor;
+}
+
+.mu-secondary-text-color {
+  color: @secondaryColor;
+}
+
+.mu-success-text-color {
+  color: @successColor;
+}
+
+.mu-warning-text-color {
+  color: @warningColor;
+}
+
+.mu-info-text-color {
+  color: @infoColor;
+}
+
+.mu-error-text-color {
+  color: @errorColor;
+}
+`
+
+const appColorLessText = `
 body {
   background-color: @backgroundColor;
 }
@@ -8,54 +61,7 @@ a {
   color: @secondaryColor;
 }
 
-// class for mixin
-.primary-theme-bg-color {
-  background-color: @primaryColor !important;
-
-  > * {
-    color: @alternateTextColor;
-  }
-}
-
-.secondary-theme-bg-color {
-  background-color: @secondaryColor;
-}
-
-
-.default-theme-bg-color {
-  background-color: @backgroundColor;
-}
-
-.primary-theme-text-color {
-  color: @primaryColor;
-}
-
-.secondary-theme-text-color {
-  color: @secondaryColor;
-}
-
-.primary-read-text-color {
-  color: @textColor;
-}
-
-.secondary-read-text-color {
-  color: @secondaryTextColor;
-}
-
-.placeholder-read-text-color {
-  color: @trackColor;
-}
-
-.base-theme-bg-color {
-  background-color: @backgroundColor !important;
-}
-
-.dialog-theme-bg-color {
-  background-color: @dialogBackgroundColor;
-}
-
 // class for certain component
-// 复杂的或者通用的会放在这里，其余尽量使用mixin
 .status-card {
   .operate-btn-group {
     .count {
@@ -178,20 +184,14 @@ a {
 // for overwrite muse-ui style
 .mu-dialog {
   background-color: @dialogBackgroundColor;
+  
+  .mu-dialog-title {
+    color: @textColor;
+  }
 
   .mu-dialog-body {
     height: 100%;
     color: @textColor;
-  }
-
-  .mu-dialog-actions {
-    .mu-button {
-      color: @textColor;
-    }
-
-    .mu-primary-text-color {
-      color: @primaryColor;
-    }
   }
 }
 
@@ -236,18 +236,6 @@ a {
 
   .mu-list {
     padding: 0;
-
-    li {
-
-      //&.selected-item, .mu-item-wrapper.hover {
-      //  background-color: @secondaryColor;
-      //
-      //  .mu-icon, .mu-item-title, .mu-item-sub-title {
-      //    color: #fff;
-      //  }
-      //
-      //}
-    }
   }
 }
 
@@ -320,4 +308,59 @@ a {
   a {
     color: @textColor;
   }
+}
+
+// class for mixin
+.primary-theme-bg-color {
+  background-color: @primaryColor !important;
+
+  > * {
+    color: @alternateTextColor;
+  }
+}
+
+.secondary-theme-bg-color {
+  background-color: @secondaryColor;
+}
+
+
+.default-theme-bg-color {
+  background-color: @backgroundColor;
+}
+
+.primary-theme-text-color {
+  color: @primaryColor;
+}
+
+.secondary-theme-text-color {
+  color: @secondaryColor;
+}
+
+.primary-read-text-color {
+  color: @textColor;
+}
+
+.secondary-read-text-color {
+  color: @secondaryTextColor;
+}
+
+.placeholder-read-text-color {
+  color: @trackColor;
+}
+
+.base-theme-bg-color {
+  background-color: @backgroundColor !important;
+}
+
+.dialog-theme-bg-color {
+  background-color: @dialogBackgroundColor;
+}
+`
+
+import baseColor from './basecolor'
+
+export default function (colorSet: Object) {
+  return Object.keys(baseColor).reduce((acc, cur) => {
+    return acc.replace(new RegExp(cur, 'g'), colorSet[cur])
+  }, themeColorLessText + appColorLessText)
 }

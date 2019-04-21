@@ -7,10 +7,52 @@
         <div class="setting-row select-row">
           <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_theme)}}</span>
           <mu-select class="setting-select" v-model="themeName">
-            <mu-option v-for="(themeInfo, index) in themeOptions" :key="index"
-                       :label="themeInfo.label" :value="themeInfo.value" />
+            <mu-option v-for="(themeInfo, index) in themeOptions" :key="index" :disabled="appStatus.isEditingThemeMode"
+                       :label="themeInfo.value" :value="themeInfo.value">
+            </mu-option>
           </mu-select>
         </div>
+
+        <div class="foot-note secondary-read-text-color">
+          <span @click="onSelectThemeColorSetFile">{{$t($i18nTags.settings.import_theme_color_set)}}</span>
+          /
+          <span @click="shouldOpenThemeColorSetExportDialog = true">{{$t($i18nTags.settings.export_theme_color_set)}}</span>
+          /
+          <span @click="onShowEditThemePanel">{{$t($i18nTags.settings.edit_theme_color_set)}}</span>
+          /
+          <span @click="onOpenDeleteThemeColorSetPanel">{{$t($i18nTags.settings.delete_theme_color_set)}}</span>
+        </div>
+        <mu-dialog :title="$t($i18nTags.settings.export_theme_color_set)" :open.sync="shouldOpenThemeColorSetExportDialog">
+          <div class="setting-row select-row dialog-setting-row">
+            <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_theme)}}</span>
+            <mu-select class="setting-select" v-model="themeNameToExport">
+              <mu-option v-for="(themeInfo, index) in themeOptions" :key="index"
+                         :label="themeInfo.value" :value="themeInfo.value">
+              </mu-option>
+            </mu-select>
+          </div>
+
+          <mu-button slot="actions" flat color="secondary" @click="shouldOpenThemeColorSetExportDialog = false">Cancel</mu-button>
+          <mu-button slot="actions" flat class="secondary-theme-text-color"
+                     :disabled="!themeNameToExport" @click="onExportThemeColorSet">Export</mu-button>
+        </mu-dialog>
+
+
+        <mu-dialog :title="$t($i18nTags.settings.delete_theme_color_set)" :open.sync="shouldOpenThemeDeleteDialog">
+          <div class="setting-row select-row dialog-setting-row">
+            <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_theme)}}</span>
+            <mu-select class="setting-select" v-model="themeNameToDelete">
+              <mu-option v-for="(themeInfo, index) in customThemeOptions" :key="index"
+                         :label="themeInfo.value" :value="themeInfo.value">
+              </mu-option>
+            </mu-select>
+          </div>
+
+          <mu-button slot="actions" flat color="secondary" @click="shouldOpenThemeDeleteDialog = false">Cancel</mu-button>
+          <mu-button slot="actions" flat class="secondary-theme-text-color"
+                     :disabled="!themeNameToDelete" @click="onDeleteThemeColorSet">Delete</mu-button>
+        </mu-dialog>
+
 
         <div class="setting-row select-row">
           <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_language)}}</span>
@@ -76,14 +118,29 @@
 
       </mu-card-actions>
     </mu-card>
+
+    <input ref="importThemeInput" type="file" @change="onImportThemeColorSet"
+           accept=".json"
+           style="display: none"/>
+
   </div>
 </template>
 
 <script lang="ts">
-  import { Vue, Component } from 'vue-property-decorator'
+  import { Vue, Component, Watch } from 'vue-property-decorator'
   import { State, Mutation, Action } from 'vuex-class'
   import { ThemeNames, I18nLocales, VisibilityTypes } from '@/constant'
   import * as moment from 'moment'
+  import ThemeManager from '@/themes'
+
+  const ADD_NEW_THEME_OPTION = 'ADD_NEW_THEME_OPTION'
+
+  const presetThemeOptions = [
+    { value: ThemeNames.GOOGLE_PLUS },
+    { value: ThemeNames.DARK },
+    { value: ThemeNames.GREEN_LIGHT },
+    { value: ThemeNames.CUCKOO_HUB },
+  ]
 
   @Component({})
   class Setting extends Vue {
@@ -96,6 +153,10 @@
 
     $toast
 
+    $refs: {
+      importThemeInput: HTMLInputElement
+    }
+
     @State('appStatus') appStatus
 
     @Mutation('updateTheme') updateTheme
@@ -106,6 +167,8 @@
     @Mutation('updateLocale') updateLocale
     @Mutation('updateOnlyMentionTargetUserMode') updateOnlyMentionTargetUserMode
     @Mutation('updateAutoExpandSpoilerTextMode') updateAutoExpandSpoilerTextMode
+    @Mutation('updateIsEditingThemeMode') updateIsEditingThemeMode
+    @Mutation('updateShouldShowThemeEditPanel') updateShouldShowThemeEditPanel
 
     @Mutation('updatePostPrivacy') mutationUpdatePostPrivacy
 
@@ -114,12 +177,25 @@
 
     isLoading: boolean = false
 
-    themeOptions = [
-      { label: 'Google Plus', value: ThemeNames.GOOGLE_PLUS },
-      { label: 'Dark', value: ThemeNames.DARK },
-      { label: 'Green Light', value: ThemeNames.GREEN_LIGHT },
-      { label: 'Cuckoo Hub', value: ThemeNames.CUCKOO_HUB }
-    ]
+    shouldOpenThemeColorSetExportDialog: boolean = false
+
+    shouldOpenThemeDeleteDialog: boolean = false
+
+    themeNameToExport = ''
+
+    themeNameToDelete = ''
+
+    shouldUpdateThemeOptions = 1
+
+    get themeOptions () {
+      this.themeName
+      return ThemeManager.getThemeOptionsList()
+    }
+
+    get customThemeOptions () {
+      this.themeName
+      return ThemeManager.getCustomThemeOptionsList()
+    }
 
     localesOptions = [
       { label: 'English', value: I18nLocales.EN },
@@ -153,6 +229,7 @@
 
     set themeName (val) {
       this.updateTheme(val)
+      ThemeManager.setTheme(val)
     }
 
     get locale () {
@@ -244,6 +321,83 @@
     set autoExpandSpoilerTextMode (val) {
       this.updateAutoExpandSpoilerTextMode(val)
     }
+
+    @Watch('shouldOpenThemeColorSetExportDialog')
+    onShouldOpenThemeColorSetExportDialogChanged () {
+      if (this.shouldOpenThemeColorSetExportDialog) {
+        this.themeNameToExport = this.themeName
+      }
+    }
+
+    @Watch('shouldOpenThemeDeleteDialog')
+    onShouldOpenThemeDeleteDialogChanged () {
+      if (this.shouldOpenThemeDeleteDialog) {
+        this.themeNameToDelete = this.customThemeOptions[0].value
+      }
+    }
+
+    onShowEditThemePanel () {
+      if (this.appStatus.isEditingThemeMode) {
+        this.updateShouldShowThemeEditPanel(true)
+      } else {
+        this.updateIsEditingThemeMode(true)
+      }
+    }
+
+    onExportThemeColorSet () {
+      ThemeManager.exportTheme(this.themeNameToExport)
+      this.shouldOpenThemeColorSetExportDialog = false
+    }
+
+    onOpenDeleteThemeColorSetPanel () {
+      if (!this.customThemeOptions.length) {
+        return this.$toast.warning('There is no custom theme to delete')
+      }
+
+      this.shouldOpenThemeDeleteDialog = true
+    }
+
+    onDeleteThemeColorSet () {
+      ThemeManager.deleteTheme(this.themeNameToDelete)
+      if (this.themeNameToDelete === this.themeName) {
+        this.themeName = ThemeNames.GOOGLE_PLUS
+      }
+      this.shouldUpdateThemeOptions = this.shouldUpdateThemeOptions + 1
+      this.shouldOpenThemeDeleteDialog = false
+    }
+
+    onSelectThemeColorSetFile () {
+      this.$refs.importThemeInput.click()
+    }
+
+    onImportThemeColorSet () {
+      const file = this.$refs.importThemeInput.files[0]
+      const fileName = file.name.replace(/.json$/, '')
+
+      if (this.themeOptions.find(opt => opt.value === fileName)) {
+        return this.$toast.warning('Same name theme conflicts')
+      }
+
+      const fileReader = new FileReader()
+      fileReader.readAsText(file)
+
+      fileReader.onload = e => {
+        if(e.target.readyState !== 2) return
+        if(e.target.error) return
+
+        const themeColorSet = JSON.parse(e.target.result)
+        ThemeManager.importTheme(themeColorSet, fileName)
+        this.shouldUpdateThemeOptions = this.shouldUpdateThemeOptions + 1
+        this.themeName = fileName
+      }
+
+    }
+
+    mounted () {
+      if (!this.themeOptions.find(opt => opt.value === this.themeName)) {
+        this.themeName = ThemeNames.GOOGLE_PLUS
+      }
+    }
   }
 
   export default Setting
@@ -268,35 +422,56 @@
         margin-top: 5px;
       }
 
-      .setting-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin: 10px 0;
+    }
+  }
 
-        .setting-label {
-          font-size: 13px;
-        }
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
 
-        .setting-switch {
-          margin-right: 12px;
-        }
+    .setting-label {
+      font-size: 13px;
+    }
 
-        .setting-input {
-          min-height: unset;
-          margin: 0;
-          padding: 0;
-        }
+    .setting-switch {
+      margin-right: 12px;
+    }
+
+    .setting-input {
+      min-height: unset;
+      margin: 0;
+      padding: 0;
+    }
+
+    &.dialog-setting-row {
+      .setting-label {
+        margin-right: 20px;
       }
+    }
+  }
 
-      .select-row {
-        .setting-select {
-          width: 170px;
-          padding: 0;
-          margin: 0;
-          min-height: unset;
-        }
+  .foot-note {
+    text-align: right;
+    margin-right: 12px;
+    margin-top: -6px;
+
+    span {
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
       }
+    }
+
+  }
+
+  .select-row {
+    .setting-select {
+      width: 170px;
+      padding: 0;
+      margin: 0;
+      min-height: unset;
     }
   }
 </style>

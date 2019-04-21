@@ -62,6 +62,11 @@ const drawer = {
 const settings = {
   [I18nTags.settings.general_label]: 'General',
   [I18nTags.settings.choose_theme]: 'Choose Theme:',
+  [I18nTags.settings.export_theme_color_set]: 'export',
+  [I18nTags.settings.import_theme_color_set]: 'import',
+  [I18nTags.settings.edit_theme_color_set]: 'edit',
+  [I18nTags.settings.delete_theme_color_set]: 'delete',
+
   [I18nTags.settings.choose_language]: 'Choose Language:',
   [I18nTags.settings.use_multi_line_mode]: 'Use multi-column layout mode:',
   [I18nTags.settings.maximum_number_of_columns_in_multi_line_mode]: 'Maximum number of columns in multi-column layout mode:',

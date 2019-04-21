@@ -2,9 +2,9 @@
   <mu-dialog dialog-class="post-status-dialog-container"
              :open.sync="isDialogOpening" overlay-color="rgba(0,0,0,0.12)"
              :overlay-opacity="1" @close="onTryCloseDialog" :transition="transition"
-             :width="dialogWidth" :fullscreen="isFullScreen" v-loading="isPostLoading">
+             :width="dialogWidth" :fullscreen="shouldDialogFullScreen" v-loading="isPostLoading">
 
-    <mu-appbar v-if="isFullScreen" class="dialog-fullscreen-bar" color="primary">
+    <mu-appbar v-if="shouldDialogFullScreen" class="dialog-fullscreen-bar" color="primary">
       <mu-button slot="left" icon @click="onTryCloseDialog">
         <mu-icon value="close"></mu-icon>
       </mu-button>
@@ -85,7 +85,7 @@
       </div>
     </section>
 
-    <footer v-if="!isFullScreen">
+    <footer v-if="!shouldDialogFullScreen">
       <mu-button class="dialog-button secondary-theme-text-color" flat :disabled="!shouldEnableSubmitButton"
                  @click="onSubmitNewStatus">
         {{$t($i18nTags.statusCard.submit_post)}}
@@ -222,7 +222,6 @@
       this.postMediaAsSensitiveMode = val
     }
 
-
     visibilityTriggerBtn: HTMLDivElement = null
 
     shouldOpenVisibilitySelectPopOver = false
@@ -251,6 +250,8 @@
 
     @Action('postStatus') postStatus
 
+    @Getter('shouldDialogFullScreen') shouldDialogFullScreen
+
     get isDialogOpening () {
       return this.open
     }
@@ -278,16 +279,11 @@
     }
 
     get dialogWidth () {
-      return this.appStatus.documentWidth > UiWidthCheckConstants.POST_STATUS_DIALOG_TOGGLE_WIDTH
-        ? UiWidthCheckConstants.POST_STATUS_DIALOG_TOGGLE_WIDTH : null
-    }
-
-    get isFullScreen () {
-      return this.appStatus.documentWidth <= UiWidthCheckConstants.POST_STATUS_DIALOG_TOGGLE_WIDTH
+      return this.shouldDialogFullScreen ? null : UiWidthCheckConstants.POST_STATUS_DIALOG_TOGGLE_WIDTH
     }
 
     get transition () {
-      return this.isFullScreen ? 'slide-bottom' : 'slide-top'
+      return this.shouldDialogFullScreen ? 'slide-bottom' : 'slide-top'
     }
 
     async onTryCloseDialog () {
@@ -365,8 +361,6 @@
 </script>
 
 <style lang="less" scoped>
-  @import "../assets/variable";
-
   .post-status-dialog-container {
 
     .dialog-header {

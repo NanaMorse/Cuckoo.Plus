@@ -9,6 +9,7 @@
 
       <router-view v-if="!$route.meta.keepAlive" />
     </mu-container>
+    <theme-edit-panel v-if="appStatus.isEditingThemeMode"/>
   </div>
 </template>
 
@@ -19,11 +20,13 @@
   import { UiWidthCheckConstants, TimeLineTypes, TITLE } from '@/constant'
   import Header from '@/components/Header.vue'
   import Drawer from '@/components/Drawer'
+  import ThemeEditPanel from '@/components/ThemeEditPanel'
 
   @Component({
     components: {
       'cuckoo-plus-header': Header,
-      'cuckoo-plus-drawer': Drawer
+      'cuckoo-plus-drawer': Drawer,
+      'theme-edit-panel': ThemeEditPanel
     }
   })
   class App extends Vue {

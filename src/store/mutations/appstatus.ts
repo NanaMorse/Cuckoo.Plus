@@ -18,15 +18,11 @@ export default {
   },
 
   updateDocumentWidth (state: cuckoostore.stateInfo) {
-    state.appStatus.documentWidth = document.body.clientWidth
+    state.appStatus.documentWidth = window.innerWidth
   },
 
   updateTheme (state: cuckoostore.stateInfo, newThemeName: string) {
-    if (!Object.keys(ThemeNames).some(key => ThemeNames[key] === newThemeName)) return
     state.appStatus.settings.theme = newThemeName
-
-    ThemeManager.setTheme(newThemeName)
-
     localStorage.setItem('theme', newThemeName)
   },
 
@@ -92,5 +88,14 @@ export default {
   updateAutoExpandSpoilerTextMode (state: cuckoostore.stateInfo, newMode: boolean) {
     state.appStatus.settings.autoExpandSpoilerTextMode = newMode
     localStorage.setItem('autoExpandSpoilerTextMode', JSON.stringify(newMode))
+  },
+
+  updateIsEditingThemeMode (state: cuckoostore.stateInfo, newMode: boolean) {
+    state.appStatus.isEditingThemeMode = newMode
+    state.appStatus.shouldShowThemeEditPanel = newMode
+  },
+
+  updateShouldShowThemeEditPanel (state: cuckoostore.stateInfo, show: boolean) {
+    state.appStatus.shouldShowThemeEditPanel = show
   }
 }

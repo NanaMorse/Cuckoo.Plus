@@ -1,38 +1,44 @@
 // @ts-ignore
-import * as GooglePlusTheme from '!raw-loader!less-loader!../assets/themes/google-plus.less'
-// @ts-ignore
-import * as DarkTheme from '!raw-loader!less-loader!../assets/themes/dark.less'
-// @ts-ignore
-import * as GreenLightTheme from '!raw-loader!less-loader!../assets/themes/green-light.less'
-// @ts-ignore
-import * as CuckooHubTheme from '!raw-loader!less-loader!../assets/themes/cuckoo-hub.less'
-
+import cuckooHubTheme from './presets/cuckoohub'
+import greenLightTheme from './presets/greenlight'
+import darkTheme from './presets/dark'
+import googlePlusTheme from './presets/googleplus'
+import * as less from 'less'
+import stylePattern from './stylepattern'
 import { ThemeNames } from '@/constant'
+import * as fileSaver from 'file-saver'
+import baseColor from './basecolor'
+
+const presetThemeInfo = {
+  [ThemeNames.GOOGLE_PLUS]: {
+    theme: googlePlusTheme,
+    less: stylePattern(googlePlusTheme.colorSet),
+    css: null,
+  },
+  [ThemeNames.DARK]: {
+    theme: darkTheme,
+    less: stylePattern(darkTheme.colorSet),
+    css: null,
+  },
+  [ThemeNames.GREEN_LIGHT]: {
+    theme: greenLightTheme,
+    less: stylePattern(greenLightTheme.colorSet),
+    css: null
+  },
+  [ThemeNames.CUCKOO_HUB]: {
+    theme: cuckooHubTheme,
+    less: stylePattern(cuckooHubTheme.colorSet),
+    css: null
+  }
+}
 
 class ThemeManager {
 
-  private themeInfo = {
-    [ThemeNames.GOOGLE_PLUS]: {
-      source: GooglePlusTheme,
-      toFavIconPath: 'google_plus',
-      color: '#db4437'
-    },
-    [ThemeNames.DARK]: {
-      source: DarkTheme,
-      toFavIconPath: 'dark',
-      color: '#1976d2'
-    },
-    [ThemeNames.GREEN_LIGHT]: {
-      source: GreenLightTheme,
-      toFavIconPath: 'green_light',
-      color: '#0f9d58'
-    },
-    [ThemeNames.CUCKOO_HUB]: {
-      source: CuckooHubTheme,
-      toFavIconPath: 'cuckoo_hub',
-      color: '#FF9900'
-    }
+  public get themeInfo () {
+    return Object.assign({}, presetThemeInfo, this.customThemeInfo)
   }
+
+  private customThemeInfo = localStorage.getItem('customThemeInfo') ? JSON.parse(localStorage.getItem('customThemeInfo')) : {}
 
   private getThemeStyleElem (): HTMLStyleElement {
     const themeElemId = 'cuckoo-plus-theme'
@@ -52,7 +58,7 @@ class ThemeManager {
       if (el.getAttribute('rel') === 'icon') {
         const size = el.getAttribute('sizes')
         if (size) {
-          el.setAttribute('href', `favicon/${this.themeInfo[themeName].toFavIconPath}/${size}.png`)
+          el.setAttribute('href', `favicon/${this.themeInfo[themeName].theme.toFavIconPath}/${size}.png`)
         }
       }
     })
@@ -61,14 +67,88 @@ class ThemeManager {
   private setThemeColorByThemeName (themeName: string) {
     Array.from(document.head.querySelectorAll('meta')).find(el => {
       return el.getAttribute('name') === 'theme-color'
-    }).setAttribute('content', this.themeInfo[themeName].color)
+    }).setAttribute('content', this.themeInfo[themeName].theme.colorSet['@primaryColor'])
+  }
+
+  private setThemeCssByThemeName (themeName: string) {
+    if (!this.themeInfo[themeName].less) {
+      this.themeInfo[themeName].less = stylePattern(this.themeInfo[themeName].theme.colorSet)
+    }
+
+    if (this.themeInfo[themeName].css) {
+      this.getThemeStyleElem().innerHTML = this.themeInfo[themeName].css
+    } else {
+      less.render(this.themeInfo[themeName].less).then(output => {
+        this.getThemeStyleElem().innerHTML = output.css
+        this.themeInfo[themeName].css = output.css
+      })
+    }
+  }
+
+  private addCustomThemeInfo (themeColorSet, themeName) {
+    this.customThemeInfo[themeName] = {
+      theme: { colorSet: themeColorSet, toFavIconPath: 'google_plus' },
+      less: stylePattern(themeColorSet),
+      css: null
+    }
+
+    this.updateLocalStorageData()
+  }
+
+  private deleteCustomThemeInfo (themeName) {
+    delete this.customThemeInfo[themeName]
+    this.updateLocalStorageData()
+  }
+
+  private updateLocalStorageData () {
+    localStorage.setItem('customThemeInfo', JSON.stringify(this.customThemeInfo))
+  }
+
+  public getThemeInfoByThemeName (themeName: string) {
+    if (!this.themeInfo[themeName]) return this.themeInfo[ThemeNames.GOOGLE_PLUS]
+
+    return this.themeInfo[themeName]
+  }
+
+  public getThemeOptionsList () {
+    return Object.keys(this.themeInfo)
+      .filter(themeName => typeof this.themeInfo[themeName] === 'object')
+      .map(themeName => { return { 'value': themeName } })
+  }
+
+  public getCustomThemeOptionsList () {
+    return Object.keys(this.customThemeInfo)
+      .filter(themeName => typeof this.themeInfo[themeName] === 'object')
+      .map(themeName => { return { 'value': themeName } })
   }
 
   public setTheme (themeName: string) {
-    this.getThemeStyleElem().innerHTML = this.themeInfo[themeName].source || ''
-
+    if (!this.themeInfo[themeName]) {
+      themeName = ThemeNames.GOOGLE_PLUS
+    }
+    this.setThemeCssByThemeName(themeName)
     this.setFavIconByThemeName(themeName)
     this.setThemeColorByThemeName(themeName)
+  }
+
+  public exportTheme (themeName: string) {
+    const blob = new Blob([JSON.stringify(this.themeInfo[themeName].theme.colorSet)], {type: "text/plain;charset=utf-8"});
+    fileSaver.saveAs(blob, `${themeName}.json`);
+  }
+
+  public importTheme (themeColorSet, themeName: string) {
+    this.addCustomThemeInfo(themeColorSet, themeName)
+  }
+
+  public deleteTheme (themeName: string) {
+    this.deleteCustomThemeInfo(themeName)
+  }
+
+  public setTempThemeByColorSet (colorSet) {
+    const finalColorSet = Object.assign({}, baseColor, colorSet)
+    less.render(stylePattern(finalColorSet)).then(output => {
+      this.getThemeStyleElem().innerHTML = output.css
+    })
   }
 }
 
