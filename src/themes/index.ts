@@ -7,6 +7,7 @@ import * as less from 'less'
 import stylePattern from './stylepattern'
 import { ThemeNames } from '@/constant'
 import * as fileSaver from 'file-saver'
+import baseColor from './basecolor'
 
 const presetThemeInfo = {
   [ThemeNames.GOOGLE_PLUS]: {
@@ -33,7 +34,7 @@ const presetThemeInfo = {
 
 class ThemeManager {
 
-  private get themeInfo () {
+  public get themeInfo () {
     return Object.assign({}, presetThemeInfo, this.customThemeInfo)
   }
 
@@ -103,6 +104,12 @@ class ThemeManager {
     localStorage.setItem('customThemeInfo', JSON.stringify(this.customThemeInfo))
   }
 
+  public getThemeInfoByThemeName (themeName: string) {
+    if (!this.themeInfo[themeName]) return this.themeInfo[ThemeNames.GOOGLE_PLUS]
+
+    return this.themeInfo[themeName]
+  }
+
   public getThemeOptionsList () {
     return Object.keys(this.themeInfo)
       .filter(themeName => typeof this.themeInfo[themeName] === 'object')
@@ -135,6 +142,13 @@ class ThemeManager {
 
   public deleteTheme (themeName: string) {
     this.deleteCustomThemeInfo(themeName)
+  }
+
+  public setTempThemeByColorSet (colorSet) {
+    const finalColorSet = Object.assign({}, baseColor, colorSet)
+    less.render(stylePattern(finalColorSet)).then(output => {
+      this.getThemeStyleElem().innerHTML = output.css
+    })
   }
 }
 

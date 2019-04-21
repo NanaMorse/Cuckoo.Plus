@@ -61,52 +61,6 @@ a {
   color: @secondaryColor;
 }
 
-// class for mixin
-.primary-theme-bg-color {
-  background-color: @primaryColor !important;
-
-  > * {
-    color: @alternateTextColor;
-  }
-}
-
-.secondary-theme-bg-color {
-  background-color: @secondaryColor;
-}
-
-
-.default-theme-bg-color {
-  background-color: @backgroundColor;
-}
-
-.primary-theme-text-color {
-  color: @primaryColor;
-}
-
-.secondary-theme-text-color {
-  color: @secondaryColor;
-}
-
-.primary-read-text-color {
-  color: @textColor;
-}
-
-.secondary-read-text-color {
-  color: @secondaryTextColor;
-}
-
-.placeholder-read-text-color {
-  color: @trackColor;
-}
-
-.base-theme-bg-color {
-  background-color: @backgroundColor !important;
-}
-
-.dialog-theme-bg-color {
-  background-color: @dialogBackgroundColor;
-}
-
 // class for certain component
 .status-card {
   .operate-btn-group {
@@ -354,6 +308,52 @@ a {
   a {
     color: @textColor;
   }
+}
+
+// class for mixin
+.primary-theme-bg-color {
+  background-color: @primaryColor !important;
+
+  > * {
+    color: @alternateTextColor;
+  }
+}
+
+.secondary-theme-bg-color {
+  background-color: @secondaryColor;
+}
+
+
+.default-theme-bg-color {
+  background-color: @backgroundColor;
+}
+
+.primary-theme-text-color {
+  color: @primaryColor;
+}
+
+.secondary-theme-text-color {
+  color: @secondaryColor;
+}
+
+.primary-read-text-color {
+  color: @textColor;
+}
+
+.secondary-read-text-color {
+  color: @secondaryTextColor;
+}
+
+.placeholder-read-text-color {
+  color: @trackColor;
+}
+
+.base-theme-bg-color {
+  background-color: @backgroundColor !important;
+}
+
+.dialog-theme-bg-color {
+  background-color: @dialogBackgroundColor;
 }
 `
 

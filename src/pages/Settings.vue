@@ -7,7 +7,7 @@
         <div class="setting-row select-row">
           <span class="setting-label primary-read-text-color">{{$t($i18nTags.settings.choose_theme)}}</span>
           <mu-select class="setting-select" v-model="themeName">
-            <mu-option v-for="(themeInfo, index) in themeOptions" :key="index"
+            <mu-option v-for="(themeInfo, index) in themeOptions" :key="index" :disabled="appStatus.isEditingThemeMode"
                        :label="themeInfo.value" :value="themeInfo.value">
             </mu-option>
           </mu-select>
@@ -167,6 +167,7 @@
     @Mutation('updateLocale') updateLocale
     @Mutation('updateOnlyMentionTargetUserMode') updateOnlyMentionTargetUserMode
     @Mutation('updateAutoExpandSpoilerTextMode') updateAutoExpandSpoilerTextMode
+    @Mutation('updateIsEditingThemeMode') updateIsEditingThemeMode
     @Mutation('updateShouldShowThemeEditPanel') updateShouldShowThemeEditPanel
 
     @Mutation('updatePostPrivacy') mutationUpdatePostPrivacy
@@ -187,12 +188,12 @@
     shouldUpdateThemeOptions = 1
 
     get themeOptions () {
-      this.shouldUpdateThemeOptions
+      this.themeName
       return ThemeManager.getThemeOptionsList()
     }
 
     get customThemeOptions () {
-      this.shouldUpdateThemeOptions
+      this.themeName
       return ThemeManager.getCustomThemeOptionsList()
     }
 
@@ -227,12 +228,8 @@
     }
 
     set themeName (val) {
-      if (val === ADD_NEW_THEME_OPTION) {
-
-      } else {
-        this.updateTheme(val)
-        ThemeManager.setTheme(val)
-      }
+      this.updateTheme(val)
+      ThemeManager.setTheme(val)
     }
 
     get locale () {
@@ -340,7 +337,11 @@
     }
 
     onShowEditThemePanel () {
-      this.updateShouldShowThemeEditPanel(true)
+      if (this.appStatus.isEditingThemeMode) {
+        this.updateShouldShowThemeEditPanel(true)
+      } else {
+        this.updateIsEditingThemeMode(true)
+      }
     }
 
     onExportThemeColorSet () {

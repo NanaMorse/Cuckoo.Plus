@@ -44,6 +44,7 @@ export namespace cuckoostore {
       isDrawerOpened: boolean
       isNotificationsPanelOpened: boolean
       unreadNotificationCount: number
+      isEditingThemeMode: boolean
       shouldShowThemeEditPanel: boolean
       streamStatusesPool: {
         home: Array<string>

@@ -54,7 +54,9 @@ const state: cuckoostore.stateInfo = {
 
     unreadNotificationCount: 0,
 
-    shouldShowThemeEditPanel: true,
+    isEditingThemeMode: false,
+
+    shouldShowThemeEditPanel: false,
 
     streamStatusesPool: {
       home: [],

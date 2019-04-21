@@ -9,7 +9,7 @@
 
       <router-view v-if="!$route.meta.keepAlive" />
     </mu-container>
-    <theme-edit-panel v-if="appStatus.shouldShowThemeEditPanel"/>
+    <theme-edit-panel v-if="appStatus.isEditingThemeMode"/>
   </div>
 </template>
 
