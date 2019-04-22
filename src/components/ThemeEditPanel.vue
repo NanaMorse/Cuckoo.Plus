@@ -36,7 +36,14 @@
 
     <mu-popover cover :trigger="triggerPopOverElem"
                 :open.sync="shouldOpenColorPickerPopOver">
-      <chrome-picker :value="currentEditColorInfo.value" @input="onColorPickerInput"/>
+      <mu-tabs :value.sync="activeTabIndex">
+        <mu-tab>Simple</mu-tab>
+        <mu-tab>Advanced</mu-tab>
+      </mu-tabs>
+      <div class="color-pickers-container">
+        <swatches-picker v-show="activeTabIndex === 0" :value="currentEditColorInfo.value" @input="onColorPickerInput"/>
+        <chrome-picker v-show="activeTabIndex === 1" :value="currentEditColorInfo.value" @input="onColorPickerInput"/>
+      </div>
     </mu-popover>
 
   </div>
@@ -47,7 +54,7 @@
   import { State, Getter, Mutation } from 'vuex-class'
   import { UiWidthCheckConstants } from '@/constant'
   import ThemeManager from '@/themes'
-  import { Chrome } from 'vue-color'
+  import { Chrome, Compact, Swatches } from 'vue-color'
   import * as _ from 'underscore'
 
   const themeColorNameToDataNameMap = {
@@ -70,6 +77,7 @@
 
   @Component({
     components: {
+      'swatches-picker': Swatches,
       'chrome-picker': Chrome
     }
   })
@@ -95,6 +103,8 @@
       label: '',
       value: ''
     }
+
+    activeTabIndex: number = 0
 
     shouldOpenColorPickerPopOver: boolean = false
 
@@ -225,7 +235,11 @@
 
     onColorPickerInput (val) {
       this.hasColorChanged = true
-      this[this.currentEditColorInfo.label] = `rgba(${val.rgba.r}, ${val.rgba.g}, ${val.rgba.b}, ${val.rgba.a})`
+
+      const newColorRGBA = `rgba(${val.rgba.r}, ${val.rgba.g}, ${val.rgba.b}, ${val.rgba.a})`
+
+      this.currentEditColorInfo.value = newColorRGBA
+      this[this.currentEditColorInfo.label] = newColorRGBA
     }
 
   }
@@ -300,6 +314,11 @@
         }
       }
     }
+  }
+
+  .color-pickers-container {
+    display: flex;
+    justify-content: center;
   }
 </style>
 
