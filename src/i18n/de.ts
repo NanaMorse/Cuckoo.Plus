@@ -101,9 +101,9 @@ const postStatusDialog = {
 
 const notifications = {
   [I18nTags.notifications.someone_followed_you]: 'folgt dir',
-  [I18nTags.notifications.mentioned_you]: 'erwähnt dir',
+  [I18nTags.notifications.mentioned_you]: 'hat dich erwähnt',
   [I18nTags.notifications.favourited_your_status]:'gefällt deinen Status',
-  [I18nTags.notifications.boosted_your_status]: 'teilt deinen Status erneut'
+  [I18nTags.notifications.boosted_your_status]: 'hat deinen Beitrag erneut geteilt'
 }
 
 export default {
