@@ -1,6 +1,7 @@
 export const I18nLocales = {
   EN: 'en',
   JA: 'ja',
+  DE: 'de',
   ZH_CN: 'zh-cn',
   ZH_HK: 'zh-hk',
   ZH_TW: 'zh-tw'

@@ -199,6 +199,7 @@
 
     localesOptions = [
       { label: 'English', value: I18nLocales.EN },
+      { label: 'Deutsch', value: I18nLocales.DE },
       { label: '日本語', value: I18nLocales.JA },
       { label: '简体中文', value: I18nLocales.ZH_CN },
       { label: '繁體中文（香港）', value: I18nLocales.ZH_HK },

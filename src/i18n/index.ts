@@ -16,7 +16,7 @@ const currentLocale = store.state.appStatus.settings.locale
 
 const i18nMessages = {
   [I18nLocales.EN]: EN,
-  [I18nLocales.DE]: de,
+  [I18nLocales.DE]: DE,
   [I18nLocales.JA]: JA,
   [I18nLocales.ZH_CN]: ZH_CN,
   [I18nLocales.ZH_HK]: ZH_HK,
