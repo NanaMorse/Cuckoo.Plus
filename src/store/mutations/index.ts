@@ -134,6 +134,12 @@ const mutations = {
     })
   },
 
+  updateAccountMap (state: cuckoostore.stateInfo, newAccountMap) {
+    Object.keys(newAccountMap).forEach(accountId => {
+      Vue.set(state.accountMap, accountId, newAccountMap[accountId])
+    })
+  },
+
   ...oAuthInfoMutations,
   ...timelinesMutations,
   ...statusesMutations,

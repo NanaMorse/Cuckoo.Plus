@@ -22,8 +22,8 @@ interface updateAccountFormData {
   }
 }
 
-async function fetchAccountInfoById () {
-
+async function fetchAccountInfoById (id: string): Promise<{ data: mastodonentities.Account }> {
+  return Vue.http.get(patchApiUri(`/api/v1/accounts/${id}`)) as any
 }
 
 async function fetchCurrentUserAccountInfo (): Promise<{ data: mastodonentities.AuthenticatedAccount }> {

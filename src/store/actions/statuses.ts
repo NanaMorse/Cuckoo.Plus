@@ -1,5 +1,6 @@
 import * as api from '@/api'
 import { TimeLineTypes } from '@/constant'
+import { mastodonentities } from "@/interface"
 
 interface postStatusFormData {
   // The text of the status
@@ -22,7 +23,7 @@ const statuses = {
   async fetchStatusById ({ commit, dispatch }, statusId: string) {
     try {
       const result = await api.statuses.getStatusById(statusId)
-      commit('updateStatusMap', { [statusId]: result.data })
+      dispatch('updateStatusMap', { [statusId]: result.data })
       dispatch('updateContextMap', statusId)
     } catch (e) {
       throw new Error(e)
@@ -58,7 +59,7 @@ const statuses = {
     }
   },
 
-  async updateContextMap ({ commit }, statusId: string) {
+  async updateContextMap ({ commit, dispatch }, statusId: string) {
     if (!statusId) throw new Error('unknown status id!')
 
     try {
@@ -74,7 +75,7 @@ const statuses = {
       const newStatusMap = {}
       ancestors.forEach(status => newStatusMap[status.id] = status)
       descendants.forEach(status => newStatusMap[status.id] = status)
-      commit('updateStatusMap', newStatusMap)
+      dispatch('updateStatusMap', newStatusMap)
     } catch (e) {
 
     }
@@ -100,7 +101,7 @@ const statuses = {
       }
 
       // update status map
-      commit('updateStatusMap', { [result.data.id]: result.data })
+      dispatch('updateStatusMap', { [result.data.id]: result.data })
 
     } catch (e) {
       throw new Error(e)
@@ -120,6 +121,17 @@ const statuses = {
     } catch (e) {
 
     }
+  },
+
+  async updateStatusMap ({ commit }, newStatusMap: { [statusId: string]: mastodonentities.Status }) {
+    commit('updateStatusMap', newStatusMap)
+
+    const newAccountMap = {}
+    Object.keys(newStatusMap).forEach(statusId => {
+      newAccountMap[newStatusMap[statusId].account.id] = newStatusMap[statusId].account
+    })
+
+    commit('updateAccountMap', newAccountMap)
   }
 }
 
