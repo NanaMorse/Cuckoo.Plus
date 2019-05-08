@@ -200,6 +200,7 @@
 
     getVisibilityDescInfo = getVisibilityDescInfo
 
+    isConfirmDialogShowing: boolean = false
 
     postPrivacy = null
 
@@ -287,7 +288,10 @@
     }
 
     async onTryCloseDialog () {
+      if (this.isConfirmDialogShowing) return
+
       if (this.textContentValue || this.spoilerTextValue || this.uploadProcesses.length) {
+        this.isConfirmDialogShowing = true
         const doCloseDialog = (await this.$confirm(this.$t(this.$i18nTags.postStatusDialog.do_discard_message_confirm), {
           okLabel: this.$t(this.$i18nTags.postStatusDialog.do_discard_message),
           cancelLabel: this.$t(this.$i18nTags.postStatusDialog.do_keep_message),
@@ -297,6 +301,8 @@
         } else {
           this.$refs.cuckooInput.focus()
         }
+
+        this.isConfirmDialogShowing = false
       } else {
         this.closeDialog()
       }

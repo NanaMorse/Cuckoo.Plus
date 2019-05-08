@@ -101,8 +101,6 @@
 
     $routersInfo
 
-    $confirm
-
     $refs: {
       replyListContainer: HTMLDivElement
     }

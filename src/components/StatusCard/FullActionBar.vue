@@ -107,6 +107,8 @@
 
     @Action('postStatus') postStatus
 
+    isConfirmDialogShowing: boolean = false
+
     postPrivacy_ = null
 
     get postPrivacy () {
@@ -262,7 +264,11 @@
     }
 
     async onTryHideFullReplyActionArea () {
+      if (this.isConfirmDialogShowing) return
+
       if (this.inputValue || this.replySpoilerTextValue || this.uploadProcesses.length) {
+        this.isConfirmDialogShowing = true
+
         const doHideFullReplyActionArea = (await this.$confirm(this.$t(this.$i18nTags.postStatusDialog.do_discard_message_confirm), {
           okLabel: this.$t(this.$i18nTags.postStatusDialog.do_discard_message),
           cancelLabel: this.$t(this.$i18nTags.postStatusDialog.do_keep_message),
@@ -272,6 +278,8 @@
         } else {
           this.$refs.cuckooInput.focus()
         }
+
+        this.isConfirmDialogShowing = false
       } else {
         this.hideFullReplyActionArea()
       }
