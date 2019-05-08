@@ -102,7 +102,13 @@ class ThemeManager {
   }
 
   private updateLocalStorageData () {
-    localStorage.setItem('customThemeInfo', JSON.stringify(this.customThemeInfo))
+    const customThemeInfo = {}
+    Object.keys(this.customThemeInfo).forEach(themeName => {
+      customThemeInfo[themeName] = {
+        theme: { colorSet: this.customThemeInfo[themeName].theme.colorSet, toFavIconPath: 'google_plus' }
+      }
+    })
+    localStorage.setItem('customThemeInfo', JSON.stringify(customThemeInfo))
   }
 
   public getThemeInfoByThemeName (themeName: string) {
