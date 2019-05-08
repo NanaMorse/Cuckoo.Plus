@@ -7,6 +7,10 @@ class Formatter {
   // todo fix test
   private delRegex = /(^|\s)-.*-($|\s|\.|,|\?|!|~)/g
 
+  private boldRegex = /(^|\s)\*.*\*($|\s|\.|,|\?|!|~)/g
+
+  private italicRegex = /(^|\s)_.*_($|\s|\.|,|\?|!|~)/g
+
   private customEmojiMap: {
     [index: string]: mastodonentities.Emoji
   } = {}
@@ -17,16 +21,30 @@ class Formatter {
     })
   }
 
+  private insertSomething (regex: RegExp, fragment: string, tag: string) {
+    return (text: string) => {
+      return text.replace(regex, (matchString: string, p1, p2, index) => {
+        const trimString = matchString.trim()
+
+        const isFinalCharacterDel = trimString[trimString.length - 1] === `${fragment}`
+        const isMatchStringFinalPixel = (index + matchString.length) === text.length && isFinalCharacterDel
+        const centralSubString = trimString.substring(1, trimString.length - ( isFinalCharacterDel ? 1 : 2 ))
+
+        return `${matchString[0] === ' ' ? ' ' : ''}<${tag}>${centralSubString}</${tag}>${isMatchStringFinalPixel ? '' : matchString[matchString.length - 1]}`
+      })
+    }
+  }
+
   public insertDels (text: string): string {
-    return text.replace(this.delRegex, (matchString: string, p1, p2, index) => {
-      const trimString = matchString.trim()
+    return this.insertSomething(this.delRegex, '-', 'del')(text)
+  }
 
-      const isFinalCharacterDel = trimString[trimString.length - 1] === '-'
-      const isMatchStringFinalPixel = (index + matchString.length) === text.length && isFinalCharacterDel
-      const centralSubString = trimString.substring(1, trimString.length - ( isFinalCharacterDel ? 1 : 2 ))
+  public insertBolds (text: string): string {
+    return this.insertSomething(this.boldRegex, '*', 'strong')(text)
+  }
 
-      return `${matchString[0] === ' ' ? ' ' : ''}<del>${centralSubString}</del>${isMatchStringFinalPixel ? '' : matchString[matchString.length - 1]}`
-    })
+  public insetItalic (text) {
+    return this.insertSomething(this.italicRegex, '_', 'i')(text)
   }
 
   private insertCustomEmojis (text: string): string {
@@ -48,7 +66,7 @@ class Formatter {
   }
 
   public format (text: string, customEmojis: Array<mastodonentities.Emoji> = []): string {
-    return [this.insertDels, this.insertCustomEmojis].reduce((preValue, process) => {
+    return [this.insertDels, this.insertBolds, this.insetItalic, this.insertCustomEmojis].reduce((preValue, process) => {
       return process.bind(this)(preValue)
     }, text)
   }

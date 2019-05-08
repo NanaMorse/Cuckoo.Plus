@@ -20,7 +20,8 @@ if (isEnvProduction) {
   fs.unlink(path.join(__dirname, './public/dist/bundle.js.map'), (err) => {})
   plugins.push(new MinifyPlugin())
 } else {
-  plugins.push(new BundleAnalyzerPlugin())
+  // plugins.push(new BundleAnalyzerPlugin())
+
 }
 
 module.exports = {
