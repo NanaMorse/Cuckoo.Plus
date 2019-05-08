@@ -1,6 +1,4 @@
-import baseColor from '../basecolor'
-
-const colorSet = Object.assign({}, baseColor, {
+const colorSet = {
   '@primaryColor': '#db4437',
   '@secondaryColor': '#2b90d9',
   '@trackColor': '#bdbdbd',
@@ -11,7 +9,7 @@ const colorSet = Object.assign({}, baseColor, {
 
   '@backgroundColor': '#f1f1f1',
   '@dialogBackgroundColor': '#fff'
-})
+}
 
 export default {
   colorSet,

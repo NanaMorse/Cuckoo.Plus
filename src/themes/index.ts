@@ -12,22 +12,22 @@ import baseColor from './basecolor'
 const presetThemeInfo = {
   [ThemeNames.GOOGLE_PLUS]: {
     theme: googlePlusTheme,
-    less: stylePattern(googlePlusTheme.colorSet),
+    less: stylePattern(Object.assign({}, baseColor, googlePlusTheme.colorSet)),
     css: null,
   },
   [ThemeNames.DARK]: {
     theme: darkTheme,
-    less: stylePattern(darkTheme.colorSet),
+    less: stylePattern(Object.assign({}, baseColor, darkTheme.colorSet)),
     css: null,
   },
   [ThemeNames.GREEN_LIGHT]: {
     theme: greenLightTheme,
-    less: stylePattern(greenLightTheme.colorSet),
+    less: stylePattern(Object.assign({}, baseColor, greenLightTheme.colorSet)),
     css: null
   },
   [ThemeNames.CUCKOO_HUB]: {
     theme: cuckooHubTheme,
-    less: stylePattern(cuckooHubTheme.colorSet),
+    less: stylePattern(Object.assign({}, baseColor, cuckooHubTheme.colorSet)),
     css: null
   }
 }
@@ -71,8 +71,9 @@ class ThemeManager {
   }
 
   private setThemeCssByThemeName (themeName: string) {
-    if (!this.themeInfo[themeName].less) {
-      this.themeInfo[themeName].less = stylePattern(this.themeInfo[themeName].theme.colorSet)
+    // todo fix custom localStorage data error
+    if (!this.themeInfo[themeName].less || this.customThemeInfo[themeName]) {
+      this.themeInfo[themeName].less = stylePattern(Object.assign({}, baseColor, this.themeInfo[themeName].theme.colorSet))
     }
 
     if (this.themeInfo[themeName].css) {
@@ -88,7 +89,7 @@ class ThemeManager {
   private addCustomThemeInfo (themeColorSet, themeName) {
     this.customThemeInfo[themeName] = {
       theme: { colorSet: themeColorSet, toFavIconPath: 'google_plus' },
-      less: stylePattern(themeColorSet),
+      less: stylePattern(Object.assign({}, baseColor, themeColorSet)),
       css: null
     }
 
