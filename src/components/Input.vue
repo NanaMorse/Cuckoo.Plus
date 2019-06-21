@@ -360,6 +360,10 @@
       .media-loading-wrapper {
         height: 100%;
         position: relative;
+
+        img {
+          width: auto;
+        }
       }
 
       .remove-icon-wrapper {
