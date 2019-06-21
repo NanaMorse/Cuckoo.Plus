@@ -2,22 +2,10 @@
   <div class="media-panel-container" v-if="combinedMediaList.length > 0">
     <div class="media-area" ref="mediaArea" :style="mediaAreaScrollStyle"
          :class="{ 'single-media-area': combinedMediaList.length === 1 }">
-      <div class="media-item" v-for="(media, index) in combinedMediaList"
-           @click="onMediaItemClick(index)">
-        <img v-if="media.type === mediaTypes.IMAGE"
-             :class="[shouldShowSensitiveCover && 'sensitive-hide']"
-             :src="media.url" :key="index"/>
-
-        <div class="gifv-container" v-if="media.type === mediaTypes.GIFV || media.type === mediaTypes.VIDEO">
-          <video width="100%" controls :loop="media.type === mediaTypes.GIFV"
-                 :class="[shouldShowSensitiveCover && 'sensitive-hide']"
-                 :src="media.url" :key="index" />
-        </div>
-
-        <mu-button class="hide-sensitive-btn" v-show="!shouldShowSensitiveCover" @click.stop="shouldShowSensitiveCover = true">
-          <mu-icon value="visibility_off"/>
-        </mu-button>
-      </div>
+      <place-holder-media-item class="media-item" v-for="(media, index) in combinedMediaList" :key="index"
+                               @click.native="onMediaItemClick(index)" :holderStyle="getMediaSizeStyle(index)"
+                               :url="media.url" :mediaType="media.type"
+                               :shouldShowSensitiveCover.sync="shouldShowSensitiveCover"/>
 
       <div class="sensitive-alert-cover" v-show="shouldShowSensitiveCover" @click="shouldShowSensitiveCover = false">
         <p v-html="$t($i18nTags.statusCard.sensitive_media_alert)"></p>
@@ -50,12 +38,20 @@
   import { State } from 'vuex-class'
   import { AttachmentTypes } from '@/constant'
   import { mastodonentities } from '@/interface'
+  import PlaceHolderMediaItem from './PlaceHolderMediaItem'
+  import ImageMeta = mastodonentities.ImageMeta
+  import GifvMeta = mastodonentities.GifvMeta
 
-  @Component({})
+  @Component({
+    components: {
+      'place-holder-media-item': PlaceHolderMediaItem
+    }
+  })
   class MediaPanel extends Vue {
 
     $refs: {
       mediaArea: HTMLDivElement
+      mediaPanelContainer: HTMLDivElement
       lightBox: {
         $el: HTMLDivElement
       }
@@ -71,7 +67,19 @@
 
     manuallyShowSensitiveCover: boolean = null
 
+    isMounted: boolean = false
+
     onLightBoxClick () { }
+
+    mounted () {
+      this.isMounted = true
+    }
+
+    get mediaAreaWidth () {
+      if (!this.isMounted) return null
+
+      return this.$refs.mediaArea.clientWidth
+    }
 
     get mediaAreaScrollStyle () {
       if (this.shouldShowSensitiveCover) {
@@ -81,6 +89,46 @@
       } else {
         return null
       }
+    }
+
+    //
+    getMediaSizeStyle (mediaIndex: number) {
+      if (!this.isMounted) return {}
+
+      if (this.combinedMediaList.length === 1) {
+
+        let aspect: number = 1
+
+        // for normal media list
+        if (this.mediaList.length === 1) {
+          const mediaType = this.mediaList[0].type
+
+          if (mediaType === AttachmentTypes.IMAGE) {
+            aspect = (this.mediaList[0].meta as ImageMeta).original.aspect
+          }
+
+          else if (mediaType === AttachmentTypes.VIDEO || mediaType === AttachmentTypes.GIFV) {
+            const originInfo = (this.mediaList[0].meta as GifvMeta).original
+            aspect = originInfo.width / originInfo.height
+          }
+        }
+
+        // for pixiv cards
+        if (this.pixivCards.length === 1) {
+          // pixiv cards media size is 1050 * 550 by now
+          aspect = 1050 / 550
+        }
+
+        return { height: `${this.mediaAreaWidth / aspect}px` }
+      } else if (this.combinedMediaList.length > 1) {
+
+        // multi media's height was static by now
+        const height = 212
+
+        return { width: `${height * (this.mediaList[mediaIndex].meta as ImageMeta).original.aspect}px` }
+      }
+
+      return {}
     }
 
     get shouldShowSensitiveCover () {
@@ -161,22 +209,6 @@
 <style lang="less" scoped>
   .media-panel-container {
 
-    img, video {
-      display: block;
-      cursor: zoom-in;
-      filter: blur(0);
-
-      &.sensitive-hide {
-        filter: blur(20px);
-      }
-
-      -webkit-transition: filter 200ms;
-      -moz-transition: filter 200ms;
-      -ms-transition: filter 200ms;
-      -o-transition: filter 200ms;
-      transition: filter 200ms;
-    }
-
     .media-area {
       position: relative;
 
@@ -184,14 +216,6 @@
         width: 100%;
         height: auto;
         padding-left: 0;
-
-        .media-item {
-          width: 100%;
-
-          img {
-            width: 100%;
-          }
-        }
 
       }
 
@@ -215,6 +239,24 @@
 </style>
 
 <style lang="less">
+  .media-panel-container {
+    img, video {
+      display: block;
+      cursor: zoom-in;
+      filter: blur(0);
+
+      &.sensitive-hide {
+        filter: blur(20px);
+      }
+
+      -webkit-transition: filter 200ms;
+      -moz-transition: filter 200ms;
+      -ms-transition: filter 200ms;
+      -o-transition: filter 200ms;
+      transition: filter 200ms;
+    }
+  }
+
   .hide-sensitive-btn {
     position: absolute;
     left: 6px;

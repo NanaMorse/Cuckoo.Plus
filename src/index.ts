@@ -61,7 +61,7 @@ if ('serviceWorker' in navigator && (process.env.NODE_ENV !== 'develop')) {
 }
 
 if (process.env.NODE_ENV === 'develop') {
-  navigator.serviceWorker.getRegistrations()
+  navigator.serviceWorker && navigator.serviceWorker.getRegistrations()
     .then(registrations => {
       for(let registration of registrations) {
         registration.unregister()

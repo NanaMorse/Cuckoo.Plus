@@ -151,16 +151,7 @@ a {
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   white-space: nowrap;
-
-  &.single-media-area {
-    .media-item {
-      margin: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-  }
-
+  
   .media-item {
     margin-right: 8px;
     position: relative;
@@ -171,6 +162,20 @@ a {
       width: auto;
       height: 100%;
       display: block;
+    }
+  }
+
+  &.single-media-area {
+    .media-item {
+      margin: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    
+    img {
+      width: 100%;
+      height: auto;
     }
   }
 }
