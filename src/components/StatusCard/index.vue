@@ -18,7 +18,7 @@
 
       <mu-card-text v-if="!status.reblog && status.content" v-show="(status.spoiler_text ? shouldShowContentWhileSpoilerExists : true)"
                     class="status-content main-status-content"
-                    v-html="status.content" />
+                    v-html="status.content" :style="mainStatusContentStyle"/>
 
       <mu-divider v-if="!status.media_attachments.length && !(status.pixiv_cards || []).length"/>
 
@@ -131,6 +131,8 @@
 
     @Prop() status: mastodonentities.Status
 
+    @Prop() shouldCollapseContent: boolean
+
     get shouldShowContentWhileSpoilerExists () {
       if (typeof this.shouldShowContentWhileSpoilerExists_ === 'boolean') {
         return this.shouldShowContentWhileSpoilerExists_
@@ -151,6 +153,13 @@
       }).filter(s => s).sort((a, b) => {
         return new Date(a.created_at) >= new Date(b.created_at) ? 1 : -1
       })
+    }
+
+    get mainStatusContentStyle () {
+      return this.shouldCollapseContent ? {
+        'max-height': '500px',
+        'overflow': 'auto'
+      } : null
     }
 
     @Watch('shouldShowFullReplyActionArea')

@@ -13,6 +13,7 @@
           <template v-for="status in getRootStatuses(timeLineName.split('/')[0], timeLineName.split('/')[1])">
             <status-card v-masonry-item class="status-card-container" :ref="`${timeLineName}_statusCard_${status.id}`"
                          @statusCardFocus="onStatusCardFocus(status.id)"
+                         :shouldCollapseContent="true"
                          :key="status.id" :status="status" :style="[statusCardStyle,
                          isTimeLineNameEqualCurrentRoute(timeLineName) &&
                          currentFocusCardId === status.id && cardFocusStyle]"/>
