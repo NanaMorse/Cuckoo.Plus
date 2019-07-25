@@ -1,0 +1,4 @@
+#!/bin/bash
+# Usage: ./compare en.ts ja.ts
+diff <(cut -f 1 -d: "$1") <(cut -f 1 -d: "$2")
+
