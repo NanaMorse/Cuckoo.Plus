@@ -101,6 +101,9 @@
 
         // for normal media list
         if (this.mediaList.length === 1) {
+
+          if (!this.mediaList[0].meta) return {}
+
           const mediaType = this.mediaList[0].type
 
           if (mediaType === AttachmentTypes.IMAGE) {
