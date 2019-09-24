@@ -20,6 +20,11 @@
                     class="status-content main-status-content"
                     v-html="status.content" :style="mainStatusContentStyle"/>
 
+      <div v-if="!status.reblog && hasLinkCardInfo" class="main-link-preview-area">
+        <mu-divider class="link-preview-divider"/>
+        <link-preview-panel :cardInfo="cardMap[status.id]"/>
+      </div>
+
       <mu-divider v-if="!status.media_attachments.length && !(status.pixiv_cards || []).length"/>
 
       <div v-if="!status.reblog" class="main-attachment-area">
@@ -35,6 +40,12 @@
           </a>
           <mu-card-text v-if="status.reblog.content" class="status-content reblog-status-content" v-html="status.reblog.content" />
         </div>
+
+        <div v-if="reblogHasLinkCardInfo" class="main-link-preview-area">
+          <mu-divider class="link-preview-divider"/>
+          <link-preview-panel :cardInfo="cardMap[status.reblog.id]"/>
+        </div>
+
         <div class="reblog-attachment-area">
           <media-panel :mediaList="status.reblog.media_attachments" :pixivCards="status.reblog.pixiv_cards" :sensitive="status.reblog.sensitive"/>
         </div>
@@ -79,6 +90,7 @@
 
   import CardHeader from './CardHeader'
   import MediaPanel from './MediaPanel'
+  import LinkPreviewPanel from './LinkPreviewPanel'
   import FullReplyListItem from './FullReplyListItem'
   import SimpleActionBar from './SimpleActionBar'
   import FullActionBar from './FullActionBar'
@@ -89,6 +101,7 @@
     components: {
       'card-header': CardHeader,
       'media-panel': MediaPanel,
+      'link-preview-panel': LinkPreviewPanel,
       'full-reply-list-item': FullReplyListItem,
       'simple-action-bar': SimpleActionBar,
       'full-action-bar': FullActionBar,
@@ -107,6 +120,7 @@
 
     @State('contextMap') contextMap
     @State('statusMap') statusMap
+    @State('cardMap') cardMap
     @State('currentUserAccount') currentUserAccount: mastodonentities.AuthenticatedAccount
     @State('appStatus') appStatus
 
@@ -132,6 +146,19 @@
     @Prop() status: mastodonentities.Status
 
     @Prop() shouldCollapseContent: boolean
+
+    get hasLinkCardInfo () {
+      return this.cardMap[this.status.id]
+        && (Object.keys(this.cardMap[this.status.id]).length !== 0)
+        && this.cardMap[this.status.id].type === 'link'
+    }
+
+    get reblogHasLinkCardInfo () {
+      return this.status.reblog &&
+        this.cardMap[this.status.reblog.id] &&
+        (Object.keys(this.cardMap[this.status.reblog.id]).length !== 0) &&
+        this.cardMap[this.status.reblog.id].type === 'link'
+    }
 
     get shouldShowContentWhileSpoilerExists () {
       if (typeof this.shouldShowContentWhileSpoilerExists_ === 'boolean') {
@@ -260,6 +287,13 @@
 
   .main-status-content {
     padding: 0 16px 16px;
+  }
+
+  .main-link-preview-area {
+    padding: 0 16px 16px 16px;
+    .link-preview-divider {
+      margin-bottom: 16px;
+    }
   }
 
   .main-attachment-area {

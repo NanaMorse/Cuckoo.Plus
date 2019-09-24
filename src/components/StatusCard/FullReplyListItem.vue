@@ -31,6 +31,10 @@
                     v-show="(status.spoiler_text ? shouldShowContentWhileSpoilerExists : true)"
                     v-html="status.content"></mu-card-text>
 
+      <div v-if="!status.reblog && hasLinkCardInfo" class="full-reply-link-preview-area">
+        <link-preview-panel :cardInfo="cardMap[status.id]"/>
+      </div>
+
       <div class="full-reply-attachment-area">
         <media-panel :mediaList="status.media_attachments" :pixivCards="status.pixiv_cards" :sensitive="status.sensitive"/>
       </div>
@@ -82,10 +86,12 @@
   import * as moment from 'moment'
   import { mastodonentities } from "@/interface"
   import MediaPanel from './MediaPanel'
+  import LinkPreviewPanel from './LinkPreviewPanel'
 
   @Component({
     components: {
-      'media-panel': MediaPanel
+      'media-panel': MediaPanel,
+      'link-preview-panel': LinkPreviewPanel,
     }
   })
   class FullReplyListItem extends Vue {
@@ -102,6 +108,7 @@
 
     @Prop() status: mastodonentities.Status
 
+    @State('cardMap') cardMap
     @State('currentUserAccount') currentUserAccount: mastodonentities.AuthenticatedAccount
 
     @Action('updateFavouriteStatusById') updateFavouriteStatusById
@@ -119,6 +126,12 @@
     shouldShowContentWhileSpoilerExists: boolean = false
 
     rightAreaStyle = null
+
+    get hasLinkCardInfo () {
+      return this.cardMap[this.status.id]
+        && (Object.keys(this.cardMap[this.status.id]).length !== 0)
+        && this.cardMap[this.status.id].type === 'link'
+    }
 
     mounted () {
       this.rightAreaStyle = {
@@ -223,6 +236,10 @@
 
       .full-reply-status-content {
         padding: 0;
+      }
+
+      .full-reply-link-preview-area {
+        margin: 12px 0 0 4px;
       }
 
       .reply-action-list {
