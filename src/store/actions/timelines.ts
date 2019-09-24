@@ -65,12 +65,7 @@ export default {
 
           Object.keys(newContextMap).length && commit('updateContextMap', newContextMap)
           // also update status map
-          if (Object.keys(newStatusMap).length) {
-            commit('updateStatusMap', newStatusMap)
-            Object.keys(newStatusMap).forEach(statusId => {
-              dispatch('updateCardMap', statusId)
-            })
-          }
+          Object.keys(newStatusMap).length && commit('updateStatusMap', newStatusMap)
         })
       }
 

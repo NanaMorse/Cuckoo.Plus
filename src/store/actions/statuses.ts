@@ -76,10 +76,6 @@ const statuses = {
       ancestors.forEach(status => newStatusMap[status.id] = status)
       descendants.forEach(status => newStatusMap[status.id] = status)
       commit('updateStatusMap', newStatusMap)
-
-      Object.keys(newStatusMap).forEach(statusId => {
-        dispatch('updateCardMap', statusId)
-      })
     } catch (e) {
 
     }
