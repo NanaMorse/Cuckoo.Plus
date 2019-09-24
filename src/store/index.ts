@@ -9,7 +9,15 @@ import { UiWidthCheckConstants, ThemeNames, I18nLocales, VisibilityTypes } from 
 Vue.use(Vuex)
 
 function getLocalSetting (tag, defaultValue) {
-  return localStorage.getItem(tag) ? JSON.parse(localStorage.getItem(tag)) : defaultValue
+  const stringData = localStorage.getItem(tag)
+
+  if (!stringData) return defaultValue
+
+  const parsedData = JSON.parse(stringData)
+
+  if (Object.keys(parsedData).length >= 500) return defaultValue
+
+  return parsedData
 }
 
 const state: cuckoostore.stateInfo = {
@@ -38,6 +46,8 @@ const state: cuckoostore.stateInfo = {
   contextMap: getLocalSetting('contextMap', {}),
 
   statusMap: getLocalSetting('statusMap', {}),
+
+  cardMap: getLocalSetting('cardMap', {}),
 
   customEmojis: getLocalSetting('customEmojis', []),
 

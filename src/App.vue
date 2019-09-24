@@ -37,6 +37,7 @@
     @State('timelines') timelines
     @State('contextMap') contextMap
     @State('statusMap') statusMap
+    @State('cardMap') cardMap
 
     @Mutation('updateDocumentWidth') updateDocumentWidth
 
@@ -75,6 +76,7 @@
         // save statusMap
         localStorage.setItem('statusMap', JSON.stringify(this.statusMap))
 
+        localStorage.setItem('cardMap', JSON.stringify(this.cardMap))
       })
     }
   }
@@ -102,7 +104,7 @@
 <style lang="less">
   body {
     height: 100%;
-    font-family: Arial,Helvetica,sans-serif;
+    font-family: Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
   }
 
   a, .mu-load-more {

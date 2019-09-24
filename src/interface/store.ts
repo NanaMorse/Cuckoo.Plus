@@ -27,6 +27,10 @@ export namespace cuckoostore {
       }
     }
 
+    cardMap: {
+      [statusId: string]: mastodonentities.Card
+    }
+
     statusMap: {
       [statusId: string]: mastodonentities.Status
     }

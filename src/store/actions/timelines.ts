@@ -65,7 +65,12 @@ export default {
 
           Object.keys(newContextMap).length && commit('updateContextMap', newContextMap)
           // also update status map
-          Object.keys(newStatusMap).length && commit('updateStatusMap', newStatusMap)
+          if (Object.keys(newStatusMap).length) {
+            commit('updateStatusMap', newStatusMap)
+            Object.keys(newStatusMap).forEach(statusId => {
+              dispatch('updateCardMap', statusId)
+            })
+          }
         })
       }
 
@@ -73,7 +78,9 @@ export default {
       const newStatusMap = {}
       result.data.forEach(status => newStatusMap[status.id] = status)
       commit('updateStatusMap', newStatusMap)
-
+      Object.keys(newStatusMap).forEach(statusId => {
+        dispatch('updateCardMap', statusId)
+      })
       commit(mutationName, { newStatusIdList: result.data.map(status => status.id), timeLineType, hashName })
 
       return result

@@ -246,4 +246,31 @@ export namespace mastodonentities {
     // Whether the user is currently endorsing the account
     endorsed: boolean
   }
+
+  export interface Card {
+    // The url associated with the card
+    url: string
+    // The title of the card
+    title: string
+    // The card description
+    description: string
+    // The image associated with the card, if any	yes
+    image: string
+    // "link", "photo", "video", or "rich"
+    type: string
+    // OEmbed data
+    author_name: string
+    // OEmbed data
+    author_url: string
+    // OEmbed data	yes
+    provider_name: string
+    // OEmbed data	yes
+    provider_url: string
+    // OEmbed data	yes
+    html: string
+    // OEmbed data	yes
+    width: number
+    // OEmbed data
+    height: number
+  }
 }

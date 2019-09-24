@@ -24,6 +24,7 @@ const statuses = {
       const result = await api.statuses.getStatusById(statusId)
       commit('updateStatusMap', { [statusId]: result.data })
       dispatch('updateContextMap', statusId)
+      dispatch('updateCardMap', statusId)
     } catch (e) {
       throw new Error(e)
     }
@@ -58,7 +59,7 @@ const statuses = {
     }
   },
 
-  async updateContextMap ({ commit }, statusId: string) {
+  async updateContextMap ({ commit, dispatch }, statusId: string) {
     if (!statusId) throw new Error('unknown status id!')
 
     try {
@@ -75,6 +76,23 @@ const statuses = {
       ancestors.forEach(status => newStatusMap[status.id] = status)
       descendants.forEach(status => newStatusMap[status.id] = status)
       commit('updateStatusMap', newStatusMap)
+
+      Object.keys(newStatusMap).forEach(statusId => {
+        dispatch('updateCardMap', statusId)
+      })
+    } catch (e) {
+
+    }
+  },
+
+  async updateCardMap (store, statusId: string) {
+    if (store.state.statusMap[statusId].pixiv_cards.length > 0) return
+
+    if (store.state.cardMap[statusId]) return
+
+    try {
+      const result = await api.statuses.getStatusCardInfoById(statusId)
+      store.commit('updateCardMap', { [statusId]: result.data })
     } catch (e) {
 
     }
@@ -101,7 +119,7 @@ const statuses = {
 
       // update status map
       commit('updateStatusMap', { [result.data.id]: result.data })
-
+      dispatch('updateCardMap', result.data.id)
     } catch (e) {
       throw new Error(e)
     }
