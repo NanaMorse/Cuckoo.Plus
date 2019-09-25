@@ -125,6 +125,8 @@
         return { height: `${this.mediaAreaWidth / aspect}px` }
       } else if (this.combinedMediaList.length > 1) {
 
+        if (!this.mediaList[mediaIndex].meta) return {}
+
         // multi media's height was static by now
         const height = 212
 
