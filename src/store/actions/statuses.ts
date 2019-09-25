@@ -82,6 +82,8 @@ const statuses = {
   },
 
   async updateCardMap (store, statusId: string) {
+    if (!store.state.statusMap[statusId].pixiv_cards) return
+
     if (store.state.statusMap[statusId].pixiv_cards.length > 0) return
 
     if (store.state.cardMap[statusId]) return
