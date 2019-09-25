@@ -28,7 +28,9 @@
       <mu-divider v-if="!status.media_attachments.length && !(status.pixiv_cards || []).length"/>
 
       <div v-if="!status.reblog" class="main-attachment-area">
-        <media-panel :mediaList="status.media_attachments" :pixivCards="status.pixiv_cards" :sensitive="status.sensitive"/>
+        <media-panel :mediaList="status.media_attachments"
+                     :pixivCards="status.pixiv_cards"
+                     :cardInfo="mainStatusCardInfo" :sensitive="status.sensitive"/>
       </div>
 
       <div v-if="status.reblog" class="reblog-area">
@@ -47,7 +49,10 @@
         </div>
 
         <div class="reblog-attachment-area">
-          <media-panel :mediaList="status.reblog.media_attachments" :pixivCards="status.reblog.pixiv_cards" :sensitive="status.reblog.sensitive"/>
+          <media-panel
+            :mediaList="status.reblog.media_attachments"
+            :pixivCards="status.reblog.pixiv_cards"
+            :cardInfo="cardMap[status.reblog.id]" :sensitive="status.reblog.sensitive"/>
         </div>
       </div>
 
@@ -87,6 +92,7 @@
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State, Getter } from 'vuex-class'
   import { mastodonentities } from '@/interface'
+  import { StatusCardTypes } from '@/constant'
 
   import CardHeader from './CardHeader'
   import MediaPanel from './MediaPanel'
@@ -147,17 +153,21 @@
 
     @Prop() shouldCollapseContent: boolean
 
-    get hasLinkCardInfo () {
+    get mainStatusCardInfo (): mastodonentities.Card {
       return this.cardMap[this.status.id]
-        && (Object.keys(this.cardMap[this.status.id]).length !== 0)
-        && this.cardMap[this.status.id].type === 'link'
+    }
+
+    get hasLinkCardInfo () {
+      return this.mainStatusCardInfo &&
+        (Object.keys(this.mainStatusCardInfo).length !== 0)
+        && this.mainStatusCardInfo.type === StatusCardTypes.LINK
     }
 
     get reblogHasLinkCardInfo () {
       return this.status.reblog &&
         this.cardMap[this.status.reblog.id] &&
         (Object.keys(this.cardMap[this.status.reblog.id]).length !== 0) &&
-        this.cardMap[this.status.reblog.id].type === 'link'
+        this.cardMap[this.status.reblog.id].type === StatusCardTypes.LINK
     }
 
     get shouldShowContentWhileSpoilerExists () {

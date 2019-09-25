@@ -59,6 +59,11 @@ const StreamingEventTypes = {
 
 const TITLE = 'Cuckoo+'
 
+const StatusCardTypes = {
+  LINK: 'link',
+  PHOTO: 'photo'
+}
+
 export {
   AttachmentTypes,
   TimeLineTypes,
@@ -67,5 +72,6 @@ export {
   ThemeNames,
   NotificationTypes,
   StreamingEventTypes,
-  TITLE
+  TITLE,
+  StatusCardTypes
 }
