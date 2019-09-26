@@ -48,6 +48,7 @@
         height: 110px;
         margin-right: 16px;
         flex-shrink: 0;
+        object-fit: cover;
       }
 
       .text-area {
