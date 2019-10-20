@@ -18,7 +18,7 @@ const plugins = [
 if (isEnvProduction) {
   // remove source map data
   fs.unlink(path.join(__dirname, './public/dist/bundle.js.map'), (err) => {})
-  plugins.push(new MinifyPlugin())
+  // plugins.push(new MinifyPlugin())
 } else {
   // plugins.push(new BundleAnalyzerPlugin())
 
