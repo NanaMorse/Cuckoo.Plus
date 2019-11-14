@@ -42,6 +42,7 @@
     .content-area {
       display: flex;
       align-items: center;
+      overflow: hidden;
 
       .preview-image {
         width: 110px;

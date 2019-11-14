@@ -1,6 +1,6 @@
 {
   "name": "cuckoo.plus",
-  "version": "0.3.17",
+  "version": "0.3.18",
   "description": "A third-party client for mastodon",
   "scripts": {
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
@@ -13,6 +13,7 @@
     "crypto-js": "^3.1.9-1",
     "express": "^4.16.4",
     "file-saver": "^2.0.1",
+    "jquery": "^3.4.1",
     "less": "^3.9.0",
     "masonry-layout": "^4.2.2",
     "moment": "^2.22.2",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@types/chai": "^4.1.6",
     "@types/crypto-js": "^3.1.43",
+    "@types/jquery": "^3.3.31",
     "@types/less": "^3.0.0",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.11.7",
