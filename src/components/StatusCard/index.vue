@@ -142,7 +142,7 @@
     if (!url.searchParams.has('id')) return null
 
     const id = url.searchParams.get('id')
-    return `//music.163.com/outchain/player?type=2&id=${id}&auto=1&height=66`
+    return `//music.163.com/outchain/player?type=2&id=${id}&auto=0&height=66`
   }
 
   function generateYoutubeVideoFrameLink (originLink: string) {
