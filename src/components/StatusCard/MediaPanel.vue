@@ -36,7 +36,7 @@
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State } from 'vuex-class'
-  import { AttachmentTypes } from '@/constant'
+  import { AttachmentTypes, StatusCardTypes } from '@/constant'
   import { mastodonentities } from '@/interface'
   import PlaceHolderMediaItem from './PlaceHolderMediaItem'
   import ImageMeta = mastodonentities.ImageMeta
@@ -61,6 +61,8 @@
 
     @Prop({ default: () => [] }) pixivCards?: Array<{ url: string, image_url: string }>
 
+    @Prop({ default: () => {} }) cardInfo: mastodonentities.Card
+
     @Prop() sensitive?: boolean
 
     @State('appStatus') appStatus
@@ -70,6 +72,27 @@
     isMounted: boolean = false
 
     onLightBoxClick () { }
+
+    get fixedPixivCards () {
+      if (this.mediaList.length) {
+        return []
+      }
+
+      return this.pixivCards
+    }
+
+    get fixedCardInfo () {
+      if (this.mediaList.length ||
+        this.fixedPixivCards.length) {
+        return null
+      }
+
+      if (!this.cardInfo || (this.cardInfo.type !== StatusCardTypes.PHOTO)) {
+        return null
+      }
+
+      return this.cardInfo
+    }
 
     mounted () {
       this.isMounted = true
@@ -101,6 +124,9 @@
 
         // for normal media list
         if (this.mediaList.length === 1) {
+
+          if (!this.mediaList[0].meta) return {}
+
           const mediaType = this.mediaList[0].type
 
           if (mediaType === AttachmentTypes.IMAGE) {
@@ -113,14 +139,20 @@
           }
         }
 
-        // for pixiv cards
-        if (this.pixivCards.length === 1) {
+        // for pixiv cards and photo type card info
+        if (this.fixedPixivCards.length === 1) {
           // pixiv cards media size is 1050 * 550 by now
           aspect = 1050 / 550
         }
 
+        if (this.fixedCardInfo) {
+          aspect = this.fixedCardInfo.width / this.fixedCardInfo.height
+        }
+
         return { height: `${this.mediaAreaWidth / aspect}px` }
       } else if (this.combinedMediaList.length > 1) {
+
+        if (!this.mediaList[mediaIndex].meta) return {}
 
         // multi media's height was static by now
         const height = 212
@@ -159,11 +191,19 @@
         return { url, type, previewUrl: item.preview_url }
       })
 
-      const pixivCardsPart = this.pixivCards.map(item => {
+      const pixivCardsPart = this.fixedPixivCards.map(item => {
         return { url: item.image_url, type: this.mediaTypes.IMAGE }
       })
 
-      return [...mediaListPart, ...pixivCardsPart]
+      const photoCardPart = []
+      if (this.fixedCardInfo) {
+        photoCardPart.push({
+          url: this.fixedCardInfo.image,
+          type: this.mediaTypes.IMAGE
+        })
+      }
+
+      return [...mediaListPart, ...pixivCardsPart, ...photoCardPart]
     }
 
     get mediaAreaClass () {

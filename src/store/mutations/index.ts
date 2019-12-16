@@ -134,6 +134,12 @@ const mutations = {
     })
   },
 
+  updateCardMap (state: cuckoostore.stateInfo, newCardMap) {
+    Object.keys(newCardMap).forEach(statusId => {
+      Vue.set(state.cardMap, statusId, newCardMap[statusId])
+    })
+  },
+
   ...oAuthInfoMutations,
   ...timelinesMutations,
   ...statusesMutations,

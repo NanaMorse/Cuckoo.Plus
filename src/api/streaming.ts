@@ -122,6 +122,7 @@ class Streaming {
 
   private initEventListener (targetWs: WebSocket, timeLineType, hashName?) {
     targetWs.onmessage = (message) => {
+     if(message.data.length) {
       const parsedMessage = JSON.parse(message.data)
 
       switch (parsedMessage.event) {
@@ -137,6 +138,7 @@ class Streaming {
           return this.emitNotification(JSON.parse(parsedMessage.payload))
         }
       }
+     }
     }
   }
 
@@ -145,6 +147,7 @@ class Streaming {
 
     // update status map
     store.commit('updateStatusMap', { [newStatus.id]: newStatus })
+    store.dispatch('updateCardMap', newStatus.id)
     if (timeLineType === TimeLineTypes.HOME) {
       prepareRootStatus(newStatus)
     }

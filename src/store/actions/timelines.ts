@@ -73,7 +73,9 @@ export default {
       const newStatusMap = {}
       result.data.forEach(status => newStatusMap[status.id] = status)
       commit('updateStatusMap', newStatusMap)
-
+      Object.keys(newStatusMap).forEach(statusId => {
+        dispatch('updateCardMap', statusId)
+      })
       commit(mutationName, { newStatusIdList: result.data.map(status => status.id), timeLineType, hashName })
 
       return result

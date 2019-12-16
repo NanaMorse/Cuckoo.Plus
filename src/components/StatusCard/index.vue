@@ -1,5 +1,5 @@
 <template>
-  <div class="status-card-container" @dragenter="onDragFileOver">
+  <div class="status-card-container" @dragenter="onDragFileOver" ref="statusCardContainer">
     <mu-card class="status-card status-card-bg-color" v-loading="isCardLoading"
              v-drag-over="isFileDragOver"
              @cuckooDragOver="onDragFileOver"
@@ -18,12 +18,34 @@
 
       <mu-card-text v-if="!status.reblog && status.content" v-show="(status.spoiler_text ? shouldShowContentWhileSpoilerExists : true)"
                     class="status-content main-status-content"
-                    v-html="status.content" />
+                    v-html="status.content" :style="mainStatusContentStyle"/>
+
+      <div v-if="neteaseMusicLink" class="netease-music-panel">
+        <iframe class="netease-music-iframe" frameborder="no" border="0"
+                marginwidth="0" marginheight="0" height=86
+                :src="neteaseMusicLink"></iframe>
+      </div>
+
+      <div v-if="youtubeVideoLink" class="youtube-video-panel">
+        <iframe class="youtube-video-iframe"
+                :height="youtubeVideoIFrameHeight"
+                :src="youtubeVideoLink"
+                frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+      </div>
+
+      <div v-if="!status.reblog && hasLinkCardInfo" class="main-link-preview-area">
+        <mu-divider class="link-preview-divider"/>
+        <link-preview-panel :cardInfo="cardMap[status.id]"/>
+      </div>
 
       <mu-divider v-if="!status.media_attachments.length && !(status.pixiv_cards || []).length"/>
 
       <div v-if="!status.reblog" class="main-attachment-area">
-        <media-panel :mediaList="status.media_attachments" :pixivCards="status.pixiv_cards" :sensitive="status.sensitive"/>
+        <media-panel :mediaList="status.media_attachments"
+                     :pixivCards="status.pixiv_cards"
+                     :cardInfo="mainStatusCardInfo" :sensitive="status.sensitive"/>
       </div>
 
       <div v-if="status.reblog" class="reblog-area">
@@ -35,8 +57,32 @@
           </a>
           <mu-card-text v-if="status.reblog.content" class="status-content reblog-status-content" v-html="status.reblog.content" />
         </div>
+
+        <div v-if="reblogNeteaseMusicLink" class="netease-music-panel">
+          <iframe class="netease-music-iframe" frameborder="no" border="0"
+                  marginwidth="0" marginheight="0" height=86
+                  :src="reblogNeteaseMusicLink"></iframe>
+        </div>
+
+        <div v-if="reblogYoutubeVideoLink" class="youtube-video-panel">
+          <iframe class="youtube-video-iframe"
+                  :height="youtubeVideoIFrameHeight"
+                  :src="reblogYoutubeVideoLink"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+        </div>
+
+        <div v-if="reblogHasLinkCardInfo" class="main-link-preview-area">
+          <mu-divider class="link-preview-divider"/>
+          <link-preview-panel :cardInfo="cardMap[status.reblog.id]"/>
+        </div>
+
         <div class="reblog-attachment-area">
-          <media-panel :mediaList="status.reblog.media_attachments" :pixivCards="status.reblog.pixiv_cards" :sensitive="status.reblog.sensitive"/>
+          <media-panel
+            :mediaList="status.reblog.media_attachments"
+            :pixivCards="status.reblog.pixiv_cards"
+            :cardInfo="cardMap[status.reblog.id]" :sensitive="status.reblog.sensitive"/>
         </div>
       </div>
 
@@ -76,19 +122,45 @@
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State, Getter } from 'vuex-class'
   import { mastodonentities } from '@/interface'
+  import { StatusCardTypes } from '@/constant'
+  import * as $ from 'jquery'
 
   import CardHeader from './CardHeader'
   import MediaPanel from './MediaPanel'
+  import LinkPreviewPanel from './LinkPreviewPanel'
   import FullReplyListItem from './FullReplyListItem'
   import SimpleActionBar from './SimpleActionBar'
   import FullActionBar from './FullActionBar'
 
   import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
 
+  function generateNetEaseMusicFrameLink (originLink: string) {
+    if (!originLink) return null
+
+    const url = new URL(originLink)
+
+    if (!url.searchParams.has('id')) return null
+
+    const id = url.searchParams.get('id')
+    return `//music.163.com/outchain/player?type=2&id=${id}&auto=0&height=66`
+  }
+
+  function generateYoutubeVideoFrameLink (originLink: string) {
+    if (!originLink) return null
+
+    const url = new URL(originLink)
+
+    if (!url.searchParams.has('v')) return null
+
+    const v = url.searchParams.get('v')
+    return `https://www.youtube.com/embed/${v}`
+  }
+
   @Component({
     components: {
       'card-header': CardHeader,
       'media-panel': MediaPanel,
+      'link-preview-panel': LinkPreviewPanel,
       'full-reply-list-item': FullReplyListItem,
       'simple-action-bar': SimpleActionBar,
       'full-action-bar': FullActionBar,
@@ -107,6 +179,7 @@
 
     @State('contextMap') contextMap
     @State('statusMap') statusMap
+    @State('cardMap') cardMap
     @State('currentUserAccount') currentUserAccount: mastodonentities.AuthenticatedAccount
     @State('appStatus') appStatus
 
@@ -127,9 +200,78 @@
 
     isFileDragOver = false
 
+    youtubeVideoIFrameHeight = 0
+
     droppedFiles: Array<File> = null
 
     @Prop() status: mastodonentities.Status
+
+    @Prop() shouldCollapseContent: boolean
+
+    mounted () {
+      this.youtubeVideoIFrameHeight = this.$refs.replyListContainer.clientWidth * 315 / 560
+    }
+
+    get mainStatusCardInfo (): mastodonentities.Card {
+      return this.cardMap[this.status.id]
+    }
+
+    get contentLinkList () {
+      return [...$(this.status.content).find('a')].map(a => {
+        return a.getAttribute('href')
+      })
+    }
+
+    get neteaseMusicLink () {
+      return generateNetEaseMusicFrameLink(
+        this.contentLinkList.find((linkString: string) =>
+          linkString.startsWith('https://music.163.com/song')
+        )
+      )
+    }
+
+    get youtubeVideoLink () {
+      return generateYoutubeVideoFrameLink(
+        this.contentLinkList.find((linkString: string) =>
+          linkString.startsWith('https://www.youtube.com/watch')
+        )
+      )
+    }
+
+    get reblogContentLinkList () {
+      return this.status.reblog ? [...$(this.status.reblog.content).find('a')].map(a => {
+        return a.getAttribute('href')
+      }) : []
+    }
+
+    get reblogNeteaseMusicLink () {
+      return generateNetEaseMusicFrameLink(
+        this.reblogContentLinkList.find((linkString: string) =>
+          linkString.startsWith('https://music.163.com/song')
+        )
+      )
+    }
+
+    get reblogYoutubeVideoLink () {
+      return generateYoutubeVideoFrameLink(
+        this.reblogContentLinkList.find((linkString: string) =>
+          linkString.startsWith('https://www.youtube.com/watch')
+        )
+      )
+    }
+
+    get hasLinkCardInfo () {
+      return this.mainStatusCardInfo &&
+        (Object.keys(this.mainStatusCardInfo).length !== 0)
+        && this.mainStatusCardInfo.type === StatusCardTypes.LINK
+    }
+
+    get reblogHasLinkCardInfo () {
+      return this.status.reblog &&
+        this.cardMap[this.status.reblog.id] &&
+        (Object.keys(this.cardMap[this.status.reblog.id]).length !== 0) &&
+        this.cardMap[this.status.reblog.id].type === StatusCardTypes.LINK
+    }
 
     get shouldShowContentWhileSpoilerExists () {
       if (typeof this.shouldShowContentWhileSpoilerExists_ === 'boolean') {
@@ -151,6 +293,13 @@
       }).filter(s => s).sort((a, b) => {
         return new Date(a.created_at) >= new Date(b.created_at) ? 1 : -1
       })
+    }
+
+    get mainStatusContentStyle () {
+      return this.shouldCollapseContent ? {
+        'max-height': '500px',
+        'overflow': 'auto'
+      } : null
     }
 
     @Watch('shouldShowFullReplyActionArea')
@@ -251,6 +400,23 @@
 
   .main-status-content {
     padding: 0 16px 16px;
+  }
+
+  .netease-music-iframe {
+    display: block;
+    width: 100%;
+  }
+
+  .youtube-video-iframe {
+    display: block;
+    width: 100%;
+  }
+
+  .main-link-preview-area {
+    padding: 0 16px 16px 16px;
+    .link-preview-divider {
+      margin-bottom: 16px;
+    }
   }
 
   .main-attachment-area {

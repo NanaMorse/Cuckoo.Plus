@@ -37,7 +37,9 @@ const statusCard = {
   [I18nTags.statusCard.do_delete_status_btn]: '削除',
   [I18nTags.statusCard.cancel_delete_status_btn]: 'キャンセル',
   [I18nTags.statusCard.originally_shared_by]: '{displayName}<span class="at-name">@{atName}</span> さんから',
-  [I18nTags.statusCard.sensitive_media_alert]: '隠されたメディア <br/> クリックで開きます'
+  [I18nTags.statusCard.sensitive_media_alert]: '隠されたメディア <br/> クリックで開きます',
+  [I18nTags.statusCard.change_visibility]: '表示/非表示を切り替え',
+  [I18nTags.statusCard.add_photos]: '画像を追加'
 }
 
 const drawer = {
@@ -60,6 +62,11 @@ const drawer = {
 const settings = {
   [I18nTags.settings.general_label]: '一般',
   [I18nTags.settings.choose_theme]: 'テーマ:',
+  [I18nTags.settings.export_theme_color_set]: 'エクスポート',
+  [I18nTags.settings.import_theme_color_set]: 'インポート',
+  [I18nTags.settings.edit_theme_color_set]: '編集',
+  [I18nTags.settings.delete_theme_color_set]: '削除',
+
   [I18nTags.settings.choose_language]: '言語:',
   [I18nTags.settings.use_multi_line_mode]: 'マルチカラムレイアウトを使う:',
   [I18nTags.settings.maximum_number_of_columns_in_multi_line_mode]: 'マルチカラムレイアウトの最大カラム数:',
