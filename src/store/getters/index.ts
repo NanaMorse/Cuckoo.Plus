@@ -27,6 +27,9 @@ const timelines = {
         .filter(status => {
           const muteStatusList = state.appStatus.settings.muteMap.statusList
           return muteStatusList.indexOf(status.id) === -1
+        }).filter(status => {
+          const muteUserList = state.appStatus.settings.muteMap.userList
+          return muteUserList.indexOf(status.account.id) === -1
         })
     }
   }

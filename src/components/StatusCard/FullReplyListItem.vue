@@ -70,9 +70,16 @@
                 :open.sync="shouldOpenMoreOperationPopOver"
                 :trigger="moreOperationTriggerBtn">
       <mu-list>
+        <mu-list-item button @click.stop="onMuteStatus">
+          <mu-list-item-title>{{$t($i18nTags.statusCard.mute_status)}}</mu-list-item-title>
+        </mu-list-item>
+        <mu-list-item button v-if="currentUserAccount.id !== status.account.id"
+                      @click.stop="onMuteUser">
+          <mu-list-item-title>{{$t($i18nTags.statusCard.mute_user)}}</mu-list-item-title>
+        </mu-list-item>
         <mu-list-item button v-if="currentUserAccount.id === status.account.id"
                       @click.stop="onDeleteStatus">
-          <mu-list-item-title>Delete</mu-list-item-title>
+          <mu-list-item-title>{{$t($i18nTags.statusCard.delete_status)}}</mu-list-item-title>
         </mu-list-item>
       </mu-list>
     </mu-popover>
@@ -82,7 +89,6 @@
 <script lang="ts">
   import { Vue, Component, Prop } from 'vue-property-decorator'
   import { Getter, Action, State } from 'vuex-class'
-  import { getVisibilityDescInfo } from '@/util'
   import * as moment from 'moment'
   import { mastodonentities } from "@/interface"
   import MediaPanel from './MediaPanel'
@@ -182,6 +188,14 @@
         this.isListItemLoading = true
         await this.deleteStatus({ statusId: this.status.id })
       }
+    }
+
+    onMuteStatus () {
+      this.$emit('muteStatus', this.status.id)
+    }
+
+    async onMuteUser () {
+      this.$emit('muteUser', this.status.account.id)
     }
 
     onItemMouseOver () {

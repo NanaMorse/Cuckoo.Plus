@@ -57,6 +57,12 @@ export default {
     localStorage.setItem('statusMuteList', JSON.stringify(statusList))
   },
 
+  updateMuteUserList (state: cuckoostore.stateInfo, userId: string) {
+    const userList: Array<string> = state.appStatus.settings.muteMap.userList
+    if (userList.indexOf(userId) === -1) userList.push(userId)
+    localStorage.setItem('userMuteList', JSON.stringify(userList))
+  },
+
   unShiftStreamStatusesPool (state: cuckoostore.stateInfo, { newStatusIdList, timeLineType, hashName }) {
     const targetStatusesPool = getTargetStatusesList(state.appStatus.streamStatusesPool, timeLineType, hashName)
     newStatusIdList = newStatusIdList.filter(id => {

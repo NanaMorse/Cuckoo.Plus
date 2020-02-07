@@ -38,6 +38,8 @@ class NotificationHandler {
     // ignore all muted status's notification
     if (newNotification.status && (store.state.appStatus.settings.muteMap.statusList.indexOf(newNotification.status) !== -1)) return
 
+    if (store.state.appStatus.settings.muteMap.userList.indexOf(newNotification.account.id) !== -1) return
+
     const nativeNotification = new Notification(title, { body: bodyText, icon: this.getImageUrl(newNotification) })
 
     nativeNotification.addEventListener('click', () => {

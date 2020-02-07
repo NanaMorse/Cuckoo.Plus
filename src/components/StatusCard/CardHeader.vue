@@ -39,6 +39,10 @@
         <mu-list-item button @click.stop="onMuteStatusByOperateList">
           <mu-list-item-title>{{$t($i18nTags.statusCard.mute_status)}}</mu-list-item-title>
         </mu-list-item>
+        <mu-list-item button v-if="currentUserAccount.id !== status.account.id"
+                      @click.stop="onMuteUserByOperateList">
+          <mu-list-item-title>{{$t($i18nTags.statusCard.mute_user)}}</mu-list-item-title>
+        </mu-list-item>
         <mu-list-item button v-if="currentUserAccount.id === status.account.id"
                       @click.stop="onDeleteStatusByOperateList">
           <mu-list-item-title>{{$t($i18nTags.statusCard.delete_status)}}</mu-list-item-title>
@@ -51,7 +55,7 @@
 
 <script lang="ts">
   import { Vue, Component, Prop } from 'vue-property-decorator'
-  import { Getter, State, Action, Mutation } from 'vuex-class'
+  import { Getter, State, Action } from 'vuex-class'
   import * as moment from 'moment'
   import { mastodonentities } from '@/interface'
 
@@ -84,8 +88,6 @@
     @State('currentUserAccount') currentUserAccount: mastodonentities.AuthenticatedAccount
 
     @Action('deleteStatus') deleteStatus
-
-    @Mutation('updateMuteStatusList') updateMuteStatusList
 
     shouldShowHeaderActionButtonGroup = false
 
@@ -133,16 +135,12 @@
       }
     }
 
-    async onMuteStatusByOperateList () {
-      const targetStatusId = this.status.id
+    onMuteStatusByOperateList () {
+      this.$emit('muteStatus', this.status.id)
+    }
 
-      const doMuteStatus = (await this.$confirm(this.$t(this.$i18nTags.statusCard.mute_status_confirm), {
-        okLabel: this.$t(this.$i18nTags.statusCard.do_mute_status_btn),
-        cancelLabel: this.$t(this.$i18nTags.statusCard.cancel_mute_status_btn),
-      })).result
-      if (doMuteStatus) {
-        this.updateMuteStatusList(targetStatusId)
-      }
+    onMuteUserByOperateList () {
+      this.$emit('muteUser', this.status.account.id)
     }
 
     getFromNowTime (createdAt: string) {

@@ -30,6 +30,7 @@ export const I18nTags = {
     show_content: 'status_card_show_content',
     hide_content: 'status_card_hide_content',
     mute_status: 'status_card_mute_status',
+    mute_user: 'status_card_mute_user',
     delete_status: 'status_card_delete_status',
     delete_status_confirm: 'status_card_delete_status_confirm',
     do_delete_status_btn: 'status_card_do_delete_status_btn',
@@ -40,7 +41,10 @@ export const I18nTags = {
     add_photos: 'status_card_add_photos',
     mute_status_confirm: 'status_card_mute_status_confirm',
     do_mute_status_btn: 'status_card_do_mute_status_btn',
-    cancel_mute_status_btn: 'status_card_cancel_mute_status_btn'
+    cancel_mute_status_btn: 'status_card_cancel_mute_status_btn',
+    mute_user_confirm: 'status_card_mute_status_confirm',
+    do_mute_user_btn: 'status_card_do_mute_user_btn',
+    cancel_mute_user_btn: 'status_card_cancel_mute_user_btn',
   },
 
   timeLines: {

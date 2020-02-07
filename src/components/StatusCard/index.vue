@@ -6,7 +6,8 @@
              @cuckooDragleave="isFileDragOver = false"
              @cuckooDrop="onDropFile">
 
-      <card-header :status="status" @deleteStatus="isCardLoading = true"/>
+      <card-header :status="status" @deleteStatus="isCardLoading = true"
+                   @muteStatus="onMuteStatus" @muteUser="onMuteUser"/>
 
       <div class="spoiler-text-area primary-read-text-color" v-if="status.spoiler_text">
         <span v-html="status.spoiler_text"/>
@@ -88,7 +89,7 @@
 
       <div class="reply-area-full">
         <div class="full-reply-list" ref="replyListContainer">
-          <full-reply-list-item v-for="replierStatus in descendantStatusList"
+          <full-reply-list-item v-for="replierStatus in descendantStatusList" @muteStatus="onMuteStatus" @muteUser="onMuteUser"
                                 :key="replierStatus.id" :status="replierStatus" @reply="onReplyToStatus(replierStatus)"/>
         </div>
       </div>
@@ -120,7 +121,7 @@
 
 <script lang="ts">
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-  import { State, Getter } from 'vuex-class'
+  import { State, Getter, Mutation } from 'vuex-class'
   import { mastodonentities } from '@/interface'
   import { StatusCardTypes } from '@/constant'
   import * as $ from 'jquery'
@@ -177,6 +178,12 @@
       replyListContainer: HTMLDivElement
     }
 
+    $confirm
+
+    $t
+
+    $i18nTags
+
     @State('contextMap') contextMap
     @State('statusMap') statusMap
     @State('cardMap') cardMap
@@ -185,6 +192,9 @@
 
     @Getter('getAccountAtName') getAccountAtName
     @Getter('isOAuthUser') isOAuthUser
+
+    @Mutation('updateMuteStatusList') updateMuteStatusList
+    @Mutation('updateMuteUserList') updateMuteUserList
 
     currentReplyToStatus: mastodonentities.Status = null
 
@@ -292,6 +302,10 @@
         return this.statusMap[descendantStatusId]
       }).filter(s => s).sort((a, b) => {
         return new Date(a.created_at) >= new Date(b.created_at) ? 1 : -1
+      }).filter(status => {
+        const muteByStatus = this.appStatus.settings.muteMap.statusList.indexOf(status.id) !== -1
+        const muteByUser = this.appStatus.settings.muteMap.userList.indexOf(status.account.id) !== -1
+        return !muteByStatus && !muteByUser
       })
     }
 
@@ -371,6 +385,26 @@
       }
 
       this.droppedFiles = Array.from(e.dataTransfer.files)
+    }
+
+    async onMuteStatus (statusId: string) {
+      const doMuteStatus = (await this.$confirm(this.$t(this.$i18nTags.statusCard.mute_status_confirm), {
+        okLabel: this.$t(this.$i18nTags.statusCard.do_mute_status_btn),
+        cancelLabel: this.$t(this.$i18nTags.statusCard.cancel_mute_status_btn),
+      })).result
+      if (doMuteStatus) {
+        this.updateMuteStatusList(statusId)
+      }
+    }
+
+    async onMuteUser (userId: string) {
+      const doMuteUser = (await this.$confirm(this.$t(this.$i18nTags.statusCard.mute_user_confirm), {
+        okLabel: this.$t(this.$i18nTags.statusCard.do_mute_user_btn),
+        cancelLabel: this.$t(this.$i18nTags.statusCard.cancel_mute_user_btn),
+      })).result
+      if (doMuteUser) {
+        this.updateMuteUserList(userId)
+      }
     }
   }
 

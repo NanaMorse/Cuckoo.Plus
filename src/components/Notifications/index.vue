@@ -105,7 +105,10 @@
       })
 
       return this.notifications.filter(notification => {
-        return allDescendantsToMute.indexOf(notification.status.id) === -1
+        const toMuteByStatus = allDescendantsToMute.indexOf(notification.status.id) !== -1
+        const toMuteByUser = this.appStatus.settings.muteMap.userList.indexOf(notification.account.id) !== -1
+
+        return !toMuteByStatus && !toMuteByUser
       })
     }
 
