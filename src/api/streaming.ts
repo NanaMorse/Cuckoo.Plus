@@ -35,6 +35,9 @@ class NotificationHandler {
     const title = `${this.getFromName(newNotification)} ${operateTypeString}`
     const bodyText =  newNotification.status ? extractText(newNotification.status.content) : ''
 
+    // ignore all muted status's notification
+    if (newNotification.status && (store.state.appStatus.settings.muteMap.statusList.indexOf(newNotification.status) !== -1)) return
+
     const nativeNotification = new Notification(title, { body: bodyText, icon: this.getImageUrl(newNotification) })
 
     nativeNotification.addEventListener('click', () => {

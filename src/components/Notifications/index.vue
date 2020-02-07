@@ -17,7 +17,7 @@
 
           <mu-list textline="three-line">
             <notification-card :notification="notification" @updateCurrentCheckStatus="onUpdateCurrentCheckStatus"
-                               v-for="(notification, index) in notifications" :key="index"/>
+                               v-for="(notification, index) in notificationsToShow" :key="index"/>
           </mu-list>
 
         </mu-load-more>
@@ -68,7 +68,12 @@
     @Mutation('updateNotificationsPanelStatus') updateNotificationsPanelStatus
 
     @State('notifications') notifications: Array<mastodonentities.Notification>
-
+    @State('contextMap') contextMap: {
+      [statusId: string]: {
+        ancestors: Array<string>
+        descendants: Array<string>
+      }
+    }
     @State('appStatus') appStatus
 
     isLoadingNotifications: boolean = false
@@ -88,6 +93,20 @@
     @Watch('shouldShowTargetStatus')
     onShouldShowTargetStatusChanged (val) {
       this.$emit('shouldShowTargetStatusChanged', val)
+    }
+
+    get notificationsToShow () {
+      const allDescendantsToMute = []
+
+      this.appStatus.settings.muteMap.statusList.forEach(statusId => {
+        if (this.contextMap[statusId]) {
+          allDescendantsToMute.push(...this.contextMap[statusId].descendants, statusId)
+        }
+      })
+
+      return this.notifications.filter(notification => {
+        return allDescendantsToMute.indexOf(notification.status.id) === -1
+      })
     }
 
     async loadNotifications (isLoadMore, isFetchMore) {

@@ -24,6 +24,10 @@ const timelines = {
       return targetStatusIdList
         .map(statusId => state.statusMap[statusId]).filter(status => status)
         .filter((status: mastodonentities.Status) => !status.in_reply_to_id)
+        .filter(status => {
+          const muteStatusList = state.appStatus.settings.muteMap.statusList
+          return muteStatusList.indexOf(status.id) === -1
+        })
     }
   }
 }

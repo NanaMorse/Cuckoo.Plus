@@ -37,7 +37,10 @@ export const I18nTags = {
     originally_shared_by: 'status_card_originally_shared_by',
     sensitive_media_alert: 'status_card_sensitive_media_alert',
     change_visibility: 'status_card_change_visibility',
-    add_photos: 'status_card_add_photos'
+    add_photos: 'status_card_add_photos',
+    mute_status_confirm: 'status_card_mute_status_confirm',
+    do_mute_status_btn: 'status_card_do_mute_status_btn',
+    cancel_mute_status_btn: 'status_card_cancel_mute_status_btn'
   },
 
   timeLines: {

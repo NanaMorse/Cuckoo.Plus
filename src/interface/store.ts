@@ -74,6 +74,10 @@ export namespace cuckoostore {
         tags: Array<string>
         locale: string,
         postPrivacy: string
+        muteMap: {
+          statusList: Array<string>
+          userList: Array<string>
+        }
       }
     }
   }
