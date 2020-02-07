@@ -31,7 +31,18 @@ const statusCard = {
   [I18nTags.statusCard.submit_post]: '送信',
   [I18nTags.statusCard.show_content]: '開く',
   [I18nTags.statusCard.hide_content]: '閉じる',
-  [I18nTags.statusCard.mute_status]: 'ミュート',
+  [I18nTags.statusCard.mute_status]: 'ミュート投稿',
+
+  [I18nTags.statusCard.mute_status]: 'ミュート投稿',
+  [I18nTags.statusCard.mute_status_confirm]: 'この投稿をミュートしてもよろしいですか？',
+  [I18nTags.statusCard.do_mute_status_btn]: 'ミュート',
+  [I18nTags.statusCard.cancel_mute_user_btn]: 'キャンセル',
+
+  [I18nTags.statusCard.mute_user]: 'ミュートユーザー',
+  [I18nTags.statusCard.mute_user_confirm]: 'このユーザーをミュートしてもよろしいですか？',
+  [I18nTags.statusCard.do_mute_user_btn]: 'ミュート',
+  [I18nTags.statusCard.cancel_mute_user_btn]: 'キャンセル',
+
   [I18nTags.statusCard.delete_status]: '削除',
   [I18nTags.statusCard.delete_status_confirm]: 'この投稿を削除してもよろしいですか？',
   [I18nTags.statusCard.do_delete_status_btn]: '削除',
