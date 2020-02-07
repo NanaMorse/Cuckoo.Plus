@@ -1,4 +1,4 @@
-const version = '0.3.19'
+const version = '0.3.20'
 const CACHE = version + ':CP'
 const cacheFilePaths = [
   '/',
