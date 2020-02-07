@@ -88,7 +88,11 @@ const state: cuckoostore.stateInfo = {
       tags: getLocalSetting('tags', ['hello']),
       locale: localStorage.getItem('locale') || I18nLocales.EN,
       postPrivacy: localStorage.getItem('postPrivacy') || VisibilityTypes.PUBLIC,
-      onlyMentionTargetUserMode: getLocalSetting('onlyMentionTargetUserMode', false)
+      onlyMentionTargetUserMode: getLocalSetting('onlyMentionTargetUserMode', false),
+      muteMap: {
+        statusList: getLocalSetting('statusMuteList', []),
+        userList: getLocalSetting('userMuteList', [])
+      },
     },
 
   }

@@ -31,7 +31,17 @@ const statusCard = {
   [I18nTags.statusCard.submit_post]: '发布',
   [I18nTags.statusCard.show_content]: '显示内容',
   [I18nTags.statusCard.hide_content]: '隐藏内容',
-  [I18nTags.statusCard.mute_status]: '忽略',
+
+  [I18nTags.statusCard.mute_status]: '忽略嘟文',
+  [I18nTags.statusCard.mute_status_confirm]: '要忽略这条嘟文吗？',
+  [I18nTags.statusCard.do_mute_status_btn]: '忽略',
+  [I18nTags.statusCard.cancel_mute_user_btn]: '取消',
+
+  [I18nTags.statusCard.mute_user]: '忽略用户',
+  [I18nTags.statusCard.mute_user_confirm]: '要忽略该用户吗？',
+  [I18nTags.statusCard.do_mute_user_btn]: '忽略',
+  [I18nTags.statusCard.cancel_mute_user_btn]: '取消',
+
   [I18nTags.statusCard.delete_status]: '删除',
   [I18nTags.statusCard.delete_status_confirm]: '要删除这条嘟文吗?',
   [I18nTags.statusCard.do_delete_status_btn]: '删除',

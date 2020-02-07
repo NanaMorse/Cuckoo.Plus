@@ -51,6 +51,18 @@ export default {
     localStorage.setItem('locale', newLocale)
   },
 
+  updateMuteStatusList (state: cuckoostore.stateInfo, statusId: string) {
+    const statusList: Array<string> = state.appStatus.settings.muteMap.statusList
+    if (statusList.indexOf(statusId) === -1) statusList.push(statusId)
+    localStorage.setItem('statusMuteList', JSON.stringify(statusList))
+  },
+
+  updateMuteUserList (state: cuckoostore.stateInfo, userId: string) {
+    const userList: Array<string> = state.appStatus.settings.muteMap.userList
+    if (userList.indexOf(userId) === -1) userList.push(userId)
+    localStorage.setItem('userMuteList', JSON.stringify(userList))
+  },
+
   unShiftStreamStatusesPool (state: cuckoostore.stateInfo, { newStatusIdList, timeLineType, hashName }) {
     const targetStatusesPool = getTargetStatusesList(state.appStatus.streamStatusesPool, timeLineType, hashName)
     newStatusIdList = newStatusIdList.filter(id => {

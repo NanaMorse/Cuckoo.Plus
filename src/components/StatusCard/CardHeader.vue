@@ -36,8 +36,12 @@
                 :open.sync="shouldOpenMoreOperationPopOver"
                 :trigger="moreOperationTriggerBtn">
       <mu-list>
-        <mu-list-item button @click.stop="onMuteStatus">
+        <mu-list-item button @click.stop="onMuteStatusByOperateList">
           <mu-list-item-title>{{$t($i18nTags.statusCard.mute_status)}}</mu-list-item-title>
+        </mu-list-item>
+        <mu-list-item button v-if="currentUserAccount.id !== status.account.id"
+                      @click.stop="onMuteUserByOperateList">
+          <mu-list-item-title>{{$t($i18nTags.statusCard.mute_user)}}</mu-list-item-title>
         </mu-list-item>
         <mu-list-item button v-if="currentUserAccount.id === status.account.id"
                       @click.stop="onDeleteStatusByOperateList">
@@ -131,7 +135,13 @@
       }
     }
 
-    onMuteStatus () {}
+    onMuteStatusByOperateList () {
+      this.$emit('muteStatus', this.status.id)
+    }
+
+    onMuteUserByOperateList () {
+      this.$emit('muteUser', this.status.account.id)
+    }
 
     getFromNowTime (createdAt: string) {
       return moment(createdAt).fromNow(true)

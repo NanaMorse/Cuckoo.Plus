@@ -14,6 +14,7 @@ interface getNotificationsQueryParams {
 }
 
 async function getNotifications(queryParams: getNotificationsQueryParams): Promise<{ data: Array<mastodonentities.Notification> }> {
+  queryParams.limit = 30
   const config = {
     params: queryParams
   }
