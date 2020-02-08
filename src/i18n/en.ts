@@ -31,7 +31,7 @@ const statusCard = {
   [I18nTags.statusCard.submit_post]: 'POST',
   [I18nTags.statusCard.show_content]: 'SHOW MORE',
   [I18nTags.statusCard.hide_content]: 'SHOW LESS',
-  [I18nTags.statusCard.mute_status]: 'Mute Status',
+  [I18nTags.statusCard.mute_status]: 'Mute Post',
   [I18nTags.statusCard.mute_user]: 'Mute User',
   [I18nTags.statusCard.delete_status]: 'Delete',
   [I18nTags.statusCard.delete_status_confirm]: 'Are you sure you want to delete the post?',

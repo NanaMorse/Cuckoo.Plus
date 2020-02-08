@@ -42,7 +42,7 @@ export const I18nTags = {
     mute_status_confirm: 'status_card_mute_status_confirm',
     do_mute_status_btn: 'status_card_do_mute_status_btn',
     cancel_mute_status_btn: 'status_card_cancel_mute_status_btn',
-    mute_user_confirm: 'status_card_mute_status_confirm',
+    mute_user_confirm: 'status_card_mute_user_confirm',
     do_mute_user_btn: 'status_card_do_mute_user_btn',
     cancel_mute_user_btn: 'status_card_cancel_mute_user_btn',
   },
