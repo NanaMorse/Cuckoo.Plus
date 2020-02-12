@@ -134,16 +134,12 @@
   import FullActionBar from './FullActionBar'
 
   import VisibilitySelectPopOver from '@/components/VisibilitySelectPopOver'
+  import {debug} from "util";
 
-  function generateNetEaseMusicFrameLink (originLink: string) {
-    if (!originLink) return null
+  function generateNetEaseMusicFrameLink (songId: string) {
+    if (!songId) return
 
-    const url = new URL(originLink)
-
-    if (!url.searchParams.has('id')) return null
-
-    const id = url.searchParams.get('id')
-    return `//music.163.com/outchain/player?type=2&id=${id}&auto=0&height=66`
+    return `//music.163.com/outchain/player?type=2&id=${songId}&auto=0&height=66`
   }
 
   function generateYoutubeVideoFrameLink (originLink: string) {
@@ -233,11 +229,40 @@
     }
 
     get neteaseMusicLink () {
-      return generateNetEaseMusicFrameLink(
-        this.contentLinkList.find((linkString: string) =>
-          linkString.startsWith('https://music.163.com/song')
-        )
-      )
+      const songId: string = this.contentLinkList.map((linkString: string) => {
+        const url = new URL(linkString)
+
+        const isNetEaseMusic = url.host === 'music.163.com'
+
+        if (!isNetEaseMusic) return
+
+        let songId
+
+        const isUseSongPath = url.pathname.startsWith('/song')
+        if (isUseSongPath) {
+          // use param song id
+          if (url.searchParams.get('id')) {
+            songId = url.searchParams.get('id')
+          }
+
+          // use path song id
+          if (url.pathname.replace('/song', '').match(/\d+/)) {
+            songId = url.pathname.replace('/song', '').match(/\d+/)[0]
+          }
+        }
+
+        const isUseSongHash = url.hash.startsWith('#/song?')
+        if (isUseSongHash) {
+          const paramsList = url.hash.replace('#/song?', '').split('&').filter(anchor => anchor.startsWith('id='))
+          if (paramsList[0]) songId = paramsList[0].split('=')[1]
+        }
+
+        return songId
+      }).filter(s => s)[0]
+
+      if (!songId) return
+
+      return generateNetEaseMusicFrameLink(songId)
     }
 
     get youtubeVideoLink () {
