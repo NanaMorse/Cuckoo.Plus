@@ -309,7 +309,7 @@
       }
 
       .netease-music-panel {
-        margin-left: -60px;
+        margin-left: -10px;
         margin-right: -20px;
       }
 
