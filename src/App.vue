@@ -133,6 +133,16 @@
     vertical-align: text-bottom;
   }
 
+  .netease-music-iframe {
+    display: block;
+    width: 100%;
+  }
+
+  .youtube-video-iframe {
+    display: block;
+    width: 100%;
+  }
+
   @keyframes fadein {
     from { opacity: 0; }
     to   { opacity: 1; }

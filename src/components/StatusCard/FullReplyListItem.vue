@@ -5,18 +5,28 @@
         <img :src="status.account.avatar">
       </mu-avatar>
     </div>
-    <div class="center-area">
 
-      <div class="reply-user-display-name">
-        <a @click="onCheckUserAccountPage" class="primary-read-text-color">
-          <span class="display-name" v-html="status.account.display_name"></span>
-          <span class="at-name secondary-read-text-color">@{{getAccountAtName(status.account)}}</span>
-        </a>
-        <span v-if="status.favourites_count > 0"
-              class="reply-favorites-count"
-              :class="[ status.favourited ? 'primary-theme-text-color' : 'secondary-read-text-color' ]">
+    <div class="content-area" ref="contentArea">
+
+      <div class="content-header">
+        <div class="reply-user-display-name">
+          <a @click="onCheckUserAccountPage" class="primary-read-text-color">
+            <span class="display-name" v-html="status.account.display_name"></span>
+            <span class="at-name secondary-read-text-color">@{{getAccountAtName(status.account)}}</span>
+          </a>
+          <span v-if="status.favourites_count > 0"
+                class="reply-favorites-count"
+                :class="[ status.favourited ? 'primary-theme-text-color' : 'secondary-read-text-color' ]">
                   +{{status.favourites_count}}
                 </span>
+        </div>
+
+        <div class="operation-area" ref="operationArea" :style="operationAreaStyle">
+          <span v-show="!shouldOpenMoreOperationPopOver && !shouldShowMoreOperationTriggerBtn" class="reply-from-now secondary-read-text-color">{{getFromNowTime()}}</span>
+          <mu-button v-show="shouldOpenMoreOperationPopOver || shouldShowMoreOperationTriggerBtn" icon style="width: 16px; height: 16px" @click="onOpenMoreOperationPopOver">
+            <mu-icon class="header-icon secondary-read-text-color" value="more_vert"/>
+          </mu-button>
+        </div>
       </div>
 
       <div class="spoiler-text-area primary-read-text-color" v-if="status.spoiler_text">
@@ -30,6 +40,21 @@
       <mu-card-text class="status-content full-reply-status-content"
                     v-show="(status.spoiler_text ? shouldShowContentWhileSpoilerExists : true)"
                     v-html="status.content"></mu-card-text>
+
+      <div v-if="neteaseMusicLink" class="netease-music-panel">
+        <iframe class="netease-music-iframe" frameborder="no" border="0"
+                marginwidth="0" marginheight="0" height=86
+                :src="neteaseMusicLink"></iframe>
+      </div>
+
+      <div v-if="youtubeVideoLink" class="youtube-video-panel">
+        <iframe class="youtube-video-iframe"
+                :height="youtubeVideoIFrameHeight"
+                :src="youtubeVideoLink"
+                frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+      </div>
 
       <div v-if="!status.reblog && hasLinkCardInfo" class="full-reply-link-preview-area">
         <link-preview-panel :cardInfo="cardMap[status.id]"/>
@@ -57,13 +82,6 @@
         </div>
 
       </div>
-
-    </div>
-    <div class="right-area" ref="rightArea" :style="rightAreaStyle">
-      <span v-show="!shouldOpenMoreOperationPopOver && !shouldShowMoreOperationTriggerBtn" class="reply-from-now secondary-read-text-color">{{getFromNowTime()}}</span>
-      <mu-button v-show="shouldOpenMoreOperationPopOver || shouldShowMoreOperationTriggerBtn" icon style="width: 16px; height: 16px" @click="onOpenMoreOperationPopOver">
-        <mu-icon class="header-icon secondary-read-text-color" value="more_vert"/>
-      </mu-button>
     </div>
 
     <mu-popover cover placement="left-start"
@@ -93,6 +111,8 @@
   import { mastodonentities } from "@/interface"
   import MediaPanel from './MediaPanel'
   import LinkPreviewPanel from './LinkPreviewPanel'
+  import {getNetEaseMusicFrameLinkFromContentLink, getYoutubeVideoFrameLinkFromContentLink } from '@/util'
+  import * as $ from "jquery"
 
   @Component({
     components: {
@@ -103,7 +123,8 @@
   class FullReplyListItem extends Vue {
 
     $refs: {
-      rightArea: HTMLDivElement
+      operationArea: HTMLDivElement
+      contentArea: HTMLDivElement
     }
 
     $confirm
@@ -131,7 +152,9 @@
 
     shouldShowContentWhileSpoilerExists: boolean = false
 
-    rightAreaStyle = null
+    operationAreaStyle = null
+
+    youtubeVideoIFrameHeight = 0
 
     get hasLinkCardInfo () {
       return this.cardMap[this.status.id]
@@ -139,11 +162,31 @@
         && this.cardMap[this.status.id].type === 'link'
     }
 
+    get contentLinkList () {
+      return [...$(this.status.content).find('a')].map(a => {
+        return a.getAttribute('href')
+      })
+    }
+
+    get neteaseMusicLink () {
+      return this.contentLinkList.map(link => {
+        return getNetEaseMusicFrameLinkFromContentLink(link)
+      }).filter(l => l)[0]
+    }
+
+    get youtubeVideoLink () {
+      return this.contentLinkList.map(link => {
+        return getYoutubeVideoFrameLinkFromContentLink(link)
+      }).filter(l => l)[0]
+    }
+
     mounted () {
-      this.rightAreaStyle = {
+      this.operationAreaStyle = {
         // todo 2 is magic number
-        width: `${this.$refs.rightArea.clientWidth + 2}px`
+        width: `${this.$refs.operationArea.clientWidth + 2}px`
       }
+
+      this.youtubeVideoIFrameHeight = this.$refs.contentArea.clientWidth * 315 / 560
     }
 
     getFromNowTime () {
@@ -221,31 +264,53 @@
       cursor: pointer;
     }
 
-    .center-area {
+    .content-area {
       flex-grow: 1;
       margin: 0 10px 0 16px;
       display: flex;
       flex-direction: column;
       width: 0;
 
-      .reply-user-display-name {
+      .content-header {
         display: flex;
-        align-items: center;
+        justify-content: space-between;
+        height: 22px;
+        line-height: 22px;
 
-        > a {
-          margin: 0;
-          font-size: 15px;
-          font-weight: 500;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          cursor: pointer;
+        .reply-user-display-name {
+          display: flex;
+          align-items: center;
+
+          > a {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 500;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            cursor: pointer;
+          }
+
+          .reply-favorites-count {
+            font-size: 13px;
+            font-weight: 500;
+            margin-left: 8px;
+          }
         }
 
-        .reply-favorites-count {
-          font-size: 13px;
-          font-weight: 500;
-          margin-left: 8px;
+        .operation-area {
+          display: flex;
+          flex-direction: row-reverse;
+
+          .reply-from-now {
+            font-size: 13px;
+            white-space: nowrap;
+          }
         }
+      }
+
+      .netease-music-panel {
+        margin-left: -60px;
+        margin-right: -20px;
       }
 
       .full-reply-status-content {
@@ -294,16 +359,6 @@
             line-height: 24px;
           }
         }
-      }
-    }
-
-    .right-area {
-      display: flex;
-      flex-direction: row-reverse;
-
-      .reply-from-now {
-        font-size: 13px;
-        white-space: nowrap;
       }
     }
   }
