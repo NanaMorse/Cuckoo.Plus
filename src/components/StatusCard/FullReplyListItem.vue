@@ -274,8 +274,8 @@
       .content-header {
         display: flex;
         justify-content: space-between;
-        height: 22px;
-        line-height: 22px;
+        min-height: 26px;
+        line-height: 26px;
 
         .reply-user-display-name {
           display: flex;
