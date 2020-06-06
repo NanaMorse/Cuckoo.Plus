@@ -37,10 +37,13 @@
   import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
   import { State } from 'vuex-class'
   import { AttachmentTypes, StatusCardTypes } from '@/constant'
+  import { documentGlobalEventBus } from '@/util'
   import { mastodonentities } from '@/interface'
   import PlaceHolderMediaItem from './PlaceHolderMediaItem'
   import ImageMeta = mastodonentities.ImageMeta
   import GifvMeta = mastodonentities.GifvMeta
+
+  let mediaPanelKeyDownEventListener
 
   @Component({
     components: {
@@ -227,9 +230,44 @@
       this.shouldShowLightBox = false
     }
 
+    @Watch('shouldShowLightBox')
+    onLightBoxStatusChanged () {
+      if (this.shouldShowLightBox) {
+        mediaPanelKeyDownEventListener = e => this.onMediaPanelKeyDown(e)
+        documentGlobalEventBus.on('keydown', mediaPanelKeyDownEventListener)
+      } else {
+        documentGlobalEventBus.off('keydown', mediaPanelKeyDownEventListener)
+      }
+    }
+
     onMediaItemClick (mediaItemIndex: number) {
       this.shouldShowLightBox = true
       this.lightBoxActiveIndex = mediaItemIndex
+    }
+
+    onMediaPanelKeyDown (e) {
+      e.stopPropagation()
+      e.preventDefault()
+
+      switch (e.key) {
+        case 'h': {
+          if (this.lightBoxActiveIndex === 0) {
+            this.lightBoxActiveIndex = this.combinedMediaList.length - 1
+          } else {
+            this.lightBoxActiveIndex --
+          }
+          break
+        }
+
+        case 'l': {
+          if (this.lightBoxActiveIndex === this.combinedMediaList.length - 1) {
+            this.lightBoxActiveIndex = 0
+          } else {
+            this.lightBoxActiveIndex ++
+          }
+          break
+        }
+      }
     }
 
     onCarouselBackgroundClick (e) {

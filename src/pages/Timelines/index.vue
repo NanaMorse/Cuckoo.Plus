@@ -50,8 +50,8 @@
   import { Vue, Component, Watch } from 'vue-property-decorator'
   import { Action, State, Getter } from 'vuex-class'
   import { TimeLineTypes, UiWidthCheckConstants, ThemeNames } from '@/constant'
-  import { cuckoostore, mastodonentities } from '@/interface'
-  import { getTimeLineTypeAndHashName, isBaseTimeLine, animatedScrollTo } from '@/util'
+  import { mastodonentities } from '@/interface'
+  import { getTimeLineTypeAndHashName, isBaseTimeLine, animatedScrollTo, documentGlobalEventBus } from '@/util'
   import StatusCard from '@/components/StatusCard'
   import PostStatusDialog from '@/components/PostStatusDialog'
   import NewStatusNoticeButton from './NewStatusNoticeButton'
@@ -226,7 +226,8 @@
 
     async mounted () {
       this.onRouteChanged()
-      document.addEventListener('keydown', e => this.onTimeLinePageKeyDown(e))
+      // @todo 可能存在重复绑定事件问题
+      documentGlobalEventBus.on('keydown', e => this.onTimeLinePageKeyDown(e), true)
     }
 
     async loadStatuses (isLoadMore: boolean = false, isFetchMore: boolean = false) {

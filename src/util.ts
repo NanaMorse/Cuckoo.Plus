@@ -4,6 +4,7 @@ import { Route } from "vue-router"
 import Formatter from "./formatter"
 import { mastodonentities } from "@/interface"
 import * as _ from 'underscore'
+import * as $ from 'jquery'
 
 export function patchApiUri (uri: string): string {
   const targetServerUri = store.state.mastodonServerUri || 'https://pawoo.net'
@@ -277,4 +278,54 @@ export function getYoutubeVideoFrameLinkFromContentLink (link: string): string |
   //
   // const v = url.searchParams.get('v')
   // return `https://www.youtube.com/embed/${v}`
+}
+
+export const documentGlobalEventBus = new class {
+
+  private eventMap: {
+    [key: string]: Array<{
+      listener: Function,
+      skip?: boolean
+    }>
+  } = {}
+
+  on (eventName: string, eventListener: Function, coexistWithOtherListener: boolean = false) {
+    if (!this.eventMap[eventName]) {
+      this.eventMap[eventName] = []
+      this.initDocumentGlobalEvent(eventName)
+    }
+
+    if (!coexistWithOtherListener) {
+      this.eventMap[eventName].forEach(listenerInfo => {
+        listenerInfo.skip = true
+      })
+    }
+
+    this.eventMap[eventName].push({
+      listener: eventListener
+    })
+  }
+
+  off (eventName: string, eventListener: Function) {
+    if (!eventListener) {
+      this.eventMap[eventName] = []
+    }
+
+    if (!this.eventMap[eventName]) return
+
+    const targetIndex = this.eventMap[eventName].findIndex(listenerInfo => listenerInfo.listener === eventListener)
+    this.eventMap[eventName].splice(targetIndex, 1)
+    this.eventMap[eventName].forEach(listenerInfo => {
+      listenerInfo.skip = false
+    })
+  }
+
+  private initDocumentGlobalEvent (eventName: string) {
+    document.addEventListener(eventName, (e) => {
+      this.eventMap[eventName].forEach(listenerInfo => {
+        if (listenerInfo.skip) return
+        listenerInfo.listener(e)
+      })
+    })
+  }
 }
