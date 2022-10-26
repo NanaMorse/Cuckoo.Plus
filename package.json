@@ -1,11 +1,13 @@
 {
   "name": "cuckoo.plus",
-  "version": "0.3.27",
+  "version": "0.3.28",
+  "tag": "release-22.10.0",
   "description": "A third-party client for mastodon",
   "scripts": {
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
     "dev": "webpack-dev-server",
     "build": "webpack --env=production",
+    "publish": "node publish.js",
     "start": "node server.js"
   },
   "dependencies": {
